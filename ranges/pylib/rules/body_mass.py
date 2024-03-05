@@ -18,19 +18,24 @@ class BodyMass(Base):
     replace: ClassVar[dict[str, str]] = term_util.term_data(csv, "replace")
     # ---------------------
 
-    mass: float = None
+    mass: float | list[float] = None
     units_inferred: bool = None
-    is_shorthand: bool = None
-    ambiguous_key: bool = None
+    shorthand: bool = None
+    ambiguous: bool = None
+    estimated: bool = None
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {"bodyMassInGrams": self.mass}
+
         if self.units_inferred:
             value |= {"bodyMassUnitsInferred": True}
-        if self.is_shorthand:
+
+        if self.shorthand:
             value |= {"bodyMassShorthand": True}
-        if self.ambiguous_key:
-            value |= {"bodyMassAmbiguousKey": True}
+
+        if self.ambiguous:
+            value |= {"bodyMassAmbiguous": True}
+
         return dwc.add_dyn()
 
     @classmethod
@@ -41,7 +46,7 @@ class BodyMass(Base):
             nlp,
             name="body_mass_patterns",
             compiler=cls.body_mass_patterns(),
-            overwrite=["metric_length", "imperial_length"],
+            overwrite=["metric_mass", "imperial_mass"],
         )
 
         add.cleanup_pipe(nlp, name="body_mass_cleanup")

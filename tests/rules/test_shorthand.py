@@ -5,9 +5,8 @@ from tests.setup import parse
 
 
 class TestShorthand(unittest.TestCase):
-    """It handles a space between the length and mass measurements."""
-
-    def test_parse_01(self):
+    def test_shorthand_01(self):
+        """It handles a space between the length and mass measurements."""
         self.assertEqual(
             parse("762-292-121-76 2435.0g"),
             [
@@ -24,7 +23,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_02(self):
+    def test_shorthand_02(self):
         """It handles a forearm length."""
         self.assertEqual(
             parse("Note in catalog: 83-0-17-23-fa64-35g"),
@@ -43,7 +42,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_03(self):
+    def test_shorthand_03(self):
         """It handles a forearm and tragus length."""
         self.assertEqual(
             parse("82-00-15-21-tr7-fa63-41g"),
@@ -63,7 +62,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_04(self):
+    def test_shorthand_04(self):
         # It handles the equals sign "=" separator
         self.assertEqual(
             parse("unformatted measurements=77-30-7-12=5.4"),
@@ -81,7 +80,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_05(self):
+    def test_shorthand_05(self):
         """It handles field labels after the numbers."""
         self.assertEqual(
             parse("""{"measurements":"78-39-5-14-8(TR)-30(FA)" }"""),
@@ -100,7 +99,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_06(self):
+    def test_shorthand_06(self):
         """It handles field labels without parentheses."""
         self.assertEqual(
             parse("""{"measurements":"78-39-5-14-8TR-30FA" }"""),
@@ -119,7 +118,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_07(self):
+    def test_shorthand_07(self):
         """It handles an estimated body mass with units."""
         self.assertEqual(
             parse("Note in catalog: Mus. SW Biol. NK 30009; 91-0-17-22-[62g]"),
@@ -138,7 +137,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_08(self):
+    def test_shorthand_08(self):
         """It handles an estimated body mass without units."""
         self.assertEqual(
             parse("Note in catalog: Mus. SW Biol. NK 30009; 91-0-17-22-[62] x"),
@@ -157,7 +156,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_09(self):
+    def test_shorthand_09(self):
         """It handles noise in place of the body mass."""
         self.assertEqual(
             parse('{"measurements":"242-109-37-34=N/D" }'),
@@ -174,7 +173,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_10(self):
+    def test_shorthand_10(self):
         """It handles other units."""
         self.maxDiff = None
         self.assertEqual(
@@ -193,7 +192,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_11(self):
+    def test_shorthand_11(self):
         """It handles unlabeled bat measurements."""
         self.assertEqual(
             parse("143-63-20-17-22=13"),
@@ -212,7 +211,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_12(self):
+    def test_shorthand_12(self):
         """It handles a missing measurement."""
         self.assertEqual(
             parse('{"measurements":"159-?-22-16=21.0" }'),
@@ -229,7 +228,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_13(self):
+    def test_shorthand_13(self):
         """It handles a missing body mass."""
         self.assertEqual(
             parse('{"measurements":"159-?-22-16" }'),
@@ -245,7 +244,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_14(self):
+    def test_shorthand_14(self):
         """It handles an estimated total length."""
         self.assertEqual(
             parse('{"measurements":"[159]-?-22-16" }'),
@@ -262,7 +261,7 @@ class TestShorthand(unittest.TestCase):
             ],
         )
 
-    def test_parse_15(self):
+    def test_shorthand_15(self):
         """It handles 3-form shorthand notation."""
         self.assertEqual(
             parse('{"measurements":"210-92-30" }'),

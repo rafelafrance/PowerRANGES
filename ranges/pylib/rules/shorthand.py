@@ -114,9 +114,17 @@ class Shorthand(Base):
             nlp,
             name="shorthand_patterns",
             compiler=cls.shorthand_patterns(),
+            overwrite=["metric_mass", "shorthand_cell"],
+        )
+        # add.debug_tokens(nlp)  # ###########################################
+
+        add.trait_pipe(
+            nlp,
+            name="shorthand_triple_patterns",
+            compiler=cls.shorthand_triple_patterns(),
             overwrite=["metric_mass", "shorthand_cell", "triple_key"],
         )
-        add.debug_tokens(nlp)  # ###########################################
+        # add.debug_tokens(nlp)  # ###########################################
 
         add.cleanup_pipe(nlp, name="shorthand_cleanup")
         # add.debug_tokens(nlp)  # ###########################################
@@ -154,11 +162,10 @@ class Shorthand(Base):
             ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA}},
             "99": {"TEXT": {"REGEX": cls.inner_re}},
             "99.0": {"TEXT": {"REGEX": cls.float_re}},
-            "99xx": {"LOWER": {"REGEX": r"^\d+(fa|tr)$"}},
+            "99fa": {"LOWER": {"REGEX": r"^\d+(fa|tr)$"}},
             "cell": {"ENT_TYPE": "shorthand_cell"},
             "g": {"ENT_TYPE": "metric_mass"},
-            "xx99": {"LOWER": {"REGEX": r"^(fa|tr)\d+$"}},
-            "key": {"ENT_TYPE": "triple_key"},
+            "fa99": {"LOWER": {"REGEX": r"^(fa|tr)\d+$"}},
         }
 
         return [
@@ -171,12 +178,33 @@ class Shorthand(Base):
                     " 99 - 99 - 99 - 99               =? 99.0? g* ",
                     " 99 - 99 - 99 - 99 - 99          =? 99.0? g* ",
                     " 99 - 99 - 99 - 99 - 99   - 99   =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - xx99        =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - xx99 - xx99 =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - 99xx        =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - 99xx - 99xx =? 99.0? g* ",
+                    " 99 - 99 - 99 - 99 - fa99        =? 99.0? g* ",
+                    " 99 - 99 - 99 - 99 - fa99 - fa99 =? 99.0? g* ",
+                    " 99 - 99 - 99 - 99 - 99fa        =? 99.0? g* ",
+                    " 99 - 99 - 99 - 99 - 99fa - 99fa =? 99.0? g* ",
                     " 99 - 99 - 99 - 99 - cell        =? 99.0? g* ",
                     " 99 - 99 - 99 - 99 - cell - cell =? 99.0? g* ",
+                ],
+            ),
+        ]
+
+    @classmethod
+    def shorthand_triple_patterns(cls):
+        decoder = {
+            '"': {"TEXT": {"IN": t_const.QUOTE}},
+            "-": {"TEXT": {"IN": cls.sep}},
+            ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA}},
+            "99": {"TEXT": {"REGEX": cls.inner_re}},
+            "key": {"ENT_TYPE": "triple_key"},
+        }
+
+        return [
+            Compiler(
+                label="shorthand",
+                keep="shorthand",
+                on_match="shorthand_match",
+                decoder=decoder,
+                patterns=[
                     ' "? key "? :? "? 99 - 99 - 99 "? ',
                 ],
             ),

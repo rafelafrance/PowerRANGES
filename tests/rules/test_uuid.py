@@ -1,5 +1,7 @@
 import unittest
 
+from traiter.pylib.rules.date_ import Date
+
 from ranges.pylib.rules.uuid import Uuid
 from tests.setup import parse
 
@@ -26,6 +28,12 @@ class TestUuid(unittest.TestCase):
                 'abbf14f5-1a7c-48f6-8f2f-2a8af53c8c86"}'
             ),
             [
+                Date(
+                    trait="date",
+                    start=13,
+                    end=23,
+                    date="2014-10-29",
+                ),
                 Uuid(
                     uuid="eeba8b10-040e-4477-a0a6-870102b56234",
                     trait="uuid",

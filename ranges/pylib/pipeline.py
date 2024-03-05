@@ -13,7 +13,7 @@ def build():
 
     tokenizer.setup_tokenizer(nlp)
     # Always break tokens on these characters
-    tokenizer.append_infix_regex(nlp, r""" = - \( \) \[ \] : " """.split())
+    tokenizer.append_infix_regex(nlp, r""" = - \( \) \[ \] : ; " """.split())
 
     Uuid.pipe(nlp)
     Date.pipe(nlp)

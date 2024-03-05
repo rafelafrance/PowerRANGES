@@ -1,0 +1,48 @@
+label,pattern,replace,units
+key_with_units,weightingrams,grams
+key_with_units,weighting,g
+key_with_units,weightinlbs,lbs
+key_with_units,weight in grams,grams
+key_with_units,weight in g,g
+key_with_units,weight in lbs,lbs
+key_with_units,weight-in-grams,grams
+key_with_units,weight-in-g,g
+key_with_units,weight-n-lbs,lbs
+key_with_units,massingrams,grams
+key_with_units,massing,g
+key_with_units,massinlbs,lbs
+key_with_units,mass in grams,grams
+key_with_units,mass in g,g
+key_with_units,mass in lbs,lbs
+key_with_units,mass-in-grams,grams
+key_with_units,mass-in-g,g
+key_with_units,mass-n-lbs,lbs
+key_leader,full,
+key_leader,observed,
+key_leader,total,
+weight,weight,
+weight,weights,
+weight,weigh,
+weight,weighed,
+weight,weighing,
+weight,weighs,
+mass,mass,
+body,body,
+other_wt,femur,
+other_wt,baculum,
+other_wt,bacu,
+other_wt,bac,
+other_wt,spleen,
+other_wt,thymus,
+other_wt,kidney,
+other_wt,testes,
+other_wt,testis,
+other_wt,ovaries,
+other_wt,epididymis,
+other_wt,epid,
+key_with_dots,w. ts,
+key_with_dots,w.ts,
+key_with_dots,wts,
+key_with_dots,w.t.s,
+key_with_dots,w.t,
+key_with_dots,wt,

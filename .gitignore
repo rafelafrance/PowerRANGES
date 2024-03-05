@@ -39,9 +39,9 @@ data/
 # Temp files
 temp/
 junk*
+scratch/
 
 # Experiments
 pilot/
-scratch/
 old/
 experiments/

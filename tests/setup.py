@@ -1,6 +1,7 @@
 import traiter.pylib.darwin_core as t_dwc
-from flora.pylib import pipeline
 from traiter.pylib.util import compress
+
+from ranges.pylib import pipeline
 
 PIPELINE = pipeline.build()
 

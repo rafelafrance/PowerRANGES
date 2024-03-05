@@ -12,6 +12,7 @@ authors = [{name="Raphael LaFrance", email="raphael.lafrance@gmail.com"}]
 requires-python = ">=3.11"
 dependencies = [
     "Jinja2",
+    "jupyter",
     "pandas",
     "regex",
     "spacy",
@@ -31,6 +32,7 @@ include = ["ranges"]
 namespaces = false
 
 [project.scripts]
+parse-gbif = "ranges.parse_gbif:main"
 
 [tool.setuptools]
 py-modules = []

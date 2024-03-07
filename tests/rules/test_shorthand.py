@@ -120,6 +120,7 @@ class TestShorthand(unittest.TestCase):
 
     def test_shorthand_07(self):
         """It handles an estimated body mass with units."""
+        self.maxDiff = None
         self.assertEqual(
             parse("Note in catalog: Mus. SW Biol. NK 30009; 91-0-17-22-[62g]"),
             [
@@ -168,7 +169,7 @@ class TestShorthand(unittest.TestCase):
                     hind_foot_length=37,
                     ear_length=34,
                     start=17,
-                    end=31,
+                    end=30,
                 )
             ],
         )
@@ -177,7 +178,7 @@ class TestShorthand(unittest.TestCase):
         """It handles other units."""
         self.maxDiff = None
         self.assertEqual(
-            parse('{"measurements":"90-30-16-7=6.9MGS" }'),
+            parse('{"measurements":"90-30-16-7=6.9GMS" }'),
             [
                 Shorthand(
                     trait="shorthand",

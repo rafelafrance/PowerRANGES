@@ -42,13 +42,12 @@ class Bat:
 class Shorthand(Base):
     # Class vars ----------
     csvs: ClassVar[list[Path]] = [
-        Path(__file__).parent / "terms" / "shorthand_terms.csv",
         Path(t_terms.__file__).parent / "unit_mass_terms.csv",
+        Path(__file__).parent / "terms" / "shorthand_terms.csv",
     ]
     replace: ClassVar[dict[str, str]] = term_util.term_data(csvs, "replace")
 
     inner_re: ClassVar[str] = r"((\d{1,4}(\.\d{,3})?)|[?x]{1,2})"
-    float_re: ClassVar[str] = r"(\d{1,4}(\.\d{,3})?)"
 
     # This separates fields within the shorthand notation
     sep: ClassVar[str] = t_const.DASH + t_const.COLON + t_const.SLASH
@@ -56,6 +55,11 @@ class Shorthand(Base):
     # This separates the last field from the rest
     last: ClassVar[str] = sep + t_const.EQ
     skip: ClassVar[str] = last + t_const.COLON + t_const.QUOTE
+
+    # Expected order of cells
+    order: ClassVar[list[str]] = """
+        total_length tail_length hind_foot_length ear_length
+        """.split()
     # ---------------------
 
     total_length: float = None
@@ -103,10 +107,19 @@ class Shorthand(Base):
 
         add.trait_pipe(
             nlp,
-            name="shorthand_cell_patterns",
-            compiler=cls.shorthand_cell_patterns(),
-            overwrite=["metric_mass"],
-            merge=["shorthand_cell"],
+            name="missing_patterns",
+            compiler=cls.missing_patterns(),
+            overwrite=["metric_mass", "number"],
+            # merge=["cell"],
+        )
+        # add.debug_tokens(nlp)  # ###########################################
+
+        add.trait_pipe(
+            nlp,
+            name="cell_patterns",
+            compiler=cls.cell_patterns(),
+            overwrite=["metric_mass", "number"],
+            # merge=["cell"],
         )
         # add.debug_tokens(nlp)  # ###########################################
 
@@ -114,7 +127,7 @@ class Shorthand(Base):
             nlp,
             name="shorthand_patterns",
             compiler=cls.shorthand_patterns(),
-            overwrite=["metric_mass", "shorthand_cell"],
+            overwrite=["metric_mass", "cell", "number", "missing"],
         )
         # add.debug_tokens(nlp)  # ###########################################
 
@@ -122,33 +135,55 @@ class Shorthand(Base):
             nlp,
             name="shorthand_triple_patterns",
             compiler=cls.shorthand_triple_patterns(),
-            overwrite=["metric_mass", "shorthand_cell", "triple_key"],
+            overwrite=["metric_mass", "cell", "triple_key", "number", "missing"],
         )
         # add.debug_tokens(nlp)  # ###########################################
 
-        add.cleanup_pipe(nlp, name="shorthand_cleanup")
+        add.cleanup_pipe(nlp, name="shorthand_cleanup", clear=False)
         # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
-    def shorthand_cell_patterns(cls):
+    def missing_patterns(cls):
         decoder = {
-            "(": {"TEXT": "("},
-            ")": {"TEXT": ")"},
-            "[": {"TEXT": "["},
-            "]": {"TEXT": "]"},
-            "99": {"TEXT": {"REGEX": cls.float_re}},
-            "g": {"ENT_TYPE": "metric_mass"},
-            "label": {"LOWER": {"REGEX": r"^(fa|tr)$"}},
+            "missing": {"LOWER": {"REGEX": r"^(x|\?){1,2}$"}},
         }
 
         return [
             Compiler(
-                label="shorthand_cell",
-                on_match="shorthand_cell_match",
+                label="missing",
+                on_match="cell_match",
+                decoder=decoder,
+                patterns=[
+                    " missing ",
+                ],
+            ),
+        ]
+
+    @classmethod
+    def cell_patterns(cls):
+        decoder = {
+            "(": {"TEXT": "("},
+            ")": {"TEXT": ")"},
+            "99": {"ENT_TYPE": "number"},
+            "[": {"TEXT": "["},
+            "]": {"TEXT": "]"},
+            "g": {"ENT_TYPE": "metric_mass"},
+            "label": {"LOWER": {"REGEX": r"^(fa|tr)$"}},
+            "99fa": {"LOWER": {"REGEX": r"^\d+(fa|tr)$"}},
+            "fa99": {"LOWER": {"REGEX": r"^(fa|tr)\d+$"}},
+        }
+
+        return [
+            Compiler(
+                label="cell",
+                on_match="cell_match",
                 decoder=decoder,
                 patterns=[
                     " 99 (? label )? ",
                     " [ 99 g? ] ",
+                    " [ 99 g? ] ",
+                    " 99fa ",
+                    " fa99 ",
                 ],
             ),
         ]
@@ -156,16 +191,11 @@ class Shorthand(Base):
     @classmethod
     def shorthand_patterns(cls):
         decoder = {
-            '"': {"TEXT": {"IN": t_const.QUOTE}},
             "-": {"TEXT": {"IN": cls.sep}},
             "=": {"TEXT": {"IN": cls.last}},
-            ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA}},
-            "99": {"TEXT": {"REGEX": cls.inner_re}},
-            "99.0": {"TEXT": {"REGEX": cls.float_re}},
-            "99fa": {"LOWER": {"REGEX": r"^\d+(fa|tr)$"}},
-            "cell": {"ENT_TYPE": "shorthand_cell"},
+            "99": {"ENT_TYPE": {"IN": ["number", "cell", "missing"]}, "OP": "+"},
+            "99.0": {"ENT_TYPE": {"IN": ["number", "cell"]}, "OP": "+"},
             "g": {"ENT_TYPE": "metric_mass"},
-            "fa99": {"LOWER": {"REGEX": r"^(fa|tr)\d+$"}},
         }
 
         return [
@@ -175,15 +205,12 @@ class Shorthand(Base):
                 on_match="shorthand_match",
                 decoder=decoder,
                 patterns=[
-                    " 99 - 99 - 99 - 99               =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - 99          =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - 99   - 99   =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - fa99        =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - fa99 - fa99 =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - 99fa        =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - 99fa - 99fa =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - cell        =? 99.0? g* ",
-                    " 99 - 99 - 99 - 99 - cell - cell =? 99.0? g* ",
+                    " 99 - 99 - 99 - 99           =? 99.0 g* ",
+                    " 99 - 99 - 99 - 99 - 99      =? 99.0 g* ",
+                    " 99 - 99 - 99 - 99 - 99 - 99 =? 99.0 g* ",
+                    " 99 - 99 - 99 - 99 ",
+                    " 99 - 99 - 99 - 99      - 99.0 ",
+                    " 99 - 99 - 99 - 99 - 99 - 99.0 ",
                 ],
             ),
         ]
@@ -191,11 +218,11 @@ class Shorthand(Base):
     @classmethod
     def shorthand_triple_patterns(cls):
         decoder = {
-            '"': {"TEXT": {"IN": t_const.QUOTE}},
             "-": {"TEXT": {"IN": cls.sep}},
             ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA}},
             "99": {"TEXT": {"REGEX": cls.inner_re}},
             "key": {"ENT_TYPE": "triple_key"},
+            '"': {"TEXT": {"IN": t_const.QUOTE}},
         }
 
         return [
@@ -218,41 +245,36 @@ class Shorthand(Base):
         full = 4
 
         # Remove unneeded characters and entities
-        tokens = [t for t in ent if t.text not in cls.skip]
-        tokens = [t for t in tokens if t.ent_type_ != "triple_key"]
-
-        # Get mass units
-        _units = tokens.pop() if tokens[-1].ent_type_ == "metric_mass" else ""
-
-        # Expected order of fields
-        fields = """ total_length tail_length hind_foot_length ear_length """.split()
+        cells = [e for e in ent.ents if e.label_ in ("number", "cell", "missing")]
 
         bats = []
 
-        for i, token in enumerate(tokens):
+        for i, cell in enumerate(cells):
+            cell = cell.text.lower()
+
             # Forearm length can be labeled
-            if token.lower_.find("fa") > -1:
-                length, estimated = cls.get_values(token.text)
+            if cell.find("fa") > -1:
+                length, estimated = cls.get_values(cell)
                 kwargs["forearm_length"] = length
                 kwargs["forearm_length_estimated"] = estimated
 
             # Tragus length can be labeled
-            elif token.lower_.find("tr") > -1:
-                length, estimated = cls.get_values(token.text)
+            elif cell.find("tr") > -1:
+                length, estimated = cls.get_values(cell)
                 kwargs["tragus_length"] = length
                 kwargs["tragus_length_estimated"] = estimated
 
             # Body mass is always last but it may be missing
-            elif i >= full and i == len(tokens) - 1:
-                length, estimated = cls.get_values(token.text)
+            elif i >= full and i == len(cells) - 1:
+                length, estimated = cls.get_values(cell)
                 kwargs["body_mass"] = length
                 kwargs["body_mass_estimated"] = estimated
 
             # Follow the expected order
             else:
-                length, estimated = cls.get_values(token.text)
+                length, estimated = cls.get_values(cell)
                 if i < full:
-                    field = fields[i]
+                    field = cls.order[i]
                     kwargs[field] = length
                     kwargs[f"{field}_estimated"] = estimated
                 else:
@@ -285,13 +307,13 @@ class Shorthand(Base):
         return value, estimated
 
     @classmethod
-    def shorthand_cell_match(cls, ent):
+    def cell_match(cls, ent):
         return cls.from_ent(ent)
 
 
-@registry.misc("shorthand_cell_match")
-def shorthand_cell_match(ent):
-    return Shorthand.shorthand_cell_match(ent)
+@registry.misc("cell_match")
+def cell_match(ent):
+    return Shorthand.cell_match(ent)
 
 
 @registry.misc("shorthand_match")

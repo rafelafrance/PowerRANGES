@@ -40,7 +40,7 @@ class Uuid(Base):
                 on_match="uuid_match",
                 decoder=decoder,
                 patterns=[
-                    " hex+ - hex+ - hex+ - hex+ - hex+ ",
+                    " hex - hex - hex - hex - hex ",
                 ],
             ),
         ]

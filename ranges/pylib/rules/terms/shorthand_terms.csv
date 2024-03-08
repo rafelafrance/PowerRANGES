@@ -1,8 +1,17 @@
 label,pattern
-triple_key,measurement
-triple_key,measurements
+length,len
+length,len.
+length,length
+sex,female
+sex,male
+tag,tag
 triple_key,meas
 triple_key,meas.
-triple_key,meas. length
-triple_key,mesurements
+triple_key,meas.:
+triple_key,meas:
+triple_key,measlength
+triple_key,measurement
+triple_key,measurements
+triple_key,measurementslength
 triple_key,measurementsnt
+triple_key,mesurements

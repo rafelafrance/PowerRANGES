@@ -77,26 +77,49 @@ class Shorthand(Base):
     body_mass: float = None
     body_mass_estimated: bool = None
 
-    # For bats
-
     forearm_length: float = None
     forearm_length_estimated: bool = None
 
     tragus_length: float = None
     tragus_length_estimated: bool = None
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc) -> DarwinCore:  # noqa: C901 PLR0912
         value = {}
-        # value = {"bodyMassInGrams": self.mass}
 
-        # if self.units_inferred:
-        #     value |= {"bodyMassUnitsInferred": True}
+        if self.total_length is not None:
+            value |= {"totalLengthInMillimeters": self.total_length}
+            if self.total_length_estimated:
+                value |= {"totalLengthEstimated": True}
 
-        # if self.shorthand:
-        #     value |= {"bodyMassShorthand": True}
+        if self.tail_length is not None:
+            value |= {"tailLengthInMillimeters": self.tail_length}
+            if self.tail_length_estimated:
+                value |= {"tailLengthEstimated": True}
 
-        # if self.ambiguous:
-        #     value |= {"bodyMassAmbiguous": True}
+        if self.hind_foot_length is not None:
+            value |= {"hindFootLengthInMillimeters": self.hind_foot_length}
+            if self.hind_foot_length_estimated:
+                value |= {"hindFootLengthEstimated": True}
+
+        if self.ear_length is not None:
+            value |= {"earLengthInMillimeters": self.ear_length}
+            if self.ear_length_estimated:
+                value |= {"earLengthEstimated": True}
+
+        if self.forearm_length is not None:
+            value |= {"forearmLengthInMillimeters": self.forearm_length}
+            if self.forearm_length_estimated:
+                value |= {"forearmLengthEstimated": True}
+
+        if self.tragus_length is not None:
+            value |= {"tragusLengthInMillimeters": self.tragus_length}
+            if self.tragus_length_estimated:
+                value |= {"tragusLengthEstimated": True}
+
+        if self.body_mass is not None:
+            value |= {"bodyMassInGrams": self.body_mass}
+            if self.body_mass_estimated:
+                value |= {"bodyMassEstimated": True}
 
         return dwc.add_dyn(**value)
 
@@ -219,9 +242,12 @@ class Shorthand(Base):
     def shorthand_triple_patterns(cls):
         decoder = {
             "-": {"TEXT": {"IN": cls.sep}},
-            ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA}},
+            ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}},
             "99": {"TEXT": {"REGEX": cls.inner_re}},
             "key": {"ENT_TYPE": "triple_key"},
+            "length": {"ENT_TYPE": "length"},
+            "sex": {"ENT_TYPE": "sex"},
+            "tag": {"ENT_TYPE": "tag"},
             '"': {"TEXT": {"IN": t_const.QUOTE}},
         }
 
@@ -232,7 +258,8 @@ class Shorthand(Base):
                 on_match="shorthand_match",
                 decoder=decoder,
                 patterns=[
-                    ' "? key "? :? "? 99 - 99 - 99 "? ',
+                    ' "? key length*     "? :* "? 99 - 99 - 99 "? ',
+                    ' "? tag 99* :* sex? "? :* "? 99 - 99 - 99 "? ',
                 ],
             ),
         ]

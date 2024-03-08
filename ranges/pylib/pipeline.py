@@ -7,6 +7,7 @@ from ranges.pylib.rules import delete
 from ranges.pylib.rules.body_mass import BodyMass
 from ranges.pylib.rules.number import Number
 from ranges.pylib.rules.shorthand import Shorthand
+from ranges.pylib.rules.total_length import TotalLength
 from ranges.pylib.rules.uuid import Uuid
 
 
@@ -24,6 +25,9 @@ def build():
 
     Number.pipe(nlp)
     BodyMass.pipe(nlp)
+
+    Number.pipe(nlp)
+    TotalLength.pipe(nlp)
 
     delete.pipe(nlp)
 

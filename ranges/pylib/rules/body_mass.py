@@ -42,6 +42,9 @@ class BodyMass(Base):
         if self.ambiguous:
             value |= {"bodyMassAmbiguous": True}
 
+        if self.ambiguous:
+            value |= {"bodyMassEstimated": True}
+
         return dwc.add_dyn()
 
     @classmethod
@@ -87,16 +90,19 @@ class BodyMass(Base):
     @classmethod
     def not_mass_patterns(cls):
         decoder = {
-            "99": {"ENT_TYPE": "number"},
-            ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}},
-            "[": {"TEXT": "["},
-            "]": {"TEXT": "]"},
+            "99": {"ENT_TYPE": "number", "OP": "+"},
+            ":": {
+                "TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ},
+                "OP": "?",
+            },
+            "[": {"TEXT": "[", "OP": "?"},
+            "]": {"TEXT": "]", "OP": "?"},
             "g": {"ENT_TYPE": {"IN": ["metric_mass", "imperial_mass"]}},
-            "key": {"ENT_TYPE": "wt_key"},
-            "key_g": {"ENT_TYPE": "key_with_units"},
-            "other": {"ENT_TYPE": "other_wt"},
-            "leader": {"ENT_TYPE": "key_leader"},
-            '"': {"TEXT": {"IN": t_const.QUOTE}},
+            "key": {"ENT_TYPE": "wt_key", "OP": "+"},
+            "key_g": {"ENT_TYPE": "key_with_units", "OP": "+"},
+            "other": {"ENT_TYPE": "other_wt", "OP": "+"},
+            "leader": {"ENT_TYPE": "key_leader", "OP": "*"},
+            '"': {"TEXT": {"IN": t_const.QUOTE}, "OP": "?"},
         }
         return [
             Compiler(
@@ -104,9 +110,9 @@ class BodyMass(Base):
                 on_match="not_body_mass_match",
                 decoder=decoder,
                 patterns=[
-                    ' other key_g+       "? :? "? [? 99+ ]? ',
-                    ' other leader*      "? :? "? [? 99+ ]? g+ ]? ',
-                    ' other leader* key+ "? :? "? [? 99+ ]? g* ]? ',
+                    ' other key_g       " : " [ 99 ] ',
+                    ' other leader      " : " [ 99 ] g+ ] ',
+                    ' other leader* key " : " [ 99 ] g* ] ',
                 ],
             ),
         ]
@@ -114,15 +120,18 @@ class BodyMass(Base):
     @classmethod
     def body_mass_patterns(cls):
         decoder = {
-            "99": {"ENT_TYPE": "number"},
-            ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}},
-            "[": {"TEXT": "["},
-            "]": {"TEXT": "]"},
+            "99": {"ENT_TYPE": "number", "OP": "+"},
+            ":": {
+                "TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ},
+                "OP": "?",
+            },
+            "[": {"TEXT": "[", "OP": "?"},
+            "]": {"TEXT": "]", "OP": "?"},
             "g": {"ENT_TYPE": {"IN": ["metric_mass", "imperial_mass"]}},
-            "key": {"ENT_TYPE": "wt_key"},
-            "key_g": {"ENT_TYPE": "key_with_units"},
-            "leader": {"ENT_TYPE": "key_leader"},
-            '"': {"TEXT": {"IN": t_const.QUOTE}},
+            "key": {"ENT_TYPE": "wt_key", "OP": "+"},
+            "key_g": {"ENT_TYPE": "key_with_units", "OP": "+"},
+            "leader": {"ENT_TYPE": "key_leader", "OP": "*"},
+            '"': {"TEXT": {"IN": t_const.QUOTE}, "OP": "?"},
         }
         return [
             Compiler(
@@ -131,9 +140,9 @@ class BodyMass(Base):
                 on_match="body_mass_match",
                 decoder=decoder,
                 patterns=[
-                    ' key_g+       "? :? "? [? 99+ ]? ',
-                    ' leader*      "? :? "? [? 99+ ]? g+ ]? ',
-                    ' leader* key+ "? :? "? [? 99+ ]? g* ]? ',
+                    ' key_g      " : " [ 99 ] ',
+                    ' leader     " : " [ 99 ] g+ ] ',
+                    ' leader key " : " [ 99 ] g* ] ',
                 ],
             ),
         ]
@@ -141,14 +150,16 @@ class BodyMass(Base):
     @classmethod
     def compound_mass_patterns(cls):
         decoder = {
-            ",": {"TEXT": {"IN": t_const.COMMA}},
-            "99": {"ENT_TYPE": "number"},
-            ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}},
-            "key": {"ENT_TYPE": "wt_key"},
-            "lbs": {"ENT_TYPE": "imperial_mass"},
-            "leader": {"ENT_TYPE": "key_leader"},
-            "ozs": {"ENT_TYPE": "imperial_mass"},
-            "to": {"LOWER": {"IN": ["to", *t_const.DASH]}},
+            ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
+            "99": {"ENT_TYPE": "number", "OP": "+"},
+            ":": {
+                "TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ},
+                "OP": "?",
+            },
+            "key": {"ENT_TYPE": "wt_key", "OP": "+"},
+            "lbs": {"ENT_TYPE": "imperial_mass", "OP": "+"},
+            "ozs": {"ENT_TYPE": "imperial_mass", "OP": "+"},
+            "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
         }
         return [
             Compiler(
@@ -157,10 +168,10 @@ class BodyMass(Base):
                 on_match="compound_mass_match",
                 decoder=decoder,
                 patterns=[
-                    "        99 lbs+ ,? 99 ozs ",
-                    " key :? 99 lbs+ ,? 99 ozs ",
-                    "        99 lbs+ ,? 99 to+ 99 ozs ",
-                    " key :? 99 lbs+ ,? 99 to+ 99 ozs ",
+                    "       99 lbs , 99 ozs ",
+                    " key : 99 lbs , 99 ozs ",
+                    "       99 lbs , 99 to 99 ozs ",
+                    " key : 99 lbs , 99 to 99 ozs ",
                 ],
             ),
         ]
@@ -168,13 +179,16 @@ class BodyMass(Base):
     @classmethod
     def mass_range_patterns(cls):
         decoder = {
-            "99": {"ENT_TYPE": "number"},
-            ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}},
+            "99": {"ENT_TYPE": "number", "OP": "+"},
+            ":": {
+                "TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ},
+                "OP": "?",
+            },
             "g": {"ENT_TYPE": {"IN": ["metric_mass", "imperial_mass"]}},
-            "key": {"ENT_TYPE": "wt_key"},
-            "key_g": {"ENT_TYPE": "key_with_units"},
-            "leader": {"ENT_TYPE": "key_leader"},
-            "to": {"LOWER": {"IN": ["to", *t_const.DASH]}},
+            "key": {"ENT_TYPE": "wt_key", "OP": "+"},
+            "key_g": {"ENT_TYPE": "key_with_units", "OP": "+"},
+            "leader": {"ENT_TYPE": "key_leader", "OP": "*"},
+            "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
         }
         return [
             Compiler(
@@ -183,9 +197,9 @@ class BodyMass(Base):
                 on_match="mass_range_match",
                 decoder=decoder,
                 patterns=[
-                    " key_g+          99 to+ 99    ",
-                    " leader*         99 to+ 99 g+ ",
-                    " leader* key+ :? 99 to+ 99 g* ",
+                    " key_g      : 99 to 99    ",
+                    " leader     : 99 to 99 g+ ",
+                    " leader key : 99 to 99 g* ",
                 ],
             ),
         ]

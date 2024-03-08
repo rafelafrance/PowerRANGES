@@ -36,15 +36,25 @@ other_wt,testes,
 other_wt,testis,
 other_wt,thymus,
 wt_key,mass,
-wt_key,w. ts,
-wt_key,w.t,
-wt_key,w.t.s,
-wt_key,w.ts,
+wt_key,w t
+wt_key,w t.
+wt_key,w ts
+wt_key,w ts.
+wt_key,w. t
+wt_key,w. t.
+wt_key,w. ts
+wt_key,w. ts.
+wt_key,w.t
+wt_key,w.t.
+wt_key,w.ts
+wt_key,w.ts.
+wt_key,wt
+wt_key,wt.
+wt_key,wts
+wt_key,wts.
 wt_key,weigh,
 wt_key,weighed,
 wt_key,weighing,
 wt_key,weighs,
 wt_key,weight,
 wt_key,weights,
-wt_key,wt,
-wt_key,wts,

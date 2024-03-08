@@ -1,0 +1,477 @@
+label,pattern,factor_cm
+ambiguous_key,length
+ambiguous_key,len
+ambiguous_key,len.
+key_with_units,fork in millimeters,0.1
+key_with_units,fork in mm,0.1
+key_with_units,fork inmillimeters,0.1
+key_with_units,fork inmm,0.1
+key_with_units,fork len in millimeters,0.1
+key_with_units,fork len in mm,0.1
+key_with_units,fork len inmillimeters,0.1
+key_with_units,fork len inmm,0.1
+key_with_units,fork length in millimeters,0.1
+key_with_units,fork length in mm,0.1
+key_with_units,fork length inmillimeters,0.1
+key_with_units,fork length inmm,0.1
+key_with_units,fork lengthin millimeters,0.1
+key_with_units,fork lengthin mm,0.1
+key_with_units,fork lengthinmillimeters,0.1
+key_with_units,fork lengthinmm,0.1
+key_with_units,fork lenin millimeters,0.1
+key_with_units,fork lenin mm,0.1
+key_with_units,fork leninmillimeters,0.1
+key_with_units,fork leninmm,0.1
+key_with_units,forkin millimeters,0.1
+key_with_units,forkin mm,0.1
+key_with_units,forkinmillimeters,0.1
+key_with_units,forkinmm,0.1
+key_with_units,forklen in millimeters,0.1
+key_with_units,forklen in mm,0.1
+key_with_units,forklen inmillimeters,0.1
+key_with_units,forklen inmm,0.1
+key_with_units,forklength in millimeters,0.1
+key_with_units,forklength in mm,0.1
+key_with_units,forklength inmillimeters,0.1
+key_with_units,forklength inmm,0.1
+key_with_units,forklengthin millimeters,0.1
+key_with_units,forklengthin mm,0.1
+key_with_units,forklengthinmillimeters,0.1
+key_with_units,forklengthinmm,0.1
+key_with_units,forklenin millimeters,0.1
+key_with_units,forklenin mm,0.1
+key_with_units,forkleninmillimeters,0.1
+key_with_units,forkleninmm,0.1
+key_with_units,head body in millimeters,0.1
+key_with_units,head body in mm,0.1
+key_with_units,head body inmillimeters,0.1
+key_with_units,head body inmm,0.1
+key_with_units,head body len in millimeters,0.1
+key_with_units,head body len in mm,0.1
+key_with_units,head body len inmillimeters,0.1
+key_with_units,head body len inmm,0.1
+key_with_units,head body length in millimeters,0.1
+key_with_units,head body length in mm,0.1
+key_with_units,head body length inmillimeters,0.1
+key_with_units,head body length inmm,0.1
+key_with_units,head body lengthin millimeters,0.1
+key_with_units,head body lengthin mm,0.1
+key_with_units,head body lengthinmillimeters,0.1
+key_with_units,head body lengthinmm,0.1
+key_with_units,head body lenin millimeters,0.1
+key_with_units,head body lenin mm,0.1
+key_with_units,head body leninmillimeters,0.1
+key_with_units,head body leninmm,0.1
+key_with_units,head bodyin millimeters,0.1
+key_with_units,head bodyin mm,0.1
+key_with_units,head bodyinmillimeters,0.1
+key_with_units,head bodyinmm,0.1
+key_with_units,head bodylen in millimeters,0.1
+key_with_units,head bodylen in mm,0.1
+key_with_units,head bodylen inmillimeters,0.1
+key_with_units,head bodylen inmm,0.1
+key_with_units,head bodylength in millimeters,0.1
+key_with_units,head bodylength in mm,0.1
+key_with_units,head bodylength inmillimeters,0.1
+key_with_units,head bodylength inmm,0.1
+key_with_units,head bodylengthin millimeters,0.1
+key_with_units,head bodylengthin mm,0.1
+key_with_units,head bodylengthinmillimeters,0.1
+key_with_units,head bodylengthinmm,0.1
+key_with_units,head bodylenin millimeters,0.1
+key_with_units,head bodylenin mm,0.1
+key_with_units,head bodyleninmillimeters,0.1
+key_with_units,head bodyleninmm,0.1
+key_with_units,headbody in millimeters,0.1
+key_with_units,headbody in mm,0.1
+key_with_units,headbody inmillimeters,0.1
+key_with_units,headbody inmm,0.1
+key_with_units,headbody len in millimeters,0.1
+key_with_units,headbody len in mm,0.1
+key_with_units,headbody len inmillimeters,0.1
+key_with_units,headbody len inmm,0.1
+key_with_units,headbody length in millimeters,0.1
+key_with_units,headbody length in mm,0.1
+key_with_units,headbody length inmillimeters,0.1
+key_with_units,headbody length inmm,0.1
+key_with_units,headbody lengthin millimeters,0.1
+key_with_units,headbody lengthin mm,0.1
+key_with_units,headbody lengthinmillimeters,0.1
+key_with_units,headbody lengthinmm,0.1
+key_with_units,headbody lenin millimeters,0.1
+key_with_units,headbody lenin mm,0.1
+key_with_units,headbody leninmillimeters,0.1
+key_with_units,headbody leninmm,0.1
+key_with_units,headbodyin millimeters,0.1
+key_with_units,headbodyin mm,0.1
+key_with_units,headbodyinmillimeters,0.1
+key_with_units,headbodyinmm,0.1
+key_with_units,headbodylen in millimeters,0.1
+key_with_units,headbodylen in mm,0.1
+key_with_units,headbodylen inmillimeters,0.1
+key_with_units,headbodylen inmm,0.1
+key_with_units,headbodylength in millimeters,0.1
+key_with_units,headbodylength in mm,0.1
+key_with_units,headbodylength inmillimeters,0.1
+key_with_units,headbodylength inmm,0.1
+key_with_units,headbodylengthin millimeters,0.1
+key_with_units,headbodylengthin mm,0.1
+key_with_units,headbodylengthinmillimeters,0.1
+key_with_units,headbodylengthinmm,0.1
+key_with_units,headbodylenin millimeters,0.1
+key_with_units,headbodylenin mm,0.1
+key_with_units,headbodyleninmillimeters,0.1
+key_with_units,headbodyleninmm,0.1
+key_with_units,snout vent in millimeters,0.1
+key_with_units,snout vent in mm,0.1
+key_with_units,snout vent inmillimeters,0.1
+key_with_units,snout vent inmm,0.1
+key_with_units,snout vent len in millimeters,0.1
+key_with_units,snout vent len in mm,0.1
+key_with_units,snout vent len inmillimeters,0.1
+key_with_units,snout vent len inmm,0.1
+key_with_units,snout vent length in millimeters,0.1
+key_with_units,snout vent length in mm,0.1
+key_with_units,snout vent length inmillimeters,0.1
+key_with_units,snout vent length inmm,0.1
+key_with_units,snout vent lengthin millimeters,0.1
+key_with_units,snout vent lengthin mm,0.1
+key_with_units,snout vent lengthinmillimeters,0.1
+key_with_units,snout vent lengthinmm,0.1
+key_with_units,snout vent lenin millimeters,0.1
+key_with_units,snout vent lenin mm,0.1
+key_with_units,snout vent leninmillimeters,0.1
+key_with_units,snout vent leninmm,0.1
+key_with_units,snout ventin millimeters,0.1
+key_with_units,snout ventin mm,0.1
+key_with_units,snout ventinmillimeters,0.1
+key_with_units,snout ventinmm,0.1
+key_with_units,snout ventlen in millimeters,0.1
+key_with_units,snout ventlen in mm,0.1
+key_with_units,snout ventlen inmillimeters,0.1
+key_with_units,snout ventlen inmm,0.1
+key_with_units,snout ventlength in millimeters,0.1
+key_with_units,snout ventlength in mm,0.1
+key_with_units,snout ventlength inmillimeters,0.1
+key_with_units,snout ventlength inmm,0.1
+key_with_units,snout ventlengthin millimeters,0.1
+key_with_units,snout ventlengthin mm,0.1
+key_with_units,snout ventlengthinmillimeters,0.1
+key_with_units,snout ventlengthinmm,0.1
+key_with_units,snout ventlenin millimeters,0.1
+key_with_units,snout ventlenin mm,0.1
+key_with_units,snout ventleninmillimeters,0.1
+key_with_units,snout ventleninmm,0.1
+key_with_units,snoutvent in millimeters,0.1
+key_with_units,snoutvent in mm,0.1
+key_with_units,snoutvent inmillimeters,0.1
+key_with_units,snoutvent inmm,0.1
+key_with_units,snoutvent len in millimeters,0.1
+key_with_units,snoutvent len in mm,0.1
+key_with_units,snoutvent len inmillimeters,0.1
+key_with_units,snoutvent len inmm,0.1
+key_with_units,snoutvent length in millimeters,0.1
+key_with_units,snoutvent length in mm,0.1
+key_with_units,snoutvent length inmillimeters,0.1
+key_with_units,snoutvent length inmm,0.1
+key_with_units,snoutvent lengthin millimeters,0.1
+key_with_units,snoutvent lengthin mm,0.1
+key_with_units,snoutvent lengthinmillimeters,0.1
+key_with_units,snoutvent lengthinmm,0.1
+key_with_units,snoutvent lenin millimeters,0.1
+key_with_units,snoutvent lenin mm,0.1
+key_with_units,snoutvent leninmillimeters,0.1
+key_with_units,snoutvent leninmm,0.1
+key_with_units,snoutventin millimeters,0.1
+key_with_units,snoutventin mm,0.1
+key_with_units,snoutventinmillimeters,0.1
+key_with_units,snoutventinmm,0.1
+key_with_units,snoutventlen in millimeters,0.1
+key_with_units,snoutventlen in mm,0.1
+key_with_units,snoutventlen inmillimeters,0.1
+key_with_units,snoutventlen inmm,0.1
+key_with_units,snoutventlength in millimeters,0.1
+key_with_units,snoutventlength in mm,0.1
+key_with_units,snoutventlength inmillimeters,0.1
+key_with_units,snoutventlength inmm,0.1
+key_with_units,snoutventlengthin millimeters,0.1
+key_with_units,snoutventlengthin mm,0.1
+key_with_units,snoutventlengthinmillimeters,0.1
+key_with_units,snoutventlengthinmm,0.1
+key_with_units,snoutventlenin millimeters,0.1
+key_with_units,snoutventlenin mm,0.1
+key_with_units,snoutventleninmillimeters,0.1
+key_with_units,snoutventleninmm,0.1
+key_with_units,total in millimeters,0.1
+key_with_units,total in mm,0.1
+key_with_units,total inmillimeters,0.1
+key_with_units,total inmm,0.1
+key_with_units,total len in millimeters,0.1
+key_with_units,total len in mm,0.1
+key_with_units,total len inmillimeters,0.1
+key_with_units,total len inmm,0.1
+key_with_units,total length in millimeters,0.1
+key_with_units,total length in mm,0.1
+key_with_units,total length inmillimeters,0.1
+key_with_units,total length inmm,0.1
+key_with_units,total lengthin millimeters,0.1
+key_with_units,total lengthin mm,0.1
+key_with_units,total lengthinmillimeters,0.1
+key_with_units,total lengthinmm,0.1
+key_with_units,total lenin millimeters,0.1
+key_with_units,total lenin mm,0.1
+key_with_units,total leninmillimeters,0.1
+key_with_units,total leninmm,0.1
+key_with_units,totalin millimeters,0.1
+key_with_units,totalin mm,0.1
+key_with_units,totalinmillimeters,0.1
+key_with_units,totalinmm,0.1
+key_with_units,totallen in millimeters,0.1
+key_with_units,totallen in mm,0.1
+key_with_units,totallen inmillimeters,0.1
+key_with_units,totallen inmm,0.1
+key_with_units,totallength in millimeters,0.1
+key_with_units,totallength in mm,0.1
+key_with_units,totallength inmillimeters,0.1
+key_with_units,totallength inmm,0.1
+key_with_units,totallengthin millimeters,0.1
+key_with_units,totallengthin mm,0.1
+key_with_units,totallengthinmillimeters,0.1
+key_with_units,totallengthinmm,0.1
+key_with_units,totallenin millimeters,0.1
+key_with_units,totallenin mm,0.1
+key_with_units,totalleninmillimeters,0.1
+key_with_units,totalleninmm,0.1
+key_with_units,total length in,2.54
+key_with_units,total length-in,2.54
+key_with_units,total lengthin,2.54
+key_with_units,total-length in,2.54
+key_with_units,total-length-in,2.54
+key_with_units,total-lengthin,2.54
+len_key,body length
+len_key,body lengths
+len_key,body-length
+len_key,body-lengths
+len_key,bodylength
+len_key,bodylengths
+len_key,fork length
+len_key,fork lengths
+len_key,fork-length
+len_key,fork-lengths
+len_key,forklength
+len_key,forklengths
+len_key,label length
+len_key,label lengths
+len_key,label.length
+len_key,label.lengths
+len_key,labellength
+len_key,labellengths
+len_key,max length
+len_key,max lengths
+len_key,max-length
+len_key,max-lengths
+len_key,maxlength
+len_key,maxlengths
+len_key,mean length
+len_key,mean lengths
+len_key,mean-length
+len_key,mean-lengths
+len_key,meanlength
+len_key,meanlengths
+len_key,meas length l
+len_key,meas length l)
+len_key,meas length l:
+len_key,meas length(l
+len_key,meas length(l)
+len_key,meas length(l:
+len_key,meas lengthl
+len_key,meas lengthl)
+len_key,meas lengthl:
+len_key,meas..: l
+len_key,meas..:l
+len_key,meas.: l
+len_key,meas.:.: l
+len_key,meas.:.:l
+len_key,meas.:: l
+len_key,meas.::l
+len_key,meas.:l
+len_key,meas: l
+len_key,meas: length l
+len_key,meas: length l)
+len_key,meas: length l:
+len_key,meas: length(l
+len_key,meas: length(l)
+len_key,meas: length(l:
+len_key,meas: lengthl
+len_key,meas: lengthl)
+len_key,meas: lengthl:
+len_key,meas:.: l
+len_key,meas:.:l
+len_key,meas:: l
+len_key,meas::l
+len_key,meas:l
+len_key,meas:length l
+len_key,meas:length l)
+len_key,meas:length l:
+len_key,meas:length(l
+len_key,meas:length(l)
+len_key,meas:length(l:
+len_key,meas:lengthl
+len_key,meas:lengthl)
+len_key,meas:lengthl:
+len_key,meas? length l
+len_key,meas? length l)
+len_key,meas? length l:
+len_key,meas? length(l
+len_key,meas? length(l)
+len_key,meas? length(l:
+len_key,meas? lengthl
+len_key,meas? lengthl)
+len_key,meas? lengthl:
+len_key,meas?length l
+len_key,meas?length l)
+len_key,meas?length l:
+len_key,meas?length(l
+len_key,meas?length(l)
+len_key,meas?length(l:
+len_key,meas?lengthl
+len_key,meas?lengthl)
+len_key,meas?lengthl:
+len_key,measlength l
+len_key,measlength l)
+len_key,measlength l:
+len_key,measlength(l
+len_key,measlength(l)
+len_key,measlength(l:
+len_key,measlength.: l
+len_key,measlength.:l
+len_key,measlength: l
+len_key,measlength:l
+len_key,measlengthl
+len_key,measlengthl)
+len_key,measlengthl:
+len_key,measurement.: l
+len_key,measurement.:l
+len_key,measurement: l
+len_key,measurement:l
+len_key,measurements.: l
+len_key,measurements.:l
+len_key,measurements: l
+len_key,measurements:l
+len_key,measurementslength.: l
+len_key,measurementslength.:l
+len_key,measurementslength: l
+len_key,measurementslength:l
+len_key,measurementsnt.: l
+len_key,measurementsnt.:l
+len_key,measurementsnt: l
+len_key,measurementsnt:l
+len_key,mesurements.: l
+len_key,mesurements.:l
+len_key,mesurements: l
+len_key,mesurements:l
+len_key,s l
+len_key,s l.
+len_key,s v l
+len_key,s v l.
+len_key,s v. l
+len_key,s v. l.
+len_key,s v.l
+len_key,s v.l.
+len_key,s vl
+len_key,s vl.
+len_key,s. l
+len_key,s. l.
+len_key,s. v l
+len_key,s. v l.
+len_key,s. v. l
+len_key,s. v. l.
+len_key,s. v.l
+len_key,s. v.l.
+len_key,s. vl
+len_key,s. vl.
+len_key,s.l
+len_key,s.l.
+len_key,s.v l
+len_key,s.v l.
+len_key,s.v. l
+len_key,s.v. l.
+len_key,s.v.l
+len_key,s.v.l.
+len_key,s.vl
+len_key,s.vl.
+len_key,sl
+len_key,sl.
+len_key,snout vent length
+len_key,snout vent lengths
+len_key,snout vent-length
+len_key,snout vent-lengths
+len_key,snout ventlength
+len_key,snout ventlengths
+len_key,snout-vent length
+len_key,snout-vent lengths
+len_key,snout-vent-length
+len_key,snout-vent-lengths
+len_key,snout-ventlength
+len_key,snout-ventlengths
+len_key,snoutvent length
+len_key,snoutvent lengths
+len_key,snoutvent-length
+len_key,snoutvent-lengths
+len_key,snoutventlength
+len_key,snoutventlengths
+len_key,standard length
+len_key,standard lengths
+len_key,standard-length
+len_key,standard-lengths
+len_key,standardlength
+len_key,standardlengths
+len_key,sv l
+len_key,sv l.
+len_key,sv. l
+len_key,sv. l.
+len_key,sv.l
+len_key,sv.l.
+len_key,svl
+len_key,svl.
+len_key,t . l
+len_key,t . l .
+len_key,t . l.
+len_key,t . l_
+len_key,t .l
+len_key,t .l.
+len_key,t .l_
+len_key,t l
+len_key,t l.
+len_key,t l_
+len_key,t o l
+len_key,t o l.
+len_key,t o l_
+len_key,t ol
+len_key,t ol.
+len_key,t ol_
+len_key,t. l
+len_key,t. l.
+len_key,t. l_
+len_key,t.l
+len_key,t.l.
+len_key,t.l_
+len_key,tl
+len_key,tl.
+len_key,tl_
+len_key,to l
+len_key,to l.
+len_key,to l_
+len_key,tol
+len_key,tol.
+len_key,tol_
+len_key,total length
+len_key,total lengths
+len_key,total-length
+len_key,total-lengths
+len_key,totallengths
+len_key,total len
+len_key,total-len
+len_key,totallen
+len_key,total len.
+len_key,total-len.

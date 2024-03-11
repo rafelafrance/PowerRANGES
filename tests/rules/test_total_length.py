@@ -172,83 +172,55 @@ class TestTotalLength(unittest.TestCase):
             [TotalLength(trait="total_length", length=[12, 34], start=0, end=18)],
         )
 
-    # def test_total_length_081(self):
-    #     self.assertEqual(
-    #         parse("LENGTH 3/8 IN. WING CHORD 5.25 IN. TAIL 4.25 IN."),
-    #         [
-    #             TotalLength(
-    #                 trait="total_length",
-    #                 length=9.52,
-    #                 ambiguous=True,
-    #                 start=0,
-    #                 end=13,
-    #             )
-    #         ],
-    #     )
-    #
-    # def test_total_length_082(self):
-    #     self.assertEqual(
-    #         parse("LENGTH 0 3/8 IN. WING CHORD 5.25 IN. TAIL 4.25 IN."),
-    #         [
-    #             TotalLength(
-    #                 trait="total_length",
-    #                 length=9.52,
-    #                 ambiguous=True,
-    #                 start=0,
-    #                 end=15,
-    #             )
-    #         ],
-    #     )
-    #
-    # def test_total_length_086(self):
-    #     self.assertEqual(
-    #         parse("measurement on tag for T. L. (141 mm) cannot be correct"),
-    #         [TotalLength(trait="total_length", length=141, start=23, end=36)],
-    #     )
-    #
-    # def test_total_length_087(self):
-    #     self.assertEqual(
-    #         parse("L: 275. T: 65.; "),
-    #         [
-    #             TotalLength(
-    #                 trait="total_length",
-    #                 length=275,
-    #                 units_inferred=True,
-    #                 ambiguous=True,
-    #                 start=0,
-    #                 end=6,
-    #             )
-    #         ],
-    #     )
-    #
-    # def test_total_length_094(self):
-    #     self.assertEqual(
-    #         parse("t.l.= 2 feet, 4.5 inches "),
-    #         [
-    #             TotalLength(
-    #                 trait="total_length",
-    #                 length=723.9,
-    #                 start=0,
-    #                 end=24,
-    #             )
-    #         ],
-    #     )
-    #
-    # def test_total_length_095(self):
-    #     target = (
-    #         "The length reported (2560 cm = 85 feet) is a bit "
-    #         "large for B. physalus and is more in keeping with B. "
-    #         "musculus. Redman, N. (2014). Whales' Bones of France, "
-    #         "Southern Europe, Middle East and North Africa. "
-    #         "Teddington, England, Redman Publishing. "
-    #         "p. 24-25, 41-42"
-    #     )
-    #     self.assertEqual(parse(target), [])
+    def test_total_length_16(self):
+        """Parse lengths given in fractional inches."""
+        self.assertEqual(
+            parse("LENGTH 3/8 IN."),
+            [
+                TotalLength(
+                    trait="total_length",
+                    length=9.52,
+                    ambiguous=True,
+                    start=0,
+                    end=14,
+                )
+            ],
+        )
 
-    # def test_total_length_108(self):
-    #     self.assertEqual(
-    #         parse(
-    #             """Body and tail: 109 mm"""
-    #         ),
-    #         [TotalLength(trait="total_length", length=109, start=0, end=34)],
-    #     )
+    def test_total_length_17(self):
+        """Parse a length with fraction and a whole number."""
+        self.assertEqual(
+            parse("LENGTH 1 1/2 IN."),
+            [
+                TotalLength(
+                    trait="total_length",
+                    length=38.1,
+                    ambiguous=True,
+                    start=0,
+                    end=16,
+                )
+            ],
+        )
+
+    def test_total_length_18(self):
+        """It handles the parentheses enclosing the measurement."""
+        self.assertEqual(
+            parse("measurement on tag for T. L. (141 mm) cannot be correct"),
+            [TotalLength(trait="total_length", length=141, start=23, end=37)],
+        )
+
+    def test_total_length_19(self):
+        """It handles this really short key abbreviation."""
+        self.assertEqual(
+            parse("L: 275."),
+            [
+                TotalLength(
+                    trait="total_length",
+                    length=275,
+                    units_inferred=True,
+                    ambiguous=True,
+                    start=0,
+                    end=6,
+                )
+            ],
+        )

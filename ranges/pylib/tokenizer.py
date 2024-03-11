@@ -23,6 +23,7 @@ def setup(nlp):
             ";",
             ":",
             '"',
+            "/",
             r"\[",
             r"\]",
             r"\(",
@@ -34,10 +35,10 @@ def setup(nlp):
         nlp,
         [
             rf"(?<=\d)[{ALPHA}]+",  # Break on a digit followed by letters
-            # Break on a key followed by digits
-            # Cannot use letters follwed by digits b/c of UUIDs
-            r"(?<=SVL|svl|TOL|tol|ToL|HFL|hfl|EFN|efn|EAR|ear)\d+",
-            r"(?<=TL|tl|TR|tr|HF|hf|FA|fa|SL|sl)\d+",
-            r"(?<=n|t)\d+",
+            #
+            # Break on a letter followed by digits but don't break up UUIDs
+            r"(?<=[G-Zg-z])\d+",
+            # Break on a key followed by digits. These overlap with UUIDs
+            r"(?<=HF|hf|FA|fa)\d+",
         ],
     )

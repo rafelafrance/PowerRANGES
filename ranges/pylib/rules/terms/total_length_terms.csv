@@ -1,4 +1,6 @@
 label,pattern,factor_cm
+ambiguous_key,l
+ambiguous_key,l.
 ambiguous_key,len
 ambiguous_key,len.
 ambiguous_key,length
@@ -109,6 +111,8 @@ key_with_units,totallengthinmillimeters,0.1
 key_with_units,totallengthinmm,0.1
 key_with_units,totalleninmillimeters,0.1
 key_with_units,totalleninmm,0.1
+len_key,body & tail
+len_key,body and tail
 len_key,body length
 len_key,body lengths
 len_key,body-length

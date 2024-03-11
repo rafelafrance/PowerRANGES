@@ -1,6 +1,7 @@
 import unittest
 
 from ranges.pylib.rules.body_mass import BodyMass
+from ranges.pylib.rules.total_length import TotalLength
 from tests.setup import parse
 
 
@@ -10,6 +11,7 @@ class TestBodyMass(unittest.TestCase):
         self.assertEqual(
             parse("TL (mm) 44,Weight (g) 0.77 xx"),
             [
+                TotalLength(trait="total_length", length=44, start=0, end=10),
                 BodyMass(trait="body_mass", mass=0.77, start=11, end=26),
             ],
         )

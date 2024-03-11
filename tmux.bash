@@ -2,6 +2,7 @@
 
 SESSION="power"
 TRAIT="$HOME/work/traiter"
+MISC="$HOME/work/misc"
 
 tmux new -s $SESSION -d
 tmux rename-window -t $SESSION ranges

@@ -60,7 +60,7 @@ class TotalLength(Base):
             compiler=cls.compound_length_patterns(),
             overwrite=["metric_length", "imperial_length", "number"],
         )
-        add.debug_tokens(nlp)  # ###########################################
+        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
@@ -105,9 +105,11 @@ class TotalLength(Base):
                 decoder=decoder,
                 patterns=[
                     ' key_mm " : " [ 99 ] ',
-                    '        " : " [ 99 ] mm+ ] ',
+                    "              [ 99 ] mm+ ] ",
                     ' key    " : " [ 99 ] mm* ] ',
                     ' ambig  " : " [ 99 ] mm* ] ',
+                    "              [ 99 ] mm+ ] key ",
+                    ' key    " : " [ 99 ] mm* ] ',
                 ],
             ),
         ]
@@ -149,6 +151,8 @@ class TotalLength(Base):
                 "TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ},
                 "OP": "?",
             },
+            '"': {"TEXT": {"IN": t_const.QUOTE}, "OP": "?"},
+            "ambig": {"ENT_TYPE": "ambiguous_key", "OP": "+"},
             "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
             "key": {"ENT_TYPE": "len_key", "OP": "+"},
             "key_mm": {"ENT_TYPE": "key_with_units", "OP": "+"},
@@ -161,9 +165,13 @@ class TotalLength(Base):
                 on_match="length_range_match",
                 decoder=decoder,
                 patterns=[
-                    " key_mm+ : 99 to 99     ",
-                    "           99 to 99 mm+ ",
-                    " key+    : 99 to 99 mm* ",
+                    ' key_mm " : " 99 to 99     ',
+                    "              99 to 99 mm+ ",
+                    ' key    " : " 99 to 99 mm* ',
+                    ' ambig  " : " 99 to 99 mm* ',
+                    ' ambig  " : " 99 to 99 mm* key mm* ',
+                    "              99 to 99 mm* key mm* ",
+                    "              99 to 99     key_mm  ",
                 ],
             ),
         ]

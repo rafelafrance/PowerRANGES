@@ -183,7 +183,7 @@ class BaseLength(Base):
             ' key_mm " : " [ 99 ] ',
             ' key    " : " [ 99 ] mm* ] ',
             ' ambig  " : " [ 99 ] mm* ] ',
-            "              [ 99 ] mm+ ] key ",
+            "              [ 99 ] mm* ] [ key ] ",
             ' key    " : " [ 99 ] mm* ] ',
         ]
         if allow_no_key:

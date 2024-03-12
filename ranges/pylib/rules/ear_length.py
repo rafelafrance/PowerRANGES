@@ -61,21 +61,21 @@ class EarLength(BaseLength):
 
     @classmethod
     def ear_length_match(cls, ent):
-        trait = EarLength.match(ent)
+        trait = cls.match(ent)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
     def ear_length_range_match(cls, ent):
-        trait = EarLength.range_match(ent)
+        trait = cls.range_match(ent)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
     def ear_length_tic_match(cls, ent):
-        trait = EarLength.tic_match(ent)
+        trait = cls.tic_match(ent)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait

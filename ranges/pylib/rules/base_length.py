@@ -10,10 +10,12 @@ from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules.base import Base
 
+SEP = t_const.COLON + t_const.COMMA + t_const.EQ + t_const.DASH
+
 DECODER = {
     ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
     "99": {"ENT_TYPE": "number", "OP": "+"},
-    ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}, "OP": "?"},
+    ":": {"TEXT": {"IN": SEP}, "OP": "?"},
     "[": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
     "]": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
     "ambig": {"ENT_TYPE": "ambiguous_key", "OP": "+"},

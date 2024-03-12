@@ -1,0 +1,134 @@
+label,pattern,factor_cm,includes
+key_with_units,foot len in millimeters,0.1
+key_with_units,foot len in mm,0.1
+key_with_units,foot len inmillimeters,0.1
+key_with_units,foot len inmm,0.1
+key_with_units,foot length in millimeters,0.1
+key_with_units,foot length in mm,0.1
+key_with_units,foot length inmillimeters,0.1
+key_with_units,foot length inmm,0.1
+key_with_units,foot lengthin millimeters,0.1
+key_with_units,foot lengthin mm,0.1
+key_with_units,foot lengthinmillimeters,0.1
+key_with_units,foot lengthinmm,0.1
+key_with_units,foot lenin millimeters,0.1
+key_with_units,foot lenin mm,0.1
+key_with_units,foot leninmillimeters,0.1
+key_with_units,foot leninmm,0.1
+key_with_units,footlen in millimeters,0.1
+key_with_units,footlen in mm,0.1
+key_with_units,footlen inmillimeters,0.1
+key_with_units,footlen inmm,0.1
+key_with_units,footlength in millimeters,0.1
+key_with_units,footlength in mm,0.1
+key_with_units,footlength inmillimeters,0.1
+key_with_units,footlength inmm,0.1
+key_with_units,footlengthin millimeters,0.1
+key_with_units,footlengthin mm,0.1
+key_with_units,footlengthinmillimeters,0.1
+key_with_units,footlengthinmm,0.1
+key_with_units,footlenin millimeters,0.1
+key_with_units,footlenin mm,0.1
+key_with_units,footleninmillimeters,0.1
+key_with_units,footleninmm,0.1
+key_with_units,hind foot len in millimeters,0.1
+key_with_units,hind foot len in mm,0.1
+key_with_units,hind foot len inmillimeters,0.1
+key_with_units,hind foot len inmm,0.1
+key_with_units,hind foot length in millimeters,0.1
+key_with_units,hind foot length in mm,0.1
+key_with_units,hind foot length inmillimeters,0.1
+key_with_units,hind foot length inmm,0.1
+key_with_units,hind foot lengthin millimeters,0.1
+key_with_units,hind foot lengthin mm,0.1
+key_with_units,hind foot lengthinmillimeters,0.1
+key_with_units,hind foot lengthinmm,0.1
+key_with_units,hind foot lenin millimeters,0.1
+key_with_units,hind foot lenin mm,0.1
+key_with_units,hind foot leninmillimeters,0.1
+key_with_units,hind foot leninmm,0.1
+key_with_units,hind footlen in millimeters,0.1
+key_with_units,hind footlen in mm,0.1
+key_with_units,hind footlen inmillimeters,0.1
+key_with_units,hind footlen inmm,0.1
+key_with_units,hind footlength in millimeters,0.1
+key_with_units,hind footlength in mm,0.1
+key_with_units,hind footlength inmillimeters,0.1
+key_with_units,hind footlength inmm,0.1
+key_with_units,hind footlengthin millimeters,0.1
+key_with_units,hind footlengthin mm,0.1
+key_with_units,hind footlengthinmillimeters,0.1
+key_with_units,hind footlengthinmm,0.1
+key_with_units,hind footlenin millimeters,0.1
+key_with_units,hind footlenin mm,0.1
+key_with_units,hind footleninmillimeters,0.1
+key_with_units,hind footleninmm,0.1
+key_with_units,hindfoot len in millimeters,0.1
+key_with_units,hindfoot len in mm,0.1
+key_with_units,hindfoot len inmillimeters,0.1
+key_with_units,hindfoot len inmm,0.1
+key_with_units,hindfoot length in millimeters,0.1
+key_with_units,hindfoot length in mm,0.1
+key_with_units,hindfoot length inmillimeters,0.1
+key_with_units,hindfoot length inmm,0.1
+key_with_units,hindfoot lengthin millimeters,0.1
+key_with_units,hindfoot lengthin mm,0.1
+key_with_units,hindfoot lengthinmillimeters,0.1
+key_with_units,hindfoot lengthinmm,0.1
+key_with_units,hindfoot lenin millimeters,0.1
+key_with_units,hindfoot lenin mm,0.1
+key_with_units,hindfoot leninmillimeters,0.1
+key_with_units,hindfoot leninmm,0.1
+key_with_units,hindfootlen in millimeters,0.1
+key_with_units,hindfootlen in mm,0.1
+key_with_units,hindfootlen inmillimeters,0.1
+key_with_units,hindfootlen inmm,0.1
+key_with_units,hindfootlength in millimeters,0.1
+key_with_units,hindfootlength in mm,0.1
+key_with_units,hindfootlength inmillimeters,0.1
+key_with_units,hindfootlength inmm,0.1
+key_with_units,hindfootlengthin millimeters,0.1
+key_with_units,hindfootlengthin mm,0.1
+key_with_units,hindfootlengthinmillimeters,0.1
+key_with_units,hindfootlengthinmm,0.1
+key_with_units,hindfootlenin millimeters,0.1
+key_with_units,hindfootlenin mm,0.1
+key_with_units,hindfootleninmillimeters,0.1
+key_with_units,hindfootleninmm,0.1
+len_key,foot
+len_key,foot len
+len_key,foot length
+len_key,footlen
+len_key,footlength
+len_key,hf
+len_key,hf c,,claw
+len_key,hf w c,,claw
+len_key,hf w claw,,claw
+len_key,hf w/ c,,claw
+len_key,hf w/ claw,,claw
+len_key,hfc,,claw
+len_key,hfl
+len_key,hfl c,,claw
+len_key,hfl w c,,claw
+len_key,hfl w claw,,claw
+len_key,hfl w/ c,,claw
+len_key,hfl w/ claw,,claw
+len_key,hflc,,claw
+len_key,hind foot
+len_key,hind foot len
+len_key,hind foot length
+len_key,hind foot with claw,,claw
+len_key,hind foot withclaw,,claw
+len_key,hind footlen
+len_key,hind footlength
+len_key,hind footwith claw,,claw
+len_key,hind footwithclaw,,claw
+len_key,hindfoot
+len_key,hindfoot len
+len_key,hindfoot length
+len_key,hindfoot with claw,,claw
+len_key,hindfoot withclaw,,claw
+len_key,hindfootlen
+len_key,hindfootlength
+len_key,hindfootwith claw,,claw
+len_key,hindfootwithclaw,,claw

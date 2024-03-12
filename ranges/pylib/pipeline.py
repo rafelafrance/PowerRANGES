@@ -7,6 +7,7 @@ from ranges.pylib.rules import delete
 from ranges.pylib.rules.body_mass import BodyMass
 from ranges.pylib.rules.ear_length import EarLength
 from ranges.pylib.rules.forearm_length import ForearmLength
+from ranges.pylib.rules.hind_foot_length import HindFootLength
 from ranges.pylib.rules.number import Number
 from ranges.pylib.rules.shorthand import Shorthand
 from ranges.pylib.rules.total_length import TotalLength
@@ -30,6 +31,7 @@ def build():
 
     EarLength.pipe(nlp)
     ForearmLength.pipe(nlp)
+    HindFootLength.pipe(nlp)
 
     TotalLength.pipe(nlp)
 

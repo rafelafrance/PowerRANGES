@@ -1,0 +1,60 @@
+label,pattern,factor_cm
+ambiguous_key,e
+ambiguous_key,e.
+key_with_units,ear len in millimeters,0.1
+key_with_units,ear len in mm,0.1
+key_with_units,ear len inmillimeters,0.1
+key_with_units,ear len inmm,0.1
+key_with_units,ear length in millimeters,0.1
+key_with_units,ear length in mm,0.1
+key_with_units,ear length inmillimeters,0.1
+key_with_units,ear length inmm,0.1
+key_with_units,ear lengthin millimeters,0.1
+key_with_units,ear lengthin mm,0.1
+key_with_units,ear lengthinmillimeters,0.1
+key_with_units,ear lengthinmm,0.1
+key_with_units,ear lenin millimeters,0.1
+key_with_units,ear lenin mm,0.1
+key_with_units,ear leninmillimeters,0.1
+key_with_units,ear leninmm,0.1
+key_with_units,earlen in millimeters,0.1
+key_with_units,earlen in mm,0.1
+key_with_units,earlen inmillimeters,0.1
+key_with_units,earlen inmm,0.1
+key_with_units,earlength in millimeters,0.1
+key_with_units,earlength in mm,0.1
+key_with_units,earlength inmillimeters,0.1
+key_with_units,earlength inmm,0.1
+key_with_units,earlengthin millimeters,0.1
+key_with_units,earlengthin mm,0.1
+key_with_units,earlengthinmillimeters,0.1
+key_with_units,earlengthinmm,0.1
+key_with_units,earlenin millimeters,0.1
+key_with_units,earlenin mm,0.1
+key_with_units,earleninmillimeters,0.1
+key_with_units,earleninmm,0.1
+len_key,e/c
+len_key,e/c-
+len_key,e/n
+len_key,e/n-
+len_key,ec
+len_key,ec-
+len_key,en
+len_key,en-
+len_key,ear from crown
+len_key,ear from notch
+len_key,ear fromcrown
+len_key,ear fromnotch
+len_key,earfrom crown
+len_key,earfrom notch
+len_key,earfromcrown
+len_key,earfromnotch
+len_key,ear
+len_key,ear len
+len_key,ear length
+len_key,earlen
+len_key,earlength
+len_key,efc
+len_key,efc-
+len_key,efn
+len_key,efn-

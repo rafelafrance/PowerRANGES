@@ -23,6 +23,7 @@ NUMBER_COUNT = 0  # Used to rename the Number pipe
 @dataclass(eq=False)
 class Number(Base):
     number: float = None
+    is_fraction: bool = None
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add_dyn()
@@ -99,7 +100,7 @@ class Number(Base):
         # Add in the whole number part
         number += numbers[0] if len(numbers) > FACT_LEN else 0.0
 
-        trait = cls.from_ent(ent, number=number)
+        trait = cls.from_ent(ent, number=number, is_fraction=True)
 
         ent[0]._.trait = trait
         ent[0]._.flag = "number"

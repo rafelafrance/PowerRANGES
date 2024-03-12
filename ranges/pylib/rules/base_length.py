@@ -3,11 +3,28 @@ from pathlib import Path
 from typing import ClassVar
 
 from spacy import Language
+from spacy.tokens import Token
 from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules.base import Base
+
+DECODER = {
+    ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
+    "99": {"ENT_TYPE": "number", "OP": "+"},
+    ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}, "OP": "?"},
+    "[": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
+    "]": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
+    "ambig": {"ENT_TYPE": "ambiguous_key", "OP": "+"},
+    "ft": {"ENT_TYPE": "imperial_length", "OP": "+"},
+    "in": {"ENT_TYPE": "imperial_length", "OP": "+"},
+    "key": {"ENT_TYPE": "len_key", "OP": "+"},
+    "key_mm": {"ENT_TYPE": "key_with_units", "OP": "+"},
+    "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
+    "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
+    '"': {"TEXT": {"IN": t_const.QUOTE}, "OP": "?"},
+}
 
 
 @dataclass(eq=False)
@@ -53,30 +70,40 @@ class BaseLength(Base):
         add.term_pipe(nlp, name=f"{cls.name}_length_terms", path=cls.csvs)
 
     @classmethod
-    def compound_length_pipe(cls, nlp):
+    def compound_length_pipe(cls, nlp, *, allow_no_key=False):
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_length_compound_patterns",
-            compiler=cls.compound_length_patterns(),
-            overwrite=["metric_length", "imperial_length", "number"],
+            compiler=cls.compound_length_patterns(allow_no_key=allow_no_key),
+            overwrite=["imperial_length", "number"],
         )
 
     @classmethod
-    def range_length_pipe(cls, nlp):
+    def range_length_pipe(cls, nlp, *, allow_no_key=False):
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_range_patterns",
-            compiler=cls.range_length_patterns(),
+            compiler=cls.range_length_patterns(allow_no_key=allow_no_key),
             overwrite=["metric_length", "imperial_length", "number"],
         )
 
     @classmethod
-    def length_pipe(cls, nlp):
+    def length_pipe(cls, nlp, *, allow_no_key=False):
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_length_patterns",
-            compiler=cls.length_patterns(),
+            compiler=cls.length_patterns(allow_no_key=allow_no_key),
             overwrite=["metric_length", "imperial_length", "number"],
+        )
+        # add.debug_tokens(nlp)  # ###########################################
+
+    @classmethod
+    def tic_pipe(cls, nlp, *, allow_no_key=False):
+        add.trait_pipe(
+            nlp,
+            name=f"{cls.name}_length_tic_patterns",
+            compiler=cls.tic_length_patterns(allow_no_key=allow_no_key),
+            overwrite=["number"],
         )
 
     @classmethod
@@ -84,103 +111,103 @@ class BaseLength(Base):
         add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup")
 
     @classmethod
-    def compound_length_patterns(cls):
-        decoder = {
-            ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
-            "99": {"ENT_TYPE": "number", "OP": "+"},
-            ":": {
-                "TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ},
-                "OP": "?",
-            },
-            "key": {"ENT_TYPE": "len_key", "OP": "+"},
-            "ft": {"ENT_TYPE": "imperial_length", "OP": "+"},
-            "in": {"ENT_TYPE": "imperial_length", "OP": "+"},
-            "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
-        }
+    def compound_length_patterns(cls, *, allow_no_key=False):
+        patterns = [
+            " key : 99 ft ,       99 in ",
+            " key : 99 ft , 99 to 99 in ",
+        ]
+        if allow_no_key:
+            patterns += [
+                " 99 ft ,       99 in ",
+                " 99 ft , 99 to 99 in ",
+            ]
+
         return [
             Compiler(
                 label=f"{cls.name}_length",
                 keep=f"{cls.name}_length",
                 on_match=f"{cls.name}_length_compound_match",
-                decoder=decoder,
-                patterns=[
-                    "       99 ft ,       99 in ",
-                    " key : 99 ft ,       99 in ",
-                    " key : 99 ft , 99 to 99 in ",
-                    "       99 ft , 99 to 99 in ",
-                ],
+                decoder=DECODER,
+                patterns=patterns,
             ),
         ]
 
     @classmethod
-    def range_length_patterns(cls):
-        decoder = {
-            "99": {"ENT_TYPE": "number", "OP": "+"},
-            ":": {
-                "TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ},
-                "OP": "?",
-            },
-            '"': {"TEXT": {"IN": t_const.QUOTE}, "OP": "?"},
-            "ambig": {"ENT_TYPE": "ambiguous_key", "OP": "+"},
-            "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
-            "key": {"ENT_TYPE": "len_key", "OP": "+"},
-            "key_mm": {"ENT_TYPE": "key_with_units", "OP": "+"},
-            "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
-        }
+    def range_length_patterns(cls, *, allow_no_key=False):
+        patterns = [
+            ' key_mm " : " 99 to 99     ',
+            ' key    " : " 99 to 99 mm* ',
+            ' ambig  " : " 99 to 99 mm* ',
+            ' ambig  " : " 99 to 99 mm* key mm* ',
+            "              99 to 99 mm* key mm* ",
+            "              99 to 99     key_mm  ",
+        ]
+        if allow_no_key:
+            patterns += [
+                " 99 to 99 mm+ ",
+            ]
+
         return [
             Compiler(
                 label=f"{cls.name}_length",
                 keep=f"{cls.name}_length",
                 on_match=f"{cls.name}_length_range_match",
-                decoder=decoder,
-                patterns=[
-                    ' key_mm " : " 99 to 99     ',
-                    "              99 to 99 mm+ ",
-                    ' key    " : " 99 to 99 mm* ',
-                    ' ambig  " : " 99 to 99 mm* ',
-                    ' ambig  " : " 99 to 99 mm* key mm* ',
-                    "              99 to 99 mm* key mm* ",
-                    "              99 to 99     key_mm  ",
-                ],
+                decoder=DECODER,
+                patterns=patterns,
             ),
         ]
 
     @classmethod
-    def length_patterns(cls):
-        decoder = {
-            "99": {"ENT_TYPE": "number", "OP": "+"},
-            ":": {
-                "TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ},
-                "OP": "?",
-            },
-            "[": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
-            "]": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
-            "ambig": {"ENT_TYPE": "ambiguous_key", "OP": "+"},
-            "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
-            "key": {"ENT_TYPE": "len_key", "OP": "+"},
-            "key_mm": {"ENT_TYPE": "key_with_units", "OP": "+"},
-            '"': {"TEXT": {"IN": t_const.QUOTE}, "OP": "?"},
-        }
+    def tic_length_patterns(cls, *, allow_no_key=False):
+        patterns = [
+            ' key       : 99 " ',
+            '     ambig : 99 " ',
+            ' key ambig : 99 " ',
+        ]
+        if allow_no_key:
+            patterns += []
+
+        return [
+            Compiler(
+                label=f"{cls.name}_length",
+                keep=f"{cls.name}_length",
+                on_match=f"{cls.name}_length_tic_match",
+                decoder=DECODER | {'"': {"TEXT": {"IN": t_const.QUOTE}}},
+                patterns=patterns,
+            ),
+        ]
+
+    @classmethod
+    def length_patterns(cls, *, allow_no_key=False):
+        patterns = [
+            ' key_mm " : " [ 99 ] ',
+            ' key    " : " [ 99 ] mm* ] ',
+            ' ambig  " : " [ 99 ] mm* ] ',
+            "              [ 99 ] mm+ ] key ",
+            ' key    " : " [ 99 ] mm* ] ',
+        ]
+        if allow_no_key:
+            patterns += [
+                " [ 99 ] mm+ ] ",
+            ]
+
         return [
             Compiler(
                 label=f"{cls.name}_length",
                 keep=f"{cls.name}_length",
                 on_match=f"{cls.name}_length_match",
-                decoder=decoder,
-                patterns=[
-                    ' key_mm " : " [ 99 ] ',
-                    "              [ 99 ] mm+ ] ",
-                    ' key    " : " [ 99 ] mm* ] ',
-                    ' ambig  " : " [ 99 ] mm* ] ',
-                    "              [ 99 ] mm+ ] key ",
-                    ' key    " : " [ 99 ] mm* ] ',
-                ],
+                decoder=DECODER,
+                patterns=patterns,
             ),
         ]
 
     @classmethod
-    def in_millimeters(cls, number, units):
-        units = units.text.lower() if units else ""
+    def in_millimeters(cls, number, units: Token | str | None):
+        if hasattr(units, "text"):
+            units = units.text.lower()
+        elif isinstance(units, str):
+            units = units.lower()
+
         factor = cls.factor_mm.get(units, 1.0)
         value = factor * number._.trait.number
         return round(value, 2)
@@ -248,3 +275,13 @@ class BaseLength(Base):
         return cls.from_ent(
             ent, length=length, ambiguous=ambiguous, units_inferred=units_inferred
         )
+
+    @classmethod
+    def tic_match(cls, ent):
+        ambiguous = [e for e in ent.ents if e.label_ in cls.keys]
+        ambiguous = True if len(ambiguous) == 0 else None
+
+        number = next(e for e in ent.ents if e.label_ == "number")
+        length = cls.in_millimeters(number, "inches")
+
+        return cls.from_ent(ent, length=length, ambiguous=ambiguous)

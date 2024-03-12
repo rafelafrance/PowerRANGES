@@ -5,6 +5,7 @@ from typing import ClassVar
 from spacy import registry
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
+from traiter.pylib.pipes.reject_match import RejectMatch
 from traiter.pylib.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import BaseLength
@@ -24,6 +25,8 @@ class EarLength(BaseLength):
     factor_mm: ClassVar[dict[str, str]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
+
+    measured_keys: ClassVar[dict[str, str]] = term_util.term_data(csvs, "measured_from")
     # ---------------------
 
     measured_from: str = None
@@ -40,24 +43,54 @@ class EarLength(BaseLength):
     def pipe(cls, nlp):
         cls.term_pipe(nlp)
         cls.range_length_pipe(nlp)
+        cls.tic_pipe(nlp)
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def not_ear_length_match(cls, ent):
-        return cls.from_ent(ent)
+    def check_ambiguous_key(cls, trait):
+        if trait.ambiguous and trait.units_inferred:
+            raise RejectMatch
+
+    @classmethod
+    def get_measured_from(cls, ent, trait):
+        keys = [e for e in ent.ents if e.label_ in cls.keys]
+        for key in keys:
+            if value := cls.measured_keys.get(key.text.lower()):
+                trait.measured_from = value
+
+    @classmethod
+    def ear_length_match(cls, ent):
+        trait = EarLength.match(ent)
+        cls.check_ambiguous_key(trait)
+        cls.get_measured_from(ent, trait)
+        return trait
+
+    @classmethod
+    def ear_length_range_match(cls, ent):
+        trait = EarLength.range_match(ent)
+        cls.check_ambiguous_key(trait)
+        cls.get_measured_from(ent, trait)
+        return trait
+
+    @classmethod
+    def ear_length_tic_match(cls, ent):
+        trait = EarLength.tic_match(ent)
+        cls.check_ambiguous_key(trait)
+        cls.get_measured_from(ent, trait)
+        return trait
 
 
 @registry.misc("ear_length_match")
 def ear_length_match(ent):
-    return EarLength.match(ent)
+    return EarLength.ear_length_match(ent)
 
 
 @registry.misc("ear_length_range_match")
-def length_range_match(ent):
-    return EarLength.range_match(ent)
+def ear_length_range_match(ent):
+    return EarLength.ear_length_range_match(ent)
 
 
-@registry.misc("not_ear_length_match")
-def not_ear_length_match(ent):
-    return EarLength.not_ear_length_match(ent)
+@registry.misc("ear_length_tic_match")
+def ear_length_tic_match(ent):
+    return EarLength.ear_length_tic_match(ent)

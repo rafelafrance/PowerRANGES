@@ -27,9 +27,10 @@ class TotalLength(BaseLength):
     @classmethod
     def pipe(cls, nlp):
         cls.term_pipe(nlp)
-        cls.compound_length_pipe(nlp)
-        cls.range_length_pipe(nlp)
-        cls.length_pipe(nlp)
+        cls.compound_length_pipe(nlp, allow_no_key=True)
+        cls.range_length_pipe(nlp, allow_no_key=True)
+        cls.tic_pipe(nlp, allow_no_key=True)
+        cls.length_pipe(nlp, allow_no_key=True)
         cls.cleanup_pipe(nlp)
 
 
@@ -41,6 +42,11 @@ def total_length_match(ent):
 @registry.misc("total_length_compound_match")
 def total_length_compound_match(ent):
     return TotalLength.compound_match(ent)
+
+
+@registry.misc("total_length_tic_match")
+def ear_length_tic_match(ent):
+    return TotalLength.tic_match(ent)
 
 
 @registry.misc("total_length_range_match")

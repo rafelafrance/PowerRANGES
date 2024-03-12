@@ -1,4 +1,4 @@
-label,pattern,factor_cm
+label,pattern,factor_cm,measured_from
 ambiguous_key,e
 ambiguous_key,e.
 key_with_units,ear len in millimeters,0.1
@@ -33,28 +33,28 @@ key_with_units,earlenin millimeters,0.1
 key_with_units,earlenin mm,0.1
 key_with_units,earleninmillimeters,0.1
 key_with_units,earleninmm,0.1
-len_key,e/c
-len_key,e/c-
-len_key,e/n
-len_key,e/n-
-len_key,ec
-len_key,ec-
-len_key,en
-len_key,en-
-len_key,ear from crown
-len_key,ear from notch
-len_key,ear fromcrown
-len_key,ear fromnotch
-len_key,earfrom crown
-len_key,earfrom notch
-len_key,earfromcrown
-len_key,earfromnotch
+len_key,e/c,,crown
+len_key,e/c-,,crown
+len_key,e/n,,notch
+len_key,e/n-,,notch
+len_key,ec,,crown
+len_key,ec-,,crown
+len_key,en,,notch
+len_key,en-,,notch
+len_key,ear from crown,,crown
+len_key,ear from notch,,notch
+len_key,ear fromcrown,,crown
+len_key,ear fromnotch,,notch
+len_key,earfrom crown,,crown
+len_key,earfrom notch,,notch
+len_key,earfromcrown,,crown
+len_key,earfromnotch,,notch
 len_key,ear
 len_key,ear len
 len_key,ear length
 len_key,earlen
 len_key,earlength
-len_key,efc
-len_key,efc-
-len_key,efn
-len_key,efn-
+len_key,efc,,crown
+len_key,efc-,,crown
+len_key,efn,,notch
+len_key,efn-,,notch

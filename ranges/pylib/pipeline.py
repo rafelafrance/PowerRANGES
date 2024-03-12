@@ -27,10 +27,9 @@ def build():
     Number.pipe(nlp)
     BodyMass.pipe(nlp)
 
-    Number.pipe(nlp)
-    TotalLength.pipe(nlp)
-
     EarLength.pipe(nlp)
+
+    TotalLength.pipe(nlp)
 
     delete.pipe(nlp)
 

@@ -224,3 +224,46 @@ class TestTotalLength(unittest.TestCase):
                 )
             ],
         )
+
+    def test_total_length_20(self):
+        self.assertEqual(
+            parse("Body and tail: 1690 mm;"),
+            [
+                TotalLength(
+                    trait="total_length",
+                    length=1690,
+                    start=0,
+                    end=22,
+                )
+            ],
+        )
+
+    def test_total_length_21(self):
+        """It parses a new 'nose-tail' key."""
+        self.assertEqual(
+            parse("Other Measurements: nose-tail=60in., girth=39in."),
+            [
+                TotalLength(
+                    trait="total_length",
+                    length=1524,
+                    start=20,
+                    end=35,
+                )
+            ],
+        )
+
+    def test_total_length_22(self):
+        """It handles a long key."""
+        self.maxDiff = None
+        self.assertEqual(
+            parse("Imm., L. snout to tip of tail 1510"),
+            [
+                TotalLength(
+                    trait="total_length",
+                    length=1510,
+                    units_inferred=True,
+                    start=9,
+                    end=34,
+                ),
+            ],
+        )

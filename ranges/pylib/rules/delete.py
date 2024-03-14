@@ -1,5 +1,3 @@
-import os
-
 from spacy.language import Language
 from spacy.tokens import Doc
 from traiter.pylib.pipes import add
@@ -9,17 +7,8 @@ from ranges.pylib import trait_util as tu
 
 def pipe(nlp: Language):
     config = {
-        "delete": """ number """.split(),
+        "delete": """ number date elevation lat_long uuid """.split(),
     }
-
-    try:
-        use_mock_data = int(os.getenv("MOCK_DATA"))
-    except (TypeError, ValueError):
-        use_mock_data = 0
-
-    if not use_mock_data:
-        config["delete"].append("uuid")
-
     add.custom_pipe(nlp, "delete", config=config)
 
 
@@ -34,7 +23,7 @@ class Delete:
         super().__init__()
         self.nlp = nlp
         self.name = name
-        self.delete = delete if delete else []  # List of traits to delete
+        self.delete = delete
 
     def __call__(self, doc: Doc) -> Doc:
         entities = []

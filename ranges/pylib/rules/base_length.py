@@ -10,7 +10,7 @@ from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules.base import Base
 
-SEP = t_const.COLON + t_const.COMMA + t_const.EQ + t_const.DASH
+SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ
 
 DECODER = {
     ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
@@ -19,13 +19,15 @@ DECODER = {
     "[": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
     "]": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
     "ambig": {"ENT_TYPE": "ambiguous_key", "OP": "+"},
+    "any": {},
+    "bad_prefix": {"ENT_TYPE": "bad_prefix", "OP": "+"},
     "ft": {"ENT_TYPE": "imperial_length", "OP": "+"},
     "in": {"ENT_TYPE": "imperial_length", "OP": "+"},
     "key": {"ENT_TYPE": "len_key", "OP": "+"},
     "key_mm": {"ENT_TYPE": "key_with_units", "OP": "+"},
     "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
     "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
-    '"': {"TEXT": {"IN": t_const.QUOTE}, "OP": "?"},
+    '"': {"TEXT": {"IN": t_const.QUOTE}},
 }
 
 
@@ -42,24 +44,27 @@ class BaseLength(Base):
         """.split()
 
     factor_mm: ClassVar[dict[str, str]] = {}
+
+    dwc_prefix: ClassVar[dict[str, str]] = {}
     # ---------------------
 
     length: float | list[float] = None
     units_inferred: bool = None
     ambiguous: bool = None
     estimated: bool = None
+    _prefix: str = None
 
     def to_dwc(self, dwc) -> DarwinCore:
-        value = {f"{self.name}LengthInMillimeters": self.length}
+        value = {f"{self._prefix}LengthInMillimeters": self.length}
 
         if self.units_inferred:
-            value |= {f"{self.name}LengthUnitsInferred": True}
+            value |= {f"{self._prefix}LengthUnitsInferred": True}
 
         if self.ambiguous:
-            value |= {f"{self.name}LengthAmbiguous": True}
+            value |= {f"{self._prefix}LengthAmbiguous": True}
 
         if self.estimated:
-            value |= {f"{self.name}LengthEstimated": True}
+            value |= {f"{self._prefix}LengthEstimated": True}
 
         return dwc.add_dyn(**value)
 
@@ -100,6 +105,16 @@ class BaseLength(Base):
         # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
+    def bad_length_pipe(cls, nlp):
+        add.trait_pipe(
+            nlp,
+            name=f"{cls.name}_bad_length_patterns",
+            compiler=cls.bad_length_patterns(),
+            overwrite=["metric_length", "imperial_length", "number"],
+        )
+        # add.debug_tokens(nlp)  # ###########################################
+
+    @classmethod
     def tic_pipe(cls, nlp, *, allow_no_key=False):
         add.trait_pipe(
             nlp,
@@ -107,6 +122,7 @@ class BaseLength(Base):
             compiler=cls.tic_length_patterns(allow_no_key=allow_no_key),
             overwrite=["number"],
         )
+        # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
     def cleanup_pipe(cls, nlp):
@@ -137,12 +153,12 @@ class BaseLength(Base):
     @classmethod
     def range_length_patterns(cls, *, allow_no_key=False):
         patterns = [
-            ' key_mm " : " 99 to 99     ',
-            ' key    " : " 99 to 99 mm* ',
-            ' ambig  " : " 99 to 99 mm* ',
-            ' ambig  " : " 99 to 99 mm* key mm* ',
-            "              99 to 99 mm* key mm* ",
-            "              99 to 99     key_mm  ",
+            ' key_mm "? : "? 99 to 99     ',
+            ' key    "? : "? 99 to 99 mm* ',
+            ' ambig  "? : "? 99 to 99 mm* ',
+            ' ambig  "? : "? 99 to 99 mm* key mm* ',
+            "                99 to 99 mm* key mm* ",
+            "                99 to 99     key_mm  ",
         ]
         if allow_no_key:
             patterns += [
@@ -162,9 +178,10 @@ class BaseLength(Base):
     @classmethod
     def tic_length_patterns(cls, *, allow_no_key=False):
         patterns = [
-            ' key       : 99 " ',
-            '     ambig : 99 " ',
-            ' key ambig : 99 " ',
+            ' ambig key   : 99 " ',
+            '       key   : 99 " ',
+            '       ambig : 99 " ',
+            ' key   ambig : 99 " ',
         ]
         if allow_no_key:
             patterns += []
@@ -182,11 +199,11 @@ class BaseLength(Base):
     @classmethod
     def length_patterns(cls, *, allow_no_key=False):
         patterns = [
-            ' key_mm " : " [ 99 ] ',
-            ' key    " : " [ 99 ] mm* ] ',
-            ' ambig  " : " [ 99 ] mm* ] ',
-            "              [ 99 ] mm* ] [ key ] ",
-            ' key    " : " [ 99 ] mm* ] ',
+            ' key_mm "? : "? [ 99 ] ',
+            ' key    "? : "? [ 99 ] mm* ] ',
+            ' ambig  "? : "? [ 99 ] mm* ] ',
+            "                [ 99 ] mm* ] [ key ] ",
+            ' key    "? : "? [ 99 ] mm* ] ',
         ]
         if allow_no_key:
             patterns += [
@@ -204,6 +221,20 @@ class BaseLength(Base):
         ]
 
     @classmethod
+    def bad_length_patterns(cls):
+        return [
+            Compiler(
+                label="bad_length",
+                on_match=f"{cls.name}_length_bad_match",
+                decoder=DECODER,
+                patterns=[
+                    " bad_prefix any{,3} ambig any 99 mm* ",
+                    " bad_prefix any{,5}           99 mm* ",
+                ],
+            ),
+        ]
+
+    @classmethod
     def in_millimeters(cls, number, units: Token | str | None):
         if hasattr(units, "text"):
             units = units.text.lower()
@@ -215,9 +246,22 @@ class BaseLength(Base):
         return round(value, 2)
 
     @classmethod
+    def get_prefix(cls, labels):
+        for ent in labels:
+            if prefix := cls.dwc_prefix.get(ent.text.lower()):
+                return prefix
+        return cls.name
+
+    @classmethod
+    def get_ambiguous_and_prefix(cls, ent):
+        labels = [e for e in ent.ents if e.label_ in cls.keys]
+        prefix = cls.get_prefix(labels)
+        ambiguous = True if len(labels) == 0 else None
+        return ambiguous, prefix
+
+    @classmethod
     def match(cls, ent):
-        ambiguous = [e for e in ent.ents if e.label_ in cls.keys]
-        ambiguous = True if len(ambiguous) == 0 else None
+        ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         units_inferred = True if units is None else None
@@ -230,6 +274,7 @@ class BaseLength(Base):
         return cls.from_ent(
             ent,
             length=length,
+            _prefix=prefix,
             ambiguous=ambiguous,
             estimated=estimated,
             units_inferred=units_inferred,
@@ -237,8 +282,7 @@ class BaseLength(Base):
 
     @classmethod
     def compound_match(cls, ent):
-        ambiguous = [e for e in ent.ents if e.label_ in cls.keys]
-        ambiguous = True if len(ambiguous) == 0 else None
+        ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         numbers = [e for e in ent.ents if e.label_ == "number"]
 
@@ -257,12 +301,11 @@ class BaseLength(Base):
                 round(length + cls.in_millimeters(numbers[2], units[1]), 2),
             ]
 
-        return cls.from_ent(ent, length=length, ambiguous=ambiguous)
+        return cls.from_ent(ent, length=length, ambiguous=ambiguous, _prefix=prefix)
 
     @classmethod
     def range_match(cls, ent):
-        ambiguous = [e for e in ent.ents if e.label_ in cls.keys]
-        ambiguous = True if len(ambiguous) == 0 else None
+        ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         units_inferred = True if units is None else None
@@ -275,15 +318,22 @@ class BaseLength(Base):
         ]
 
         return cls.from_ent(
-            ent, length=length, ambiguous=ambiguous, units_inferred=units_inferred
+            ent,
+            length=length,
+            _prefix=prefix,
+            ambiguous=ambiguous,
+            units_inferred=units_inferred,
         )
 
     @classmethod
     def tic_match(cls, ent):
-        ambiguous = [e for e in ent.ents if e.label_ in cls.keys]
-        ambiguous = True if len(ambiguous) == 0 else None
+        ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         number = next(e for e in ent.ents if e.label_ == "number")
         length = cls.in_millimeters(number, "inches")
 
-        return cls.from_ent(ent, length=length, ambiguous=ambiguous)
+        return cls.from_ent(ent, length=length, ambiguous=ambiguous, _prefix=prefix)
+
+    @classmethod
+    def bad_match(cls, ent):
+        return cls.from_ent(ent)

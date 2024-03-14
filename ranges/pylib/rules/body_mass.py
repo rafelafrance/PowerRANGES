@@ -140,6 +140,7 @@ class BodyMass(Base):
                 on_match="body_mass_match",
                 decoder=decoder,
                 patterns=[
+                    ' key g      " : " [ 99 ] ',
                     ' key_g      " : " [ 99 ] ',
                     ' leader     " : " [ 99 ] g+ ] ',
                     ' leader key " : " [ 99 ] g* ] ',

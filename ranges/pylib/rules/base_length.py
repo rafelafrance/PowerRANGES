@@ -23,11 +23,10 @@ DECODER = {
     "bad_prefix": {"ENT_TYPE": "bad_prefix", "OP": "+"},
     "ft": {"ENT_TYPE": "imperial_length", "OP": "+"},
     "in": {"ENT_TYPE": "imperial_length", "OP": "+"},
-    "key": {"ENT_TYPE": "len_key", "OP": "+"},
-    "key_mm": {"ENT_TYPE": "key_with_units", "OP": "+"},
+    "key": {"ENT_TYPE": {"IN": ["len_key", "key_with_units"]}, "OP": "+"},
     "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
     "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
-    '"': {"TEXT": {"IN": t_const.QUOTE}},
+    '"': {"TEXT": {"IN": t_const.D_QUOTE}},
 }
 
 
@@ -131,8 +130,12 @@ class BaseLength(Base):
     @classmethod
     def compound_length_patterns(cls, *, allow_no_key=False):
         patterns = [
-            " key : 99 ft ,       99 in ",
-            " key : 99 ft , 99 to 99 in ",
+            " key       : 99 ft ,       99 in ",
+            " key       : 99 ft , 99 to 99 in ",
+            "     ambig : 99 ft ,       99 in ",
+            "     ambig : 99 ft , 99 to 99 in ",
+            " key ambig : 99 ft ,       99 in ",
+            " key ambig : 99 ft , 99 to 99 in ",
         ]
         if allow_no_key:
             patterns += [
@@ -153,12 +156,12 @@ class BaseLength(Base):
     @classmethod
     def range_length_patterns(cls, *, allow_no_key=False):
         patterns = [
-            ' key_mm "? : "? 99 to 99     ',
-            ' key    "? : "? 99 to 99 mm* ',
-            ' ambig  "? : "? 99 to 99 mm* ',
-            ' ambig  "? : "? 99 to 99 mm* key mm* ',
-            "                99 to 99 mm* key mm* ",
-            "                99 to 99     key_mm  ",
+            ' key       "? : "? 99 to 99 mm* ',
+            ' key ambig "? : "? 99 to 99 mm* ',
+            ' key ambig "? : "? 99 to 99 mm* key mm* ',
+            '     ambig "? : "? 99 to 99 mm* ',
+            '     ambig "? : "? 99 to 99 mm* key mm* ',
+            "                   99 to 99 mm* key mm* ",
         ]
         if allow_no_key:
             patterns += [
@@ -178,10 +181,10 @@ class BaseLength(Base):
     @classmethod
     def tic_length_patterns(cls, *, allow_no_key=False):
         patterns = [
-            ' ambig key   : 99 " ',
-            '       key   : 99 " ',
-            '       ambig : 99 " ',
-            ' key   ambig : 99 " ',
+            ' ambig key   : 99 "+ ',
+            '       key   : 99 "+ ',
+            '       ambig : 99 "+ ',
+            ' key   ambig : 99 "+ ',
         ]
         if allow_no_key:
             patterns += []
@@ -199,11 +202,10 @@ class BaseLength(Base):
     @classmethod
     def length_patterns(cls, *, allow_no_key=False):
         patterns = [
-            ' key_mm "? : "? [ 99 ] ',
-            ' key    "? : "? [ 99 ] mm* ] ',
-            ' ambig  "? : "? [ 99 ] mm* ] ',
-            "                [ 99 ] mm* ] [ key ] ",
-            ' key    "? : "? [ 99 ] mm* ] ',
+            ' key       "? : "? [ 99 ] mm* ] ',
+            '     ambig "? : "? [ 99 ] mm* ] ',
+            ' key ambig "? : "? [ 99 ] mm* ] ',
+            "                   [ 99 ] mm* ] [ key ] ",
         ]
         if allow_no_key:
             patterns += [

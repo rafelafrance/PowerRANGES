@@ -10,6 +10,7 @@ from ranges.pylib import tokenizer
 from ranges.pylib.rules import delete
 from ranges.pylib.rules.body_mass import BodyMass
 from ranges.pylib.rules.ear_length import EarLength
+from ranges.pylib.rules.embryo_length import EmbryoLength
 from ranges.pylib.rules.forearm_length import ForearmLength
 from ranges.pylib.rules.hind_foot_length import HindFootLength
 from ranges.pylib.rules.shorthand import Shorthand
@@ -34,6 +35,8 @@ def build():
     Number.pipe(nlp)
 
     BodyMass.pipe(nlp)
+
+    EmbryoLength.pipe(nlp)
 
     EarLength.pipe(nlp)
 

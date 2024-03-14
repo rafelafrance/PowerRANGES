@@ -256,7 +256,7 @@ class TestTotalLength(unittest.TestCase):
         """It handles a long key."""
         self.maxDiff = None
         self.assertEqual(
-            parse("Imm., L. snout to tip of tail 1510"),
+            parse("Imm., L. snout to tip of tail 1510,"),
             [
                 TotalLength(
                     trait="total_length",

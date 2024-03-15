@@ -6,6 +6,7 @@ from tests.setup import parse
 
 class TestEmbryoLength(unittest.TestCase):
     def test_embryo_length_01(self):
+        """It parses a crown-rump length."""
         self.maxDiff = None
         self.assertEqual(
             parse("crown-rump length=13 mm"),
@@ -13,6 +14,7 @@ class TestEmbryoLength(unittest.TestCase):
         )
 
     def test_embryo_length_02(self):
+        """It handles no units."""
         self.assertEqual(
             parse("Embryo crown-rump length 22"),
             [

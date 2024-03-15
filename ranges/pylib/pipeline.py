@@ -16,6 +16,7 @@ from ranges.pylib.rules.hind_foot_length import HindFootLength
 from ranges.pylib.rules.shorthand import Shorthand
 from ranges.pylib.rules.tail_length import TailLength
 from ranges.pylib.rules.total_length import TotalLength
+from ranges.pylib.rules.tragus_length import TragusLength
 
 
 def build():
@@ -41,6 +42,8 @@ def build():
     EarLength.pipe(nlp)
 
     ForearmLength.pipe(nlp)
+
+    TragusLength.pipe(nlp)
 
     HindFootLength.pipe(nlp)
 

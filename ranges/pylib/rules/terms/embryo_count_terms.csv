@@ -1,0 +1,49 @@
+label,pattern,side
+numbered,1
+numbered,2
+numbered,one
+numbered,two
+side,both,both
+side,f,female
+side,fem,female
+side,female,female
+side,females,female
+side,l x,left
+side,l,left
+side,left,left
+side,lf,left
+side,lft,left
+side,m,male
+side,male,male
+side,males,male
+side,on left,left
+side,on right,right
+side,r x,right
+side,r,right
+side,right,right
+side,rt,right
+embryo_key,emb
+embryo_key,emb.
+embryo_key,embr
+embryo_key,embr.
+embryo_key,embroys
+embryo_key,embrs
+embryo_key,embrs.
+embryo_key,embryo
+embryo_key,embryonic
+embryo_key,embryos
+embryo_key,embryp
+embryo_key,embryps
+embryo_key,embs
+embryo_key,embs.
+embryo_key,embyro
+embryo_key,embyros
+embryo_key,fetus
+embryo_key,fetuses
+embryo_key,foeti
+embryo_key,pregnant
+zero,no
+zero,none
+zero,not
+zero,non
+zero,zero

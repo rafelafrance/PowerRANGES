@@ -20,12 +20,12 @@ class HindFootLength(BaseLength):
         Path(__file__).parent / "terms" / "hind_foot_length_terms.csv",
     ]
 
-    factor_cm: ClassVar[dict[str, str]] = term_util.term_data(csvs, "factor_cm")
+    factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
     factor_mm: ClassVar[dict[str, str]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
 
-    includes_keys: ClassVar[dict[str, str]] = term_util.term_data(csvs, "includes")
+    includes_keys: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "includes")
     # ---------------------
 
     includes: str = None
@@ -55,7 +55,7 @@ class HindFootLength(BaseLength):
 
     @classmethod
     def hind_foot_length_match(cls, ent):
-        trait = cls.match(ent)
+        trait = cls.length_match(ent)
         cls.get_includes(ent, trait)
         return trait
 

@@ -15,7 +15,9 @@ def setup(nlp):
     tokenizer.append_infix_regex(
         nlp,
         [
-            rf"(?<=[{ALPHA}])\.(?=[{ALPHA}])",  # Break on interior dot
+            rf"(?<=[{ALPHA}])\.(?=[{ALPHA}\d])",  # Break on interior dot
+            rf"(?<=\d)(?=[{ALPHA}])",  # Break on digit followed by a letter
+            rf"(?<=[{ALPHA}])(?=\d)",  # Break on letter followed by a digit
             # Always break on these characters
             "=",
             "-",

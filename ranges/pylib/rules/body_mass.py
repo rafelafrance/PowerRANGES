@@ -19,8 +19,8 @@ class BodyMass(Base):
         Path(t_terms.__file__).parent / "unit_mass_terms.csv",
         Path(__file__).parent / "terms" / "body_mass_terms.csv",
     ]
-    replace: ClassVar[dict[str, str]] = term_util.term_data(csvs, "replace")
-    factor: ClassVar[dict[str, str]] = term_util.term_data(csvs, "factor_g")
+    replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
+    factor: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_g")
     factor: ClassVar[dict[str, str]] = {k: float(v) for k, v in factor.items()}
     keys: ClassVar[list[str]] = """ key_with_units key_leader wt_key """.split()
     units: ClassVar[list[str]] = """

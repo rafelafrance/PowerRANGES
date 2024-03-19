@@ -18,7 +18,7 @@ class TotalLength(BaseLength):
         Path(t_terms.__file__).parent / "unit_length_terms.csv",
         Path(__file__).parent / "terms" / "total_length_terms.csv",
     ]
-    factor_cm: ClassVar[dict[str, str]] = term_util.term_data(csvs, "factor_cm")
+    factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
     factor_mm: ClassVar[dict[str, str]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
@@ -37,7 +37,7 @@ class TotalLength(BaseLength):
 
 @registry.misc("total_length_match")
 def total_length_match(ent):
-    return TotalLength.match(ent)
+    return TotalLength.length_match(ent)
 
 
 @registry.misc("total_length_compound_match")

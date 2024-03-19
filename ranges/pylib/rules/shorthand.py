@@ -45,7 +45,7 @@ class Shorthand(Base):
         Path(t_terms.__file__).parent / "unit_mass_terms.csv",
         Path(__file__).parent / "terms" / "shorthand_terms.csv",
     ]
-    replace: ClassVar[dict[str, str]] = term_util.term_data(csvs, "replace")
+    replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
 
     inner_re: ClassVar[str] = r"((\d{1,4}(\.\d{,3})?)|[?x]{1,2})"
 
@@ -191,9 +191,7 @@ class Shorthand(Base):
             "[": {"TEXT": "["},
             "]": {"TEXT": "]"},
             "g": {"ENT_TYPE": "metric_mass"},
-            "label": {"LOWER": {"REGEX": r"^(fa|tr)$"}},
-            "99fa": {"LOWER": {"REGEX": r"^\d+(fa|tr)$"}},
-            "fa99": {"LOWER": {"REGEX": r"^(fa|tr)\d+$"}},
+            "fa": {"LOWER": {"REGEX": r"^(fa|tr)$"}},
         }
 
         return [
@@ -202,11 +200,11 @@ class Shorthand(Base):
                 on_match="cell_match",
                 decoder=decoder,
                 patterns=[
-                    " 99 (? label )? ",
+                    " 99 (? fa )? ",
                     " [ 99 g? ] ",
                     " [ 99 g? ] ",
-                    " 99fa ",
-                    " fa99 ",
+                    " 99 fa ",
+                    " fa 99 ",
                 ],
             ),
         ]

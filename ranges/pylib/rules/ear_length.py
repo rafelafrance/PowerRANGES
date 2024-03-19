@@ -21,12 +21,14 @@ class EarLength(BaseLength):
         Path(__file__).parent / "terms" / "ear_length_terms.csv",
     ]
 
-    factor_cm: ClassVar[dict[str, str]] = term_util.term_data(csvs, "factor_cm")
+    factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
     factor_mm: ClassVar[dict[str, str]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
 
-    measured_keys: ClassVar[dict[str, str]] = term_util.term_data(csvs, "measured_from")
+    measured_keys: ClassVar[dict[str, str]] = term_util.look_up_table(
+        csvs, "measured_from"
+    )
     # ---------------------
 
     measured_from: str = None
@@ -61,7 +63,7 @@ class EarLength(BaseLength):
 
     @classmethod
     def ear_length_match(cls, ent):
-        trait = cls.match(ent)
+        trait = cls.length_match(ent)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait

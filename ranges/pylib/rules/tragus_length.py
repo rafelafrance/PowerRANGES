@@ -19,7 +19,7 @@ class TragusLength(BaseLength):
         Path(__file__).parent / "terms" / "tragus_length_terms.csv",
     ]
 
-    factor_cm: ClassVar[dict[str, str]] = term_util.term_data(csvs, "factor_cm")
+    factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
     factor_mm: ClassVar[dict[str, str]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
@@ -36,7 +36,7 @@ class TragusLength(BaseLength):
 
 @registry.misc("tragus_length_match")
 def tragus_length_match(ent):
-    return TragusLength.match(ent)
+    return TragusLength.length_match(ent)
 
 
 @registry.misc("tragus_length_range_match")

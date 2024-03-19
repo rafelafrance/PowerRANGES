@@ -38,9 +38,9 @@ class BaseLength(Base):
     csvs: ClassVar[list[Path]] = []
 
     keys: ClassVar[list[str]] = """ key_with_units key_leader len_key """.split()
-    units: ClassVar[list[str]] = """
-        key_with_units metric_length imperial_length
-        """.split()
+    units: ClassVar[
+        list[str]
+    ] = """ key_with_units metric_length imperial_length """.split()
 
     factor_mm: ClassVar[dict[str, str]] = {}
 
@@ -76,6 +76,16 @@ class BaseLength(Base):
         add.term_pipe(nlp, name=f"{cls.name}_length_terms", path=cls.csvs)
 
     @classmethod
+    def length_pipe(cls, nlp, *, allow_no_key=False, label=None):
+        add.trait_pipe(
+            nlp,
+            name=f"{cls.name}_length_patterns",
+            compiler=cls.length_patterns(allow_no_key=allow_no_key, label=label),
+            overwrite=["metric_length", "imperial_length", "number"],
+        )
+        # add.debug_tokens(nlp)  # ###########################################
+
+    @classmethod
     def compound_length_pipe(cls, nlp, *, allow_no_key=False):
         add.trait_pipe(
             nlp,
@@ -92,16 +102,6 @@ class BaseLength(Base):
             compiler=cls.range_length_patterns(allow_no_key=allow_no_key),
             overwrite=["metric_length", "imperial_length", "number"],
         )
-
-    @classmethod
-    def length_pipe(cls, nlp, *, allow_no_key=False):
-        add.trait_pipe(
-            nlp,
-            name=f"{cls.name}_length_patterns",
-            compiler=cls.length_patterns(allow_no_key=allow_no_key),
-            overwrite=["metric_length", "imperial_length", "number"],
-        )
-        # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
     def bad_length_pipe(cls, nlp):
@@ -126,6 +126,30 @@ class BaseLength(Base):
     @classmethod
     def cleanup_pipe(cls, nlp):
         add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup")
+
+    @classmethod
+    def length_patterns(cls, *, allow_no_key=False, label=None):
+        label = label if label else f"{cls.name}_length"
+        patterns = [
+            ' key       "? : "? [ 99 ] mm* ] ',
+            '     ambig "? : "? [ 99 ] mm* ] ',
+            ' key ambig "? : "? [ 99 ] mm* ] ',
+            "                   [ 99 ] mm* ] [ key ] ",
+        ]
+        if allow_no_key:
+            patterns += [
+                " [ 99 ] mm+ ] ",
+            ]
+
+        return [
+            Compiler(
+                label=label,
+                keep=label,
+                on_match=f"{cls.name}_length_match",
+                decoder=DECODER,
+                patterns=patterns,
+            ),
+        ]
 
     @classmethod
     def compound_length_patterns(cls, *, allow_no_key=False):
@@ -200,29 +224,6 @@ class BaseLength(Base):
         ]
 
     @classmethod
-    def length_patterns(cls, *, allow_no_key=False):
-        patterns = [
-            ' key       "? : "? [ 99 ] mm* ] ',
-            '     ambig "? : "? [ 99 ] mm* ] ',
-            ' key ambig "? : "? [ 99 ] mm* ] ',
-            "                   [ 99 ] mm* ] [ key ] ",
-        ]
-        if allow_no_key:
-            patterns += [
-                " [ 99 ] mm+ ] ",
-            ]
-
-        return [
-            Compiler(
-                label=f"{cls.name}_length",
-                keep=f"{cls.name}_length",
-                on_match=f"{cls.name}_length_match",
-                decoder=DECODER,
-                patterns=patterns,
-            ),
-        ]
-
-    @classmethod
     def bad_length_patterns(cls):
         return [
             Compiler(
@@ -262,7 +263,7 @@ class BaseLength(Base):
         return ambiguous, prefix
 
     @classmethod
-    def match(cls, ent):
+    def length_match(cls, ent):
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)

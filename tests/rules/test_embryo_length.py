@@ -27,59 +27,28 @@ class TestEmbryoLength(unittest.TestCase):
             ],
         )
 
+    def test_embryo_length_03(self):
+        """It handles odd interstitial characters."""
+        self.assertEqual(
+            parse("3 embs/2L+2R/cr=X34mm"),
+            [
+                Embryo(trait="embryo", start=0, end=12, count=3, left=2, right=2),
+                Embryo(trait="embryo", start=13, end=21, length=34.0),
+            ],
+        )
 
-#     def test_embryo_length_03(self):
-#         self.assertEqual(
-#             parse(
-#                 "reproductive data: 4 embryos - 15 mm, crown-rump length"
-#             ),
-#             [Embryo(trait="embryo", length=15, start=21, end=55)],
-#         )
-#
-#     def test_embryo_length_04(self):
-#         self.assertEqual(
-#             parse(", CR (crown-rump length) =7 ;"),
-#             [Embryo(trait="embryo", length=7, start=6, end=27)],
-#         )
-#
-#     def test_embryo_length_05(self):
-#         self.assertEqual(
-#             parse(", CRL=59 mm; "),
-#             [Embryo(trait="embryo", length=59, start=2, end=11)],
-#         )
-#
-#     def test_embryo_length_06(self):
-#         self.assertEqual(
-#             parse("pregnant; 1 emb; cr-28"),
-#             [Embryo(trait="embryo", length=28,
-#             inferred=True, start=17, end=22)],
-#         )
-#
-#     def test_embryo_length_07(self):
-#         self.assertEqual(
-#             parse("embryos left horn, cr-rump: 23mm."),
-#             [Embryo(trait="embryo", length=23, start=19, end=32)],
-#         )
-#
-#     def test_embryo_length_08(self):
-#         self.assertEqual(
-#             parse("4 embs/1R/3L/cr=2mm"),
-#             [Embryo(trait="embryo", length=2, start=13, end=19)],
-#         )
-#
-#     def test_embryo_length_09(self):
-#         self.assertEqual(
-#             parse("3 embs/2L+2R/cr=X34mm"),
-#             [Embryo(trait="embryo", length=34,  start=13, end=21)],
-#         )
-#
-#     def test_embryo_length_10(self):
-#         self.assertEqual(
-#             parse(", cr=5x5 ;"),
-#             [Embryo(trait="embryo", length=[5, 5], units_inferred=True,
-#             start=2, end=8)],
-#         )
-#
+    # def test_embryo_length_10(self):
+    #     """It parses multiple lengths."""
+    #     self.assertEqual(
+    #         parse(", cr=5x5 ;"),
+    #         [
+    #             Embryo(
+    #                 trait="embryo", length=[5, 5], units_inferred=True, start=2, end=8
+    #             )
+    #         ],
+    #     )
+
+
 #     def test_embryo_length_11(self):
 #         self.assertEqual(
 #             parse("sex=recorded as unknown ; reproductive data=cr=9x8mm"),

@@ -17,9 +17,7 @@ from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules import terms as t_terms
 
-from ranges.pylib.rules.base_length import BaseLength
-
-SEP = t_const.EQ + t_const.COLON + t_const.COMMA + t_const.SLASH
+from ranges.pylib.rules.base_length import SEP, BaseLength
 
 
 @dataclass(eq=False)
@@ -72,6 +70,7 @@ class Embryo(BaseLength):
     def pipe(cls, nlp: Language):
         add.term_pipe(nlp, name="embryo_terms", path=cls.csvs)
 
+        cls.bad_length_pipe(nlp)
         cls.embryo_mix_pipe(nlp)
         cls.embryo_zero_count_pipe(nlp)
         cls.embryo_count_pipe(nlp)
@@ -118,7 +117,7 @@ class Embryo(BaseLength):
                 decoder={
                     "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
                     ")": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
-                    ",": {"LOWER": {"REGEX": r"^([a-z]+|[,\-])$"}, "OP": "{,2}"},
+                    ",": {"LOWER": {"REGEX": r"^([a-z]+|[+,/\-])$"}, "OP": "{,2}"},
                     "99": {"ENT_TYPE": "number", "OP": "+"},
                     ":": {"TEXT": {"IN": SEP}, "OP": "?"},
                     "key": {"ENT_TYPE": "embryo_key"},
@@ -249,3 +248,8 @@ def embryo_length_match(ent):
 @registry.misc("embryo_mix_match")
 def embryo_mix_match(ent):
     return Embryo.embryo_mix_match(ent)
+
+
+@registry.misc("embryo_length_bad_match")
+def embryo_length_bad_match(ent):
+    return Embryo.bad_match(ent)

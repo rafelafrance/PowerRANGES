@@ -44,6 +44,7 @@ class EarLength(BaseLength):
     @classmethod
     def pipe(cls, nlp):
         cls.term_pipe(nlp)
+        cls.bad_length_pipe(nlp)
         cls.range_length_pipe(nlp)
         cls.tic_pipe(nlp)
         cls.length_pipe(nlp)
@@ -96,3 +97,8 @@ def ear_length_range_match(ent):
 @registry.misc("ear_length_tic_match")
 def ear_length_tic_match(ent):
     return EarLength.ear_length_tic_match(ent)
+
+
+@registry.misc("ear_length_bad_match")
+def ear_length_bad_match(ent):
+    return EarLength.bad_match(ent)

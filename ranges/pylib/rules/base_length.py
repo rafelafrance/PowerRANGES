@@ -10,7 +10,8 @@ from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules.base import Base
 
-SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ
+SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ + t_const.SLASH
+BAD = """ tag """.split()
 
 DECODER = {
     ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
@@ -20,6 +21,7 @@ DECODER = {
     "]": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
     "ambig": {"ENT_TYPE": "ambiguous_key", "OP": "+"},
     "any": {},
+    "bad": {"LOWER": {"IN": BAD}},
     "bad_prefix": {"ENT_TYPE": "bad_prefix", "OP": "+"},
     "ft": {"ENT_TYPE": "imperial_length", "OP": "+"},
     "in": {"ENT_TYPE": "imperial_length", "OP": "+"},
@@ -27,6 +29,7 @@ DECODER = {
     "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
     "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
     '"': {"TEXT": {"IN": t_const.D_QUOTE}},
+    "word": {"LOWER": {"REGEX": r"^[a-z]+$"}, "OP": "?"},
 }
 
 
@@ -125,7 +128,7 @@ class BaseLength(Base):
 
     @classmethod
     def cleanup_pipe(cls, nlp):
-        add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup")
+        add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup", delete=["bad_length"])
 
     @classmethod
     def length_patterns(cls, *, allow_no_key=False, label=None):
@@ -135,6 +138,7 @@ class BaseLength(Base):
             '     ambig "? : "? [ 99 ] mm* ] ',
             ' key ambig "? : "? [ 99 ] mm* ] ',
             "                   [ 99 ] mm* ] [ key ] ",
+            " key : word   :      99   mm* ",
         ]
         if allow_no_key:
             patterns += [
@@ -228,9 +232,11 @@ class BaseLength(Base):
         return [
             Compiler(
                 label="bad_length",
+                keep="bad_length",
                 on_match=f"{cls.name}_length_bad_match",
                 decoder=DECODER,
                 patterns=[
+                    " bad ",
                     " bad_prefix any{,3} ambig any 99 mm* ",
                     " bad_prefix any{,5}           99 mm* ",
                 ],

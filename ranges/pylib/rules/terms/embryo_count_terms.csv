@@ -4,20 +4,40 @@ side,f,female
 side,fem,female
 side,female,female
 side,females,female
+side,l side,left
+side,l side,left
 side,l x,left
 side,l,left
+side,l. side,left
+side,l. x,left
+side,l.,left
+side,left side,left
 side,left,left
+side,lf side,left
 side,lf,left
+side,lf. side,left
+side,lf.,left
+side,lft side,left
 side,lft,left
+side,lft. side,left
+side,lft.,left
 side,m,male
 side,male,male
 side,males,male
 side,on left,left
 side,on right,right
+side,r side,right
 side,r x,right
 side,r,right
+side,r. side,right
+side,r. x,right
+side,r.,right
+side,right side,right
 side,right,right
 side,rt,right
+side,rt. side,right
+side,rt. side,right
+side,rt.,right
 embryo_key,emb
 embryo_key,emb.
 embryo_key,embr

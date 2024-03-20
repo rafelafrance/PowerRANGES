@@ -78,8 +78,13 @@ class BaseLength(Base):
         raise NotImplementedError
 
     @classmethod
-    def term_pipe(cls, nlp):
-        add.term_pipe(nlp, name=f"{cls.name}_length_terms", path=cls.csvs)
+    def term_pipe(cls, nlp, delete_patterns: list[str] | str | None = None):
+        add.term_pipe(
+            nlp,
+            name=f"{cls.name}_length_terms",
+            path=cls.csvs,
+            delete_patterns=delete_patterns,
+        )
 
     @classmethod
     def length_pipe(cls, nlp, *, allow_no_key=False, label=None):

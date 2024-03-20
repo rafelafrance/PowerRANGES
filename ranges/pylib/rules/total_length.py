@@ -26,7 +26,7 @@ class TotalLength(BaseLength):
 
     @classmethod
     def pipe(cls, nlp):
-        cls.term_pipe(nlp)
+        cls.term_pipe(nlp, delete_patterns="in")
         cls.bad_length_pipe(nlp)
         cls.compound_length_pipe(nlp, allow_no_key=True)
         cls.range_length_pipe(nlp, allow_no_key=True)

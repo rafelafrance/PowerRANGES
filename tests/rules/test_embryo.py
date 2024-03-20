@@ -227,48 +227,76 @@ class TestEmbryoCount(unittest.TestCase):
             [Embryo(trait="embryo", length=9, width=8, start=20, end=28)],
         )
 
-    # def test_embryo_32(self):
-    #     self.assertEqual(parse("2 embryo scars left horn, 1 right"), [])
-    #
-    # def test_embryo_33(self):
-    #     self.assertEqual(
-    #         parse("3 embryos in left horn, 1 in right, crown to rump 25mm"),
-    #         [Embryo(trait="embryo", count=4, left=3, right=1, start=0, end=34)],
-    #     )
-    #
-    # def test_embryo_34(self):
-    #     self.assertEqual(parse("2 embryo scars, 1 in each horn, lactating"), [])
-    #
-    # def test_embryo_35(self):
-    #     self.assertEqual(
-    #         parse("Fetus found in uterus, saved in formalin"),
-    #         [Embryo(trait="embryo", count=1, start=0, end=11)],
-    #     )
-    #
-    # def test_embryo_36(self):
-    #     self.assertEqual(
-    #         parse("Near-term fetus (86.5 cm S.L.)"),
-    #         [Embryo(trait="embryo", count=1, start=0, end=15)],
-    #     )
-    #
-    # def test_embryo_37(self):
-    #     self.assertEqual(
-    #         parse("Pregnant female, 6 near-term embryos."),
-    #         [Embryo(trait="embryo", count=6, start=17, end=36)],
-    #     )
-    #
-    # def test_embryo_38(self):
-    #     self.assertEqual(
-    #         parse("2 embryos right horn, 3 left, ~9x10mm"),
-    #         [Embryo(trait="embryo", count=5, left=3, right=2, start=0, end=28)],
-    #     )
-    #
-    # def test_embryo_39(self):
-    #     self.assertEqual(
-    #         parse("Fetus on left, 18mm crown to rump."),
-    #         [Embryo(trait="embryo", count=1, side="left", start=0, end=13)],
-    #     )
-    #
+    def test_embryo_26(self):
+        """It parses scars."""
+        self.assertEqual(
+            parse("2 embryo scars left horn, 1 right"),
+            [
+                Embryo(
+                    trait="embryo",
+                    count=3,
+                    left=2,
+                    right=1,
+                    start=0,
+                    end=33,
+                )
+            ],
+        )
+
+    def test_embryo_27(self):
+        """It does not pick up the '1 in'."""
+        self.assertEqual(
+            parse("2 embryo scars, 1 in each horn, lactating"),
+            [
+                Embryo(
+                    trait="embryo",
+                    count=2,
+                    start=0,
+                    end=8,
+                )
+            ],
+        )
+
+    def test_embryo_28(self):
+        """It picks up the presence of an embryo."""
+        self.assertEqual(
+            parse("Near-term fetus"),
+            [Embryo(trait="embryo", count=1, start=0, end=15)],
+        )
+
+    def test_embryo_29(self):
+        self.assertEqual(
+            parse("6 near-term embryos."),
+            [Embryo(trait="embryo", count=6, start=0, end=19)],
+        )
+
+    def test_embryo_30(self):
+        self.maxDiff = None
+        self.assertEqual(
+            parse("2 embryos right horn, 3 left, ~9x10mm"),
+            [
+                Embryo(
+                    trait="embryo",
+                    count=5,
+                    length=9,
+                    width=10,
+                    left=3,
+                    right=2,
+                    start=0,
+                    end=37,
+                )
+            ],
+        )
+
+    def test_embryo_31(self):
+        self.assertEqual(
+            parse("Fetus on left, 18mm crown to rump."),
+            [
+                Embryo(trait="embryo", count=1, left=1, start=0, end=13),
+                Embryo(trait="embryo", length=18, start=15, end=33),
+            ],
+        )
+
     # def test_embryo_40(self):
     #     self.assertEqual(
     #         parse("3 embryos L side, 1 R. Mammaries developing."),

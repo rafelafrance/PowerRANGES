@@ -9,6 +9,8 @@ def setup(nlp):
         nlp,
         [
             "mm",  # Break on units
+            # Always break on these characters
+            "~",
         ],
     )
 
@@ -19,18 +21,19 @@ def setup(nlp):
             rf"(?<=\d)(?=[{ALPHA}])",  # Break on digit followed by a letter
             rf"(?<=[{ALPHA}])(?=\d)",  # Break on letter followed by a digit
             # Always break on these characters
-            "=",
-            "-",
             ",",
-            ";",
-            ":",
-            '"',
+            "-",
             "/",
+            ":",
+            ";",
+            "=",
+            "~",
+            '"',
+            r"\(",
+            r"\)",
             r"\+",
             r"\[",
             r"\]",
-            r"\(",
-            r"\)",
         ],
     )
 

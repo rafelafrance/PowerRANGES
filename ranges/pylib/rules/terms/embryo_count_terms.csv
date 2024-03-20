@@ -38,7 +38,11 @@ embryo_key,fetus
 embryo_key,fetuses
 embryo_key,foeti
 embryo_key,pregnant
-zero,no
-zero,none
-zero,not
-zero,non
+no,no
+no,none
+no,not
+no,non
+yes,found
+yes,near term
+yes,near-term
+yes,nearterm

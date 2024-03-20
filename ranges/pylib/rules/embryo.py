@@ -19,6 +19,22 @@ from traiter.pylib.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import SEP, BaseLength
 
+DECODER = {
+    "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
+    ")": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
+    ",": {"LOWER": {"REGEX": r"^([a-z]+|[+,/~\-])$"}, "OP": "{,2}"},
+    "99": {"ENT_TYPE": "number", "OP": "+"},
+    ":": {"TEXT": {"IN": SEP}, "OP": "?"},
+    "emb_key": {"ENT_TYPE": "embryo_key"},
+    "key": {"ENT_TYPE": {"IN": ["len_key", "embryo_key"]}},
+    "len_key": {"ENT_TYPE": "len_key"},
+    "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
+    "present": {"ENT_TYPE": {"IN": ["no", "yes"]}, "OP": "+"},
+    "side": {"ENT_TYPE": "side", "OP": "+"},
+    "word": {"LOWER": {"REGEX": r"^[a-z]+$"}, "OP": "?"},
+    "x": {"LOWER": {"IN": t_const.CROSS}, "OP": "?"},
+}
+
 
 @dataclass(eq=False)
 class Embryo(BaseLength):
@@ -83,13 +99,14 @@ class Embryo(BaseLength):
 
     @classmethod
     def pipe(cls, nlp: Language):
-        add.term_pipe(nlp, name="embryo_terms", path=cls.csvs)
+        add.term_pipe(nlp, name="embryo_terms", path=cls.csvs, delete_patterns="in")
 
         cls.bad_length_pipe(nlp)
         cls.embryo_width_pipe(nlp)
-        cls.embryo_mix_pipe(nlp)
-        cls.embryo_zero_count_pipe(nlp)
+        cls.embryo_mix_1_pipe(nlp)
+        cls.embryo_mix_2_pipe(nlp)
         cls.embryo_count_pipe(nlp)
+        cls.embryo_present_pipe(nlp)
         cls.length_pipe(nlp, label=cls.name)
         cls.cleanup_pipe(nlp)
 
@@ -104,21 +121,33 @@ class Embryo(BaseLength):
         # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
-    def embryo_zero_count_pipe(cls, nlp):
+    def embryo_present_pipe(cls, nlp):
         add.trait_pipe(
             nlp,
-            name="embryo_zero_count_patterns",
-            compiler=cls.embryo_zero_count_patterns(),
+            name="embryo_present_patterns",
+            compiler=cls.embryo_present_patterns(),
             overwrite=["number"],
         )
         # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
-    def embryo_mix_pipe(cls, nlp):
+    def embryo_mix_1_pipe(cls, nlp):
+        """Length is at index 1."""
         add.trait_pipe(
             nlp,
-            name="embryo_mix_patterns",
-            compiler=cls.embryo_mix_patterns(),
+            name="embryo_mix_1_patterns",
+            compiler=cls.embryo_mix_1_patterns(),
+            overwrite="number metric_length imperial_length".split(),
+        )
+        # add.debug_tokens(nlp)  # ###########################################
+
+    @classmethod
+    def embryo_mix_2_pipe(cls, nlp):
+        """Length is at index 2."""
+        add.trait_pipe(
+            nlp,
+            name="embryo_mix_2_patterns",
+            compiler=cls.embryo_mix_2_patterns(),
             overwrite="number metric_length imperial_length".split(),
         )
         # add.debug_tokens(nlp)  # ###########################################
@@ -140,71 +169,67 @@ class Embryo(BaseLength):
                 label="embryo",
                 keep="embryo",
                 on_match="embryo_count_match",
-                decoder={
-                    "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
-                    ")": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
-                    ",": {"LOWER": {"REGEX": r"^([a-z]+|[+,/\-])$"}, "OP": "{,2}"},
-                    "99": {"ENT_TYPE": "number", "OP": "+"},
-                    ":": {"TEXT": {"IN": SEP}, "OP": "?"},
-                    "key": {"ENT_TYPE": "embryo_key"},
-                    "side": {"ENT_TYPE": "side", "OP": "+"},
-                    "word": {"LOWER": {"REGEX": r"^[a-z]+$"}, "OP": "?"},
-                },
+                decoder=DECODER,
                 patterns=[
-                    "key+ : 99      key* ",
-                    "       99 word key+ ",
-                    "key+ : 99      key* , ( 99 side , 99 side ) ",
-                    "       99 word key+ , ( 99 side , 99 side ) ",
-                    "               key+ , ( 99 side , 99 side ) ",
-                    "                      ( 99 side , 99 side ) : key+ ",
-                    "       99 word key+        side , 99 side ",
-                    " 99 word  word key+ ",
-                    "               key+ : ( 99 side , 99 side ) : 99 ",
+                    "emb_key+ : 99      emb_key* ",
+                    "           99 word emb_key+ ",
+                    "emb_key+ : 99      emb_key* , ( 99 side , 99 side ) ",
+                    "           99 word emb_key+ , ( 99 side , 99 side ) ",
+                    "                   emb_key+ , ( 99 side , 99 side ) ",
+                    "                              ( 99 side , 99 side ) : key+ ",
+                    "           99 word emb_key+        side , 99 side ",
+                    " 99 word  word     emb_key+ ",
+                    "                   emb_key+ : ( 99 side , 99 side ) : 99 ",
+                    " 99 emb_key word side word ,    99 word side ",
+                    " 99 present+ emb_key+",
                 ],
             ),
         ]
 
     @classmethod
-    def embryo_zero_count_patterns(cls):
+    def embryo_present_patterns(cls):
         return [
             Compiler(
                 label="embryo",
                 keep="embryo",
-                on_match="embryo_zero_count_match",
-                decoder={
-                    ":": {"TEXT": {"IN": SEP}, "OP": "?"},
-                    "key": {"ENT_TYPE": "embryo_key"},
-                    "00": {"ENT_TYPE": "zero", "OP": "+"},
-                    "word": {"LOWER": {"REGEX": r"^[a-z]+$"}, "OP": "?"},
-                },
+                on_match="embryo_present_match",
+                decoder=DECODER,
                 patterns=[
-                    "key+ : 00           key* ",
-                    "       00 word word key+ ",
+                    "emb_key+ : present           emb_key* ",
+                    "emb_key+ : present side      emb_key* ",
+                    "emb_key+ :         side      emb_key* ",
+                    "           present word word emb_key+ ",
                 ],
             ),
         ]
 
     @classmethod
-    def embryo_mix_patterns(cls):
+    def embryo_mix_1_patterns(cls):
         return [
             Compiler(
                 label="embryo",
                 keep="embryo",
-                on_match="embryo_mix_match",
-                decoder={
-                    "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
-                    ")": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
-                    ",": {"LOWER": {"REGEX": r"^([a-z]+|[/,\-])$"}, "OP": "{,2}"},
-                    "99": {"ENT_TYPE": "number", "OP": "+"},
-                    ":": {"TEXT": {"IN": SEP}, "OP": "?"},
-                    "key": {"ENT_TYPE": {"IN": ["len_key", "embryo_key"]}},
-                    "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
-                    "side": {"ENT_TYPE": "side", "OP": "+"},
-                },
+                on_match="embryo_mix_1_match",
+                decoder=DECODER,
                 patterns=[
-                    "99 key+ , 99 mm+ , ( 99 side , 99 side ) ",
-                    "99 key+ , 99 mm+ ",
+                    "      99 key+ , 99 mm+ , ( 99 side , 99 side ) ",
+                    "      99 key+ , 99 mm+ ",
                     " side 99 key+ , 99 mm* , side 99 key+ ",
+                ],
+            ),
+        ]
+
+    @classmethod
+    def embryo_mix_2_patterns(cls):
+        return [
+            Compiler(
+                label="embryo",
+                keep="embryo",
+                on_match="embryo_mix_2_match",
+                decoder=DECODER,
+                patterns=[
+                    " 99 key side word , 99 word side , 99      mm* ",
+                    " 99 key side word , 99 word side , 99 x 99 mm* ",
                 ],
             ),
         ]
@@ -216,16 +241,7 @@ class Embryo(BaseLength):
                 label="embryo",
                 keep="embryo",
                 on_match="embryo_width_match",
-                decoder={
-                    "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
-                    ")": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
-                    ",": {"LOWER": {"REGEX": r"^([a-z]+|[/,\-])$"}, "OP": "{,2}"},
-                    "99": {"ENT_TYPE": "number", "OP": "+"},
-                    ":": {"TEXT": {"IN": SEP}, "OP": "?"},
-                    "key": {"ENT_TYPE": {"IN": ["len_key", "embryo_key"]}},
-                    "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
-                    "x": {"LOWER": {"IN": t_const.CROSS}, "OP": "?"},
-                },
+                decoder=DECODER,
                 patterns=[
                     "key+ : 99 x 99 mm* ",
                 ],
@@ -254,11 +270,22 @@ class Embryo(BaseLength):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def embryo_zero_count_match(cls, ent):
-        return cls.from_ent(ent, count=0)
+    def embryo_present_match(cls, ent):
+        side = [e for e in ent.ents if e.label_ == "side"]
+        side = [cls.side.get(s.text.lower()) for s in side]
+
+        count = 1 if any(e.label_ == "yes" for e in ent.ents) or side else 0
+        count = 1 if side else count
+
+        data = {"count": count}
+
+        if side:
+            data[side[0]] = 1
+
+        return cls.from_ent(ent, **data)
 
     @classmethod
-    def embryo_mix_match(cls, ent):
+    def embryo_mix_1_match(cls, ent):
         counts0, length, *counts = (e for e in ent.ents if e.label_ == "number")
         counts = [int(c._.trait.number) for c in [counts0, *counts]]
 
@@ -277,6 +304,35 @@ class Embryo(BaseLength):
         data = {
             "_prefix": "embryo",
             "length": length,
+            "count": total,
+        }
+
+        for count, side in zip(counts, side_lbs, strict=False):
+            data[side] = count
+
+        return cls.from_ent(ent, **data)
+
+    @classmethod
+    def embryo_mix_2_match(cls, ent):
+        count0, count1, *lengths = (e for e in ent.ents if e.label_ == "number")
+        counts = [int(c._.trait.number) for c in [count0, count1]]
+
+        units = next((e for e in ent.ents if e.label_ in cls.units), None)
+        lengths = [cls.in_millimeters(ln, units) for ln in lengths]
+
+        side_lbs = [e for e in ent.ents if e.label_ == "side"]
+        side_lbs = [cls.side.get(s.text.lower()) for s in side_lbs]
+
+        if len(counts) > len(side_lbs):
+            total = max(counts)
+            counts.remove(total)
+        else:
+            total = sum(counts)
+
+        data = {
+            "_prefix": "embryo",
+            "length": lengths[0],
+            "width": lengths[1] if len(lengths) > 1 else None,
             "count": total,
         }
 
@@ -310,9 +366,9 @@ def embryo_count_match(ent):
     return Embryo.embryo_count_match(ent)
 
 
-@registry.misc("embryo_zero_count_match")
-def embryo_zero_count_match(ent):
-    return Embryo.embryo_zero_count_match(ent)
+@registry.misc("embryo_present_match")
+def embryo_present_match(ent):
+    return Embryo.embryo_present_match(ent)
 
 
 @registry.misc("embryo_length_match")
@@ -320,9 +376,14 @@ def embryo_length_match(ent):
     return Embryo.length_match(ent)
 
 
-@registry.misc("embryo_mix_match")
-def embryo_mix_match(ent):
-    return Embryo.embryo_mix_match(ent)
+@registry.misc("embryo_mix_1_match")
+def embryo_mix_1_match(ent):
+    return Embryo.embryo_mix_1_match(ent)
+
+
+@registry.misc("embryo_mix_2_match")
+def embryo_mix_2_match(ent):
+    return Embryo.embryo_mix_2_match(ent)
 
 
 @registry.misc("embryo_length_bad_match")

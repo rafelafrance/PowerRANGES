@@ -57,7 +57,10 @@ class BaseLength(Base):
     _prefix: str = None
 
     def to_dwc(self, dwc) -> DarwinCore:
-        value = {f"{self._prefix}LengthInMillimeters": self.length}
+        value = {}
+
+        if self.length is not None:
+            value |= {f"{self._prefix}LengthInMillimeters": self.length}
 
         if self.units_inferred:
             value |= {f"{self._prefix}LengthUnitsInferred": True}
@@ -127,8 +130,10 @@ class BaseLength(Base):
         # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
-    def cleanup_pipe(cls, nlp):
-        add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup", delete=["bad_length"])
+    def cleanup_pipe(cls, nlp, delete: list[str] | None = None):
+        delete = delete if delete else []
+        delete = ["bad_length", *delete]
+        add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup", delete=delete)
 
     @classmethod
     def length_patterns(cls, *, allow_no_key=False, label=None):

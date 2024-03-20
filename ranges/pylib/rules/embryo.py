@@ -38,7 +38,10 @@ class Embryo(BaseLength):
     }
     # ---------------------
 
-    # Count fields - Length fields are in the parent class
+    # Length fields are in the parent class
+    width: float = None
+
+    # Count fields
     count: int = None
     left: int = None
     right: int = None
@@ -50,18 +53,30 @@ class Embryo(BaseLength):
     def to_dwc(self, dwc) -> DarwinCore:
         super().to_dwc(dwc)  # Get length fields
 
-        value = {"embryoCount": self.count}
-        if self.left:
+        value = {}
+
+        if self.width is not None:
+            value |= {"embryoWidthInMillimeters": self.width}
+
+        if self.count is not None:
+            value |= {"embryoCount": self.count}
+
+        if self.left is not None:
             value |= {"embryoCountLeft": self.left}
-        if self.right:
+
+        if self.right is not None:
             value |= {"embryoCountRight": self.right}
-        if self.female:
+
+        if self.female is not None:
             value |= {"embryoCountFemale": self.female}
-        if self.male:
+
+        if self.male is not None:
             value |= {"embryoCountMale": self.male}
-        if self.one:
+
+        if self.one is not None:
             value |= {"embryoCountSide1": self.one}
-        if self.two:
+
+        if self.two is not None:
             value |= {"embryoCountSide2": self.two}
 
         return dwc.add_dyn(**value)
@@ -71,6 +86,7 @@ class Embryo(BaseLength):
         add.term_pipe(nlp, name="embryo_terms", path=cls.csvs)
 
         cls.bad_length_pipe(nlp)
+        cls.embryo_width_pipe(nlp)
         cls.embryo_mix_pipe(nlp)
         cls.embryo_zero_count_pipe(nlp)
         cls.embryo_count_pipe(nlp)
@@ -103,6 +119,16 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_mix_patterns",
             compiler=cls.embryo_mix_patterns(),
+            overwrite="number metric_length imperial_length".split(),
+        )
+        # add.debug_tokens(nlp)  # ###########################################
+
+    @classmethod
+    def embryo_width_pipe(cls, nlp):
+        add.trait_pipe(
+            nlp,
+            name="embryo_width_patterns",
+            compiler=cls.embryo_width_patterns(),
             overwrite="number metric_length imperial_length".split(),
         )
         # add.debug_tokens(nlp)  # ###########################################
@@ -171,13 +197,37 @@ class Embryo(BaseLength):
                     ",": {"LOWER": {"REGEX": r"^([a-z]+|[/,\-])$"}, "OP": "{,2}"},
                     "99": {"ENT_TYPE": "number", "OP": "+"},
                     ":": {"TEXT": {"IN": SEP}, "OP": "?"},
-                    "key": {"ENT_TYPE": "embryo_key"},
+                    "key": {"ENT_TYPE": {"IN": ["len_key", "embryo_key"]}},
                     "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
                     "side": {"ENT_TYPE": "side", "OP": "+"},
                 },
                 patterns=[
                     "99 key+ , 99 mm+ , ( 99 side , 99 side ) ",
                     "99 key+ , 99 mm+ ",
+                    " side 99 key+ , 99 mm* , side 99 key+ ",
+                ],
+            ),
+        ]
+
+    @classmethod
+    def embryo_width_patterns(cls):
+        return [
+            Compiler(
+                label="embryo",
+                keep="embryo",
+                on_match="embryo_width_match",
+                decoder={
+                    "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
+                    ")": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
+                    ",": {"LOWER": {"REGEX": r"^([a-z]+|[/,\-])$"}, "OP": "{,2}"},
+                    "99": {"ENT_TYPE": "number", "OP": "+"},
+                    ":": {"TEXT": {"IN": SEP}, "OP": "?"},
+                    "key": {"ENT_TYPE": {"IN": ["len_key", "embryo_key"]}},
+                    "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
+                    "x": {"LOWER": {"IN": t_const.CROSS}, "OP": "?"},
+                },
+                patterns=[
+                    "key+ : 99 x 99 mm* ",
                 ],
             ),
         ]
@@ -209,23 +259,48 @@ class Embryo(BaseLength):
 
     @classmethod
     def embryo_mix_match(cls, ent):
-        total, length, *counts = (e for e in ent.ents if e.label_ == "number")
+        counts0, length, *counts = (e for e in ent.ents if e.label_ == "number")
+        counts = [int(c._.trait.number) for c in [counts0, *counts]]
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
-
         length = cls.in_millimeters(length, units)
 
         side_lbs = [e for e in ent.ents if e.label_ == "side"]
         side_lbs = [cls.side.get(s.text.lower()) for s in side_lbs]
 
+        if len(counts) > len(side_lbs):
+            total = max(counts)
+            counts.remove(total)
+        else:
+            total = sum(counts)
+
         data = {
             "_prefix": "embryo",
             "length": length,
-            "count": int(total._.trait.number),
+            "count": total,
         }
 
         for count, side in zip(counts, side_lbs, strict=False):
-            data[side] = int(count._.trait.number)
+            data[side] = count
+
+        return cls.from_ent(ent, **data)
+
+    @classmethod
+    def embryo_width_match(cls, ent):
+        length, width = (e for e in ent.ents if e.label_ == "number")
+
+        units = next((e for e in ent.ents if e.label_ in cls.units), None)
+        units_inferred = True if units is None else None
+
+        length = cls.in_millimeters(length, units)
+        width = cls.in_millimeters(width, units)
+
+        data = {
+            "_prefix": "embryo",
+            "length": length,
+            "width": width,
+            "units_inferred": units_inferred,
+        }
 
         return cls.from_ent(ent, **data)
 
@@ -253,3 +328,8 @@ def embryo_mix_match(ent):
 @registry.misc("embryo_length_bad_match")
 def embryo_length_bad_match(ent):
     return Embryo.bad_match(ent)
+
+
+@registry.misc("embryo_width_match")
+def embryo_width_match(ent):
+    return Embryo.embryo_width_match(ent)

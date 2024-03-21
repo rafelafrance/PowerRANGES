@@ -1,5 +1,10 @@
 label,pattern,side
+side,both side,both
+side,both sides,both
 side,both,both
+side,each side,both
+side,emb-l,left
+side,emb-r,right
 side,f,female
 side,fem,female
 side,female,female
@@ -21,6 +26,9 @@ side,lft side,left
 side,lft,left
 side,lft. side,left
 side,lft.,left
+side,lt,left
+side,lt.,left
+side,lx,left
 side,m,male
 side,male,male
 side,males,male
@@ -35,9 +43,11 @@ side,r.,right
 side,right side,right
 side,right,right
 side,rt,right
-side,rt. side,right
+side,rt side,right
 side,rt. side,right
 side,rt.,right
+side,rx,right
+side,rx.,right
 embryo_key,emb
 embryo_key,emb.
 embryo_key,embr
@@ -66,3 +76,5 @@ yes,found
 yes,near term
 yes,near-term
 yes,nearterm
+len_key,embx
+len_key,embsx

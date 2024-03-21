@@ -160,7 +160,7 @@ class TestEmbryoCount(unittest.TestCase):
                     left=4,
                     right=2,
                     start=16,
-                    end=37,
+                    end=33,
                 ),
             ],
         )
@@ -308,7 +308,6 @@ class TestEmbryoCount(unittest.TestCase):
 
     def test_embryo_33(self):
         """It handles a x as a side separator."""
-        self.maxDiff = None
         self.assertEqual(
             parse("Embryos: 5R x 4L c.r. 3 mm."),
             [
@@ -342,135 +341,250 @@ class TestEmbryoCount(unittest.TestCase):
             ],
         )
 
-    # def test_embryo_36(self):
-    #     self.assertEqual(
-    #         parse("embs=1R (CR=32 mm), 1L (CR=32&28mm) ;"),
-    #         [{"end": 22, "left": 1, "right": 1, "start": 0, "count": 2}],
-    #     )
+    def test_embryo_36(self):
+        """It parses a mixed notation with a leading key."""
+        self.assertEqual(
+            parse("embs=1R (CR=32 mm), 1L (CR=32&28mm) ;"),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=0,
+                    end=22,
+                    length=32,
+                    count=2,
+                    left=1,
+                    right=1,
+                ),
+                Embryo(
+                    trait="embryo", start=24, end=29, length=32, units_inferred=True
+                ),
+            ],
+        )
 
-    # def test_embryo_51(self):
-    #     self.assertEqual(
-    #         parse("R horn 5embsx18mm, L horn 1 resorb embx5mm, 1embx18mm; "),
-    #         [
-    #             {"end": 27, "left": 1, "right": 5, "start": 0, "count": 6},
-    #             {"end": 48, "start": 44, "count": 1},
-    #         ],
-    #     )
-    #
-    # def test_embryo_52(self):
-    #     self.assertEqual(
-    #         parse("emb 5x21 (R2 L3),"),
-    #         [{"end": 15, "left": 3, "right": 2, "start": 0, "count": 5}],
-    #     )
-    #
-    # def test_embryo_53(self):
-    #     self.assertEqual(
-    #         parse("emb 1x13( R), 1+ pl sc (L),"),
-    #         [{"end": 11, "right": 1, "start": 0, "count": 1}],
-    #     )
-    #
-    # def test_embryo_54(self):
-    #     self.assertEqual(
-    #         parse("reproductive data=3 large, 20mm embryos: 2R, 1L."),
-    #         [{"end": 47, "left": 1, "right": 2, "start": 32, "count": 3}],
-    #     )
-    #
-    # def test_embryo_55(self):
-    #     self.assertEqual(
-    #         parse("reproductive data=5 3mm embryos: 1R, 4L"),
-    #         [{"end": 39, "left": 4, "right": 1, "start": 18, "count": 5}],
-    #     )
-    #
-    # def test_embryo_57(self):
-    #     self.assertEqual(
-    #         parse(
-    #             """vulva w/sm blood clot; R horn 2 mmx2.5 mm,
-    #             L 1 emb x 3 mm and 1 emb 2.5 mm;"""
-    #         ),
-    #         [
-    #             {"end": 66, "start": 61, "count": 1},
-    #             {"end": 83, "start": 78, "count": 1},
-    #         ],
-    #     )
-    #
-    # def test_embryo_58(self):
-    #     self.assertEqual(
-    #         parse("2 embryos each side (4 total), 3x4mm"),
-    #         [{"end": 19, "left": 2, "right": 2, "start": 0, "count": 4}],
-    #     )
-    #
-    # def test_embryo_59(self):
-    #     self.assertEqual(
-    #         parse("reproductive data=2Rx1Lx23 mm fetuses"),
-    #         [{"end": 24, "left": 1, "right": 2, "start": 0, "count": 3}],
-    #     )
-    #
-    # def test_embryo_60(self):
-    #     self.assertEqual(
-    #         parse("VC, R2, L3=19, embryos saved"),
-    #         [{"end": 22, "left": 3, "right": 2, "start": 4, "count": 5}],
-    #     )
-    #
-    # def test_embryo_63(self):
-    #     self.assertEqual(
-    #         parse("Pregnant with 4 embryos (rt = 1, lt = 3;"),
-    #         [{"end": 39, "left": 3, "right": 1, "start": 14, "count": 4}],
-    #     )
-    #
-    # def test_embryo_64(self):
-    #     self.assertEqual(
-    #         parse("RBS 4029; EMB-R 2, EMB-L 3, CR 8 mm"),
-    #         [{"end": 26, "left": 3, "right": 2, "start": 10, "count": 5}],
-    #     )
-    #
-    # def test_embryo_65(self):
-    #     self.assertEqual(
-    #         parse("reproductive data=4 2.5mm embryos"),
-    #         [{"end": 33, "start": 18, "count": 4}],
-    #     )
-    #
-    # def test_embryo_66(self):
-    #     self.assertEqual(
-    #         parse("reproductive data=Emb = 4 : CR = 17mm : 2R x 2L"),
-    #         [{"end": 47, "left": 2, "right": 2, "start": 18, "count": 4}],
-    #     )
-    #
-    # def test_embryo_68(self):
-    #     self.assertEqual(
-    #         parse("Embryos (R2, L4, 10mm)."),
-    #         [{"end": 35, "left": 1, "right": 3, "start": 18, "count": 4}],
-    #     )
+    def test_embryo_37(self):
+        """It handles a key merged with a cross."""
+        self.assertEqual(
+            parse("R horn 5embsx18mm, L horn 1 resorb embx5mm, 1embx18mm; "),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=0,
+                    end=27,
+                    length=18,
+                    count=6,
+                    left=1,
+                    right=5,
+                ),
+                Embryo(trait="embryo", start=35, end=42, length=5),
+                Embryo(trait="embryo", start=44, end=53, length=18, count=1),
+            ],
+        )
 
+    def test_embryo_38(self):
+        """It handles the side inside of parentheses."""
+        self.assertEqual(
+            parse("emb 5x21 (R2 L3),"),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=0,
+                    end=16,
+                    length=21,
+                    count=5,
+                    left=3,
+                    right=2,
+                ),
+            ],
+        )
 
-#
-#     def test_embryo_17(self):
-#         self.assertEqual(
-#             parse("CR=15mm left intact"),
-#             [Embryo(trait="embryo", length=15, start=147, end=154)],
-#         )
-#
-#     def test_embryo_19(self):
-#         self.assertEqual(
-#             parse("Mammals 7 embs, 3 mm"),
-#             [Embryo(trait="embryo", length=3, start=10, end=20)],
-#         )
-#
-#     def test_embryo_23(self):
-#         self.assertEqual(
-#             parse("4 embs: 2(R)&2(L)=9mm "),
-#             [Embryo(trait="embryo", length=9, start=2, end=21)],
-#         )
-# 1
-#     def test_embryo_25(self):
-#         self.assertEqual(
-#             parse("7 embryos, 4 male, and 3 female"),
-#             [Embryo(trait="embryo", length=59.0, start=33, end=42)],
-#         )
-#
-#     def test_embryo_27(self):
-#         self.assertEqual(
-#             parse(
-#                 "uterus large, embryos 1 + 1 = 2 (29763, 29764) CR = 30 mm."
-#             ),
-#             [Embryo(trait="embryo", length=30.0, start=47, end=57)],
-#         )
+    def test_embryo_39(self):
+        """It handles a few words inbetween the sides."""
+        self.assertEqual(
+            parse("emb 1x13( R), 1+ pl sc (L),"),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=0,
+                    end=26,
+                    length=13,
+                    count=2,
+                    left=1,
+                    right=1,
+                ),
+            ],
+        )
+
+    def test_embryo_40(self):
+        """It handles the key after the length."""
+        self.assertEqual(
+            parse("reproductive data=3 large, 20mm embryos: 2R, 1L."),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=27,
+                    end=48,
+                    length=20,
+                    count=3,
+                    left=1,
+                    right=2,
+                ),
+            ],
+        )
+
+    def test_embryo_41(self):
+        """It correctly parses numbers being next to each other."""
+        self.assertEqual(
+            parse("reproductive data=5 3mm embryos: 1R, 4L"),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=18,
+                    end=39,
+                    length=3,
+                    count=5,
+                    left=4,
+                    right=1,
+                ),
+            ],
+        )
+
+    def test_embryo_42(self):
+        """It handles a missing total count."""
+        self.assertEqual(
+            parse("""L 1 emb x 3 mm and 1 emb 2.5 mm;"""),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=0,
+                    end=14,
+                    length=3,
+                    count=1,
+                    left=1,
+                ),
+                Embryo(
+                    trait="embryo",
+                    start=19,
+                    end=31,
+                    length=2.5,
+                    count=1,
+                ),
+            ],
+        )
+
+    def test_embryo_43(self):
+        """It parses an 'each side' notation."""
+        self.assertEqual(
+            parse("2 embryos each side (4 total), 3x4mm"),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=0,
+                    end=36,
+                    length=3,
+                    width=4,
+                    count=4,
+                    left=2,
+                    right=2,
+                ),
+            ],
+        )
+
+    def test_embryo_44(self):
+        """It handles a key at the end of the notation."""
+        self.assertEqual(
+            parse("reproductive data=2Rx1Lx23 mm fetuses"),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=18,
+                    end=37,
+                    length=23,
+                    count=3,
+                    left=1,
+                    right=2,
+                ),
+            ],
+        )
+
+    def test_embryo_45(self):
+        """It handles the sides being inside of parentheses."""
+        self.maxDiff = None
+        self.assertEqual(
+            parse("Pregnant with 4 embryos (rt = 1, lt = 3;"),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=14,
+                    end=39,
+                    count=4,
+                    left=3,
+                    right=1,
+                ),
+            ],
+        )
+
+    def test_embryo_46(self):
+        """It handles the key in the middle of the notation."""
+        self.assertEqual(
+            parse("RBS 4029; EMB-R 2, EMB-L 3, CR 8 mm"),
+            [
+                Embryo(
+                    trait="embryo",
+                    start=10,
+                    end=35,
+                    length=8,
+                    count=5,
+                    left=3,
+                    right=2,
+                ),
+            ],
+        )
+
+    def test_embryo_47(self):
+        """It handles a lot of colons between the fields."""
+        self.assertEqual(
+            parse("reproductive data=Emb = 4 : CR = 17mm : 2R x 2L"),
+            [
+                Embryo(
+                    trait="embryo",
+                    end=47,
+                    length=17,
+                    left=2,
+                    right=2,
+                    start=18,
+                    count=4,
+                )
+            ],
+        )
+
+    def test_embryo_48(self):
+        """It allows parentheses around all values."""
+        self.assertEqual(
+            parse("Embryos (R2, L4, 10mm)."),
+            [
+                Embryo(
+                    trait="embryo", length=10, end=22, left=4, right=2, start=0, count=6
+                )
+            ],
+        )
+
+    def test_embryo_49(self):
+        """It handles the length at index 3."""
+        self.assertEqual(
+            parse("4 embs: 2(R)&2(L)=9mm"),
+            [
+                Embryo(
+                    trait="embryo", length=9, start=0, end=21, left=2, right=2, count=4
+                )
+            ],
+        )
+
+    def test_embryo_50(self):
+        """It parses an equation format."""
+        self.assertEqual(
+            parse("embryos 1 + 2 = 3 (29763, 29764) CR = 30 mm."),
+            [
+                Embryo(trait="embryo", count=3, side1=1, side2=2, start=0, end=17),
+                Embryo(trait="embryo", length=30.0, start=33, end=44),
+            ],
+        )

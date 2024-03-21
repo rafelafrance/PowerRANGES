@@ -11,6 +11,8 @@ from traiter.pylib.pipes import add
 from traiter.pylib.rules.base import Base
 
 SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ + t_const.SLASH
+SEP += r""" & ! + / ~ """.split()
+
 BAD = """ tag """.split()
 
 DECODER = {
@@ -94,7 +96,6 @@ class BaseLength(Base):
             compiler=cls.length_patterns(allow_no_key=allow_no_key, label=label),
             overwrite=["metric_length", "imperial_length", "number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
     def compound_length_pipe(cls, nlp, *, allow_no_key=False):
@@ -122,7 +123,6 @@ class BaseLength(Base):
             compiler=cls.bad_length_patterns(),
             overwrite=["metric_length", "imperial_length", "number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
     def tic_pipe(cls, nlp, *, allow_no_key=False):
@@ -132,7 +132,6 @@ class BaseLength(Base):
             compiler=cls.tic_length_patterns(allow_no_key=allow_no_key),
             overwrite=["number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
     def cleanup_pipe(cls, nlp, delete: list[str] | None = None):

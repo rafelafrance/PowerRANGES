@@ -57,8 +57,10 @@ class LifeStage(Base):
                 "99": {"ENT_TYPE": "number", "OP": "+"},
                 "-": {"TEXT": {"IN": cls.dash}, "OP": "?"},
                 "=": {"TEXT": {"IN": cls.eq}, "OP": "?"},
+                "after": {"LOWER": "after", "OP": "?"},
                 "intrinsic": {"ENT_TYPE": "intrinsic", "OP": "+"},
                 "key": {"ENT_TYPE": "key", "OP": "+"},
+                "literal": {"LOWER": {"IN": ["hatching", "second"]}},
                 "ordinal": {"ENT_TYPE": "ordinal", "OP": "+"},
                 "prefix": {"ENT_TYPE": "key_prefix", "OP": "+"},
                 "th": {"LOWER": {"IN": ["nd", "rd", "st", "th"]}},
@@ -66,17 +68,18 @@ class LifeStage(Base):
                 "word": {"IS_ALPHA": True},
             },
             patterns=[
+                "       99 th           - time ",
+                "       after 99 th     - time ",
+                "       after literal   - time ",
+                "       after ordinal   - time ",
                 "       intrinsic ",
-                "       intrinsic - intrinsic ",
-                "       word      - intrinsic ",
-                "       99 th     - time ",
-                " key = 99 th     - time ",
+                " key = 99 th           - time ",
+                " key = after 99 th     - time ",
+                " key = after literal   - time ",
+                " key = after ordinal   - time ",
                 " key = intrinsic ",
-                " key = intrinsic - intrinsic ",
-                " key = word      - intrinsic ",
-                " key = 99 th     - time ",
-                " key = ordinal   - time ",
-                " key = time      - time ",  # To handle "second"
+                " key = word            - intrinsic ",
+                " key = 99 - 99         - time ",
             ],
         )
 
@@ -85,7 +88,7 @@ class LifeStage(Base):
         life_stage = [t.lower_ for t in ent if t.ent_type_ != "key"]
         life_stage = " ".join(life_stage)
         life_stage = cls.eq_re.sub("", life_stage)
-        life_stage = cls.dash_re.sub(r"\1", life_stage, count=1)
+        life_stage = cls.dash_re.sub(r"\1", life_stage)
         life_stage = re.sub(r"\s\.$", ".", life_stage)
         life_stage = re.sub(r"(\d)\s(th|st|nd|rd)", r"\1\2", life_stage, flags=re.I)
         return cls.from_ent(ent, life_stage=life_stage)

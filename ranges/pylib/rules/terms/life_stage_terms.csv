@@ -1,0 +1,131 @@
+label,pattern
+bad_key,determ
+bad_key,determine
+bad_key,determined
+intrinsic,ad
+intrinsic,ad.
+intrinsic,ads
+intrinsic,ads.
+intrinsic,adult
+intrinsic,adult young
+intrinsic,adulte
+intrinsic,adultes
+intrinsic,adults
+intrinsic,adultyoung
+intrinsic,chick
+intrinsic,chicks
+intrinsic,fledgeling
+intrinsic,fledgelings
+intrinsic,flegling
+intrinsic,fleglings
+intrinsic,fry
+intrinsic,hatched
+intrinsic,hatchling
+intrinsic,hatchlings
+intrinsic,imago
+intrinsic,imagos
+intrinsic,imm
+intrinsic,imm.
+intrinsic,immature
+intrinsic,immatures
+intrinsic,imms
+intrinsic,imms.
+intrinsic,jeune
+intrinsic,jeunes
+intrinsic,juv
+intrinsic,juv.
+intrinsic,juvenile
+intrinsic,juveniles
+intrinsic,juvs
+intrinsic,juvs.
+intrinsic,juvénile
+intrinsic,juvéniles
+intrinsic,larva
+intrinsic,larvae
+intrinsic,larval
+intrinsic,larvals
+intrinsic,larve
+intrinsic,larves
+intrinsic,leptocephale
+intrinsic,leptocephales
+intrinsic,leptocephalus
+intrinsic,mature
+intrinsic,matures
+intrinsic,metamorph
+intrinsic,metamorphs
+intrinsic,neonate
+intrinsic,neonates
+intrinsic,nestling
+intrinsic,nestlings
+intrinsic,nulliparous
+intrinsic,over winter
+intrinsic,over-winter
+intrinsic,overwinter
+intrinsic,premetamorph
+intrinsic,premetamorphs
+intrinsic,sub-adult
+intrinsic,sub-adults
+intrinsic,subad
+intrinsic,subad.
+intrinsic,subads
+intrinsic,subads.
+intrinsic,subadult
+intrinsic,subadulte
+intrinsic,subadultes
+intrinsic,subadults
+intrinsic,tadpole
+intrinsic,tadpoles
+intrinsic,têtard
+intrinsic,yearling
+intrinsic,yearlings
+intrinsic,yg
+intrinsic,yg.
+intrinsic,ygs
+intrinsic,ygs.
+intrinsic,yolk sac
+intrinsic,yolksac
+intrinsic,young
+intrinsic,young adult
+intrinsic,young of the year
+intrinsic,young of the-year
+intrinsic,young of theyear
+intrinsic,young of-the year
+intrinsic,young of-the-year
+intrinsic,young of-theyear
+intrinsic,young ofthe year
+intrinsic,young ofthe-year
+intrinsic,young oftheyear
+intrinsic,young-of the year
+intrinsic,young-of the-year
+intrinsic,young-of theyear
+intrinsic,young-of-the year
+intrinsic,young-of-the-year
+intrinsic,young-of-theyear
+intrinsic,young-ofthe year
+intrinsic,young-ofthe-year
+intrinsic,young-oftheyear
+intrinsic,youngadult
+intrinsic,youngof the year
+intrinsic,youngof the-year
+intrinsic,youngof theyear
+intrinsic,youngof-the year
+intrinsic,youngof-the-year
+intrinsic,youngof-theyear
+intrinsic,youngofthe year
+intrinsic,youngofthe-year
+intrinsic,youngoftheyear
+key,age
+key,age class
+key,ageclass
+key,life stage
+key,life stage remark
+key,life stage remarks
+key,life stageremark
+key,life stageremarks
+key,lifestage
+key,lifestage remark
+key,lifestage remarks
+key,lifestageremark
+key,lifestageremarks
+key_prefix,age in
+key_prefix,agein

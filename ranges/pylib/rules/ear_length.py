@@ -18,6 +18,7 @@ class EarLength(BaseLength):
 
     csvs: ClassVar[list[Path]] = [
         Path(t_terms.__file__).parent / "unit_length_terms.csv",
+        Path(t_terms.__file__).parent / "unit_tic_terms.csv",
         Path(__file__).parent / "terms" / "ear_length_terms.csv",
     ]
 

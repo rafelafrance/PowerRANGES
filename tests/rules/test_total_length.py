@@ -1,6 +1,7 @@
 import unittest
 
 from ranges.pylib.rules.body_mass import BodyMass
+from ranges.pylib.rules.life_stage import LifeStage
 from ranges.pylib.rules.total_length import TotalLength
 from tests.setup import parse
 
@@ -258,6 +259,9 @@ class TestTotalLength(unittest.TestCase):
         self.assertEqual(
             parse("Imm., L. snout to tip of tail 1510,"),
             [
+                LifeStage(
+                    trait="life_stage", start=0, end=4, _text="Imm.", life_stage="imm."
+                ),
                 TotalLength(
                     trait="total_length",
                     length=1510,

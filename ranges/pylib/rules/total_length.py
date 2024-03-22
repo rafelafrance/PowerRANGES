@@ -16,6 +16,7 @@ class TotalLength(BaseLength):
 
     csvs: ClassVar[list[Path]] = [
         Path(t_terms.__file__).parent / "unit_length_terms.csv",
+        Path(t_terms.__file__).parent / "unit_tic_terms.csv",
         Path(__file__).parent / "terms" / "total_length_terms.csv",
     ]
     factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")

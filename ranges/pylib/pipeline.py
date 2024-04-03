@@ -14,6 +14,7 @@ from ranges.pylib.rules.embryo import Embryo
 from ranges.pylib.rules.forearm_length import ForearmLength
 from ranges.pylib.rules.hind_foot_length import HindFootLength
 from ranges.pylib.rules.life_stage import LifeStage
+from ranges.pylib.rules.sex import Sex
 from ranges.pylib.rules.shorthand import Shorthand
 from ranges.pylib.rules.tail_length import TailLength
 from ranges.pylib.rules.total_length import TotalLength
@@ -55,6 +56,7 @@ def build():
     Number.pipe(nlp)
 
     LifeStage.pipe(nlp)
+    Sex.pipe(nlp)
 
     delete.pipe(nlp)
 

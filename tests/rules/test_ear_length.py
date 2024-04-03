@@ -46,7 +46,7 @@ class TestEarLength(unittest.TestCase):
 
     def test_ear_length_05(self):
         """It skips a name."""
-        self.assertEqual(parse("verbatim collector=E. E. Makela 2432 ; sex=female"), [])
+        self.assertEqual(parse("verbatim collector=E. E. Makela 2432 "), [])
 
     def test_ear_length_06(self):
         """It gets a measured from notch notation."""

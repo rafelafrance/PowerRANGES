@@ -1,0 +1,18 @@
+label,pattern,replace
+not_sex,and,
+not_sex,is,
+not_sex,was,
+sex,bisexual,bisexual
+sex,bisexual,bisexual
+sex,female,female
+sex,females,female
+sex,hermaphrodite,hermaphroditic
+sex,hermaphroditic,hermaphroditic
+sex,male,male
+sex,males,male
+sex,unisexual,unisexual
+sex_abbrev,f,female
+sex_abbrev,m,male
+sex_key,sex,
+sex_unknown,not recorded,unknown
+sex_unknown,unknown,unknown

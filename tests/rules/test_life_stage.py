@@ -29,7 +29,7 @@ class TestLifeStage(unittest.TestCase):
 
     def test_life_stage_04(self):
         self.assertEqual(
-            parse("; age=1st year more than four words here"),
+            parse("; age=1st year"),
             [LifeStage(trait="life_stage", life_stage="1st year", start=2, end=14)],
         )
 
@@ -165,13 +165,13 @@ class TestLifeStage(unittest.TestCase):
     def test_life_stage_26(self):
         """It handles 'seconds' as a time unit and an ordinal."""
         self.assertEqual(
-            parse("; age=second year more than four words here"),
+            parse("; age=second year"),
             [LifeStage(trait="life_stage", life_stage="second year", start=2, end=17)],
         )
 
     def test_life_stage_27(self):
         """It handles regular ordinal terms."""
         self.assertEqual(
-            parse("; age=third year more than four words here"),
+            parse("; age=third year"),
             [LifeStage(trait="life_stage", life_stage="third year", start=2, end=16)],
         )

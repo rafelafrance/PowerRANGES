@@ -13,6 +13,7 @@ from ranges.pylib.rules.ear_length import EarLength
 from ranges.pylib.rules.embryo import Embryo
 from ranges.pylib.rules.forearm_length import ForearmLength
 from ranges.pylib.rules.hind_foot_length import HindFootLength
+from ranges.pylib.rules.lactation_state import LactationState
 from ranges.pylib.rules.life_stage import LifeStage
 from ranges.pylib.rules.sex import Sex
 from ranges.pylib.rules.shorthand import Shorthand
@@ -57,6 +58,8 @@ def build():
 
     LifeStage.pipe(nlp)
     Sex.pipe(nlp)
+
+    LactationState.pipe(nlp)
 
     delete.pipe(nlp)
 

@@ -4,7 +4,7 @@ from ranges.pylib.rules.embryo import Embryo
 from tests.setup import parse
 
 
-class TestEmbryoCount(unittest.TestCase):
+class TestEmbryo(unittest.TestCase):
     def test_embryo_01(self):
         """It handles a count with a suffix label."""
         self.maxDiff = None
@@ -246,7 +246,7 @@ class TestEmbryoCount(unittest.TestCase):
     def test_embryo_27(self):
         """It does not pick up the '1 in'."""
         self.assertEqual(
-            parse("2 embryo scars, 1 in each horn, lactating"),
+            parse("2 embryo scars, 1 in each horn,"),
             [
                 Embryo(
                     trait="embryo",

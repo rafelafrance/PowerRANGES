@@ -10,6 +10,7 @@ def setup(nlp):
         [
             "mm",  # Break on units
             # Always break on these characters
+            "-",
             "~",
         ],
     )

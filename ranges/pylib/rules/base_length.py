@@ -25,6 +25,7 @@ DECODER = {
     "any": {},
     "bad": {"LOWER": {"IN": BAD}},
     "bad_prefix": {"ENT_TYPE": "bad_prefix", "OP": "+"},
+    "bad_suffix": {"ENT_TYPE": "bad_suffix", "OP": "+"},
     "ft": {"ENT_TYPE": "imperial_length", "OP": "+"},
     "in": {"ENT_TYPE": "imperial_length", "OP": "+"},
     "key": {"ENT_TYPE": {"IN": ["len_key", "key_with_units"]}, "OP": "+"},
@@ -248,6 +249,7 @@ class BaseLength(Base):
                     " bad ",
                     " bad_prefix any{,3} ambig any 99 mm* ",
                     " bad_prefix any{,5}           99 mm* ",
+                    " 99 bad_suffix",
                 ],
             ),
         ]

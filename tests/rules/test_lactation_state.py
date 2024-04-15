@@ -5,7 +5,7 @@ from tests.setup import parse
 
 
 class TestLactationState(unittest.TestCase):
-    def test_parse_01(self):
+    def test_lactation_state_01(self):
         self.assertEqual(
             parse("lactating"),
             [
@@ -15,7 +15,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_02(self):
+    def test_lactation_state_02(self):
         self.assertEqual(
             parse("not lactating"),
             [
@@ -25,7 +25,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_03(self):
+    def test_lactation_state_03(self):
         self.assertEqual(
             parse("post lact."),
             [
@@ -35,7 +35,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_04(self):
+    def test_lactation_state_04(self):
         self.assertEqual(
             parse("non-lactating"),
             [
@@ -45,7 +45,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_05(self):
+    def test_lactation_state_05(self):
         self.assertEqual(
             parse("lactating?"),
             [
@@ -55,17 +55,17 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_06(self):
+    def test_lactation_state_06(self):
         self.assertEqual(
             parse("recently lactating"),
             [
                 LactationState(
-                    trait="lactation_state", state="lactating", start=9, end=18
+                    trait="lactation_state", state="not lactating", start=0, end=18
                 )
             ],
         )
 
-    def test_parse_07(self):
+    def test_lactation_state_07(self):
         self.assertEqual(
             parse("small mammaries, no lactation,"),
             [
@@ -75,7 +75,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_08(self):
+    def test_lactation_state_08(self):
         self.assertEqual(
             parse("just finished lactating"),
             [
@@ -85,7 +85,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_09(self):
+    def test_lactation_state_09(self):
         self.assertEqual(
             parse("reproductive data=non-lactating, non-pregnant"),
             [
@@ -95,7 +95,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_10(self):
+    def test_lactation_state_10(self):
         self.assertEqual(
             parse("Tail pencil; Not nursing,"),
             [
@@ -105,7 +105,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_11(self):
+    def test_lactation_state_11(self):
         self.assertEqual(
             parse("no. 8552; suckling"),
             [
@@ -115,7 +115,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_12(self):
+    def test_lactation_state_12(self):
         self.assertEqual(
             parse("reproductive data=OEL;"),
             [
@@ -125,7 +125,7 @@ class TestLactationState(unittest.TestCase):
             ],
         )
 
-    def test_parse_13(self):
+    def test_lactation_state_13(self):
         self.assertEqual(
             parse("reproductive data=OSN;"),
             [

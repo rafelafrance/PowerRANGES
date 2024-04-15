@@ -47,7 +47,7 @@ def total_length_compound_match(ent):
 
 
 @registry.misc("total_length_tic_match")
-def ear_length_tic_match(ent):
+def total_length_tic_match(ent):
     return TotalLength.tic_match(ent)
 
 

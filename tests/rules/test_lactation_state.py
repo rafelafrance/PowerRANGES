@@ -67,10 +67,10 @@ class TestLactationState(unittest.TestCase):
 
     def test_lactation_state_07(self):
         self.assertEqual(
-            parse("small mammaries, no lactation,"),
+            parse("no lactation,"),
             [
                 LactationState(
-                    trait="lactation_state", state="not lactating", start=17, end=29
+                    trait="lactation_state", state="not lactating", start=0, end=12
                 )
             ],
         )
@@ -131,6 +131,16 @@ class TestLactationState(unittest.TestCase):
             [
                 LactationState(
                     trait="lactation_state", state="not lactating", start=18, end=21
+                )
+            ],
+        )
+
+    def test_lactation_state_14(self):
+        self.assertEqual(
+            parse("; NIPPLES INDICATE PREVIOUS LACTATION"),
+            [
+                LactationState(
+                    trait="lactation_state", state="not lactating", start=19, end=37
                 )
             ],
         )

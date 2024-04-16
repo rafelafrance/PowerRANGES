@@ -1,34 +1,131 @@
 label,pattern
-nipple,nipples
-nipple,nipple
-nipple,nip
-nipple,nipp
-nipple,nips
-nipple,nipps
-nipple,teats
-nipple,teat
-nipple,mammae
-nipple,mammary
-nipple,mammery
-nipple,mammaries
-nipple,mamm
-nipple,mammae glands
-nipple,mammary glands
-nipple,mammery glands
-nipple,mammaries glands
-nipple,mamm gland
-nipple,mammae gland
-nipple,mammary gland
-nipple,mammery gland
-nipple,mammaries gland
-nipple,mamm gland
-nipple,mammae tissue
-nipple,mammary tissue
-nipple,mammery tissue
-nipple,mammaries tissue
-nipple,mamm tissue
-nipple,mammae tisssue
-nipple,mammary tisssue
-nipple,mammery tisssue
-nipple,mammaries tisssue
-nipple,mamm tisssue
+count_label,#
+count_label,no.
+count_label,no:
+count_label,number
+dev,dev
+dev,devel
+dev,develop
+dev,development
+enlarged,conspicuous
+enlarged,enlarge
+enlarged,enlarged
+enlarged,extended
+enlarged,large
+enlarged,lg
+enlarged,prominent
+enlarged,protuberant
+eq,=
+eq,eq
+eq,equal
+eq,equals
+eq,is
+modifier,ing
+modifier,inguinal
+modifier,pec
+modifier,pectoral
+modifier,pr
+nip,mamm
+nip,mamm gland
+nip,mamm. gland
+nip,mamm tisssue
+nip,mamm tissue
+nip,mammae
+nip,mammae gland
+nip,mammae glands
+nip,mammae tisssue
+nip,mammae tissue
+nip,mammaries
+nip,mammaries gland
+nip,mammaries glands
+nip,mammaries tisssue
+nip,mammaries tissue
+nip,mammary
+nip,mammary gland
+nip,mammary glands
+nip,mammary tisssue
+nip,mammary tissue
+nip,mammery
+nip,mammery gland
+nip,mammery glands
+nip,mammery tisssue
+nip,mammery tissue
+nip,nip
+nip,nipp
+nip,nipple
+nip,nipples
+nip,nipps
+nip,nips
+nip,teat
+nip,teats
+none,false
+none,no
+none,non
+none,none
+none,not
+not_enlarged,minute
+not_enlarged,not enlarged
+not_enlarged,not large
+not_enlarged,not-enlarged
+not_enlarged,not-large
+not_enlarged,notenlarged
+not_enlarged,notlarge
+not_enlarged,sm
+not_enlarged,sm-med
+not_enlarged,small
+not_enlarged,tiny
+not_enlarged,unobservable
+side,both
+side,both side
+side,both sides
+side,each side
+side,f
+side,fem
+side,female
+side,females
+side,l
+side,l side
+side,l side
+side,l x
+side,l.
+side,l. side
+side,l. x
+side,left
+side,left side
+side,lf
+side,lf side
+side,lf.
+side,lf. side
+side,lft
+side,lft side
+side,lft.
+side,lft. side
+side,lt
+side,lt.
+side,lx
+side,on left
+side,on right
+side,r
+side,r side
+side,r x
+side,r.
+side,r. side
+side,r. x
+side,right
+side,right side
+side,rt
+side,rt side
+side,rt.
+side,rt. side
+side,rx
+side,rx.
+visible,bare
+visible,conspicuous
+visible,definite
+visible,faint
+visible,hidden
+visible,invisible
+visible,prominen
+visible,prominent
+visible,seen
+visible,visible

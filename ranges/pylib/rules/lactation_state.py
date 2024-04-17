@@ -22,7 +22,7 @@ class LactationState(Base):
     state: str = None
 
     def to_dwc(self, dwc) -> DarwinCore:
-        return dwc.add(lactation_state=self.state)
+        return dwc.add_dyn(lactationState=self.state)
 
     @classmethod
     def pipe(cls, nlp):

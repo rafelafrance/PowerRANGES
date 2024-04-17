@@ -2,6 +2,7 @@ import unittest
 
 from ranges.pylib.rules.embryo import Embryo
 from ranges.pylib.rules.nipple import Nipple
+from ranges.pylib.rules.pregnancy_state import PregnancyState
 from tests.setup import parse
 
 
@@ -10,16 +11,17 @@ class TestEmbryo(unittest.TestCase):
         """It handles a count with a suffix label."""
         self.maxDiff = None
         self.assertEqual(
-            parse("pregnant; 4 emb"),
-            [Embryo(count=4, start=10, end=15)],
+            parse("4 emb"),
+            [Embryo(count=4, start=0, end=5)],
         )
 
     def test_embryo_02(self):
         """It parses an absence notation."""
+        self.maxDiff = None
         self.assertEqual(
             parse("not pregnant; no embs"),
             [
-                Embryo(count=0, start=0, end=12),
+                PregnancyState(state="not pregnant", start=0, end=12),
                 Embryo(count=0, start=14, end=21),
             ],
         )
@@ -27,8 +29,8 @@ class TestEmbryo(unittest.TestCase):
     def test_embryo_03(self):
         """It parses counts per side."""
         self.assertEqual(
-            parse("pregnant; 4 emb 3L 1R"),
-            [Embryo(count=4, left=3, right=1, start=10, end=21)],
+            parse("4 emb 3L 1R"),
+            [Embryo(count=4, left=3, right=1, start=0, end=11)],
         )
 
     def test_embryo_04(self):
@@ -140,6 +142,7 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("pregnant; 1 emb; CR-74; emb W-25; emb WT-4.8"),
             [
+                PregnancyState(state="pregnant", start=0, end=8),
                 Embryo(count=1, start=10, end=15),
                 Embryo(length=74, units_inferred=True, start=17, end=22),
             ],
@@ -490,6 +493,7 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("Pregnant with 4 embryos (rt = 1, lt = 3;"),
             [
+                PregnancyState(state="pregnant", start=0, end=8),
                 Embryo(
                     start=14,
                     end=39,

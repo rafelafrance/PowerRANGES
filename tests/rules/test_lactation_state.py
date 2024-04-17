@@ -55,7 +55,7 @@ class TestLactationState(unittest.TestCase):
 
     def test_lactation_state_09(self):
         self.assertEqual(
-            parse("reproductive data=non-lactating, non-pregnant"),
+            parse("reproductive data=non-lactating,"),
             [LactationState(state="not lactating", start=18, end=31)],
         )
 

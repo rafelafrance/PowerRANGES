@@ -61,9 +61,9 @@ def build():
     LifeStage.pipe(nlp)
     Sex.pipe(nlp)
 
-    LactationState.pipe(nlp)
     Mammary.pipe(nlp)
     Nipple.pipe(nlp)
+    LactationState.pipe(nlp)
 
     delete.pipe(nlp)
 

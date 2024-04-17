@@ -73,18 +73,6 @@ class TestLactationState(unittest.TestCase):
 
     def test_lactation_state_12(self):
         self.assertEqual(
-            parse("reproductive data=OEL;"),
-            [LactationState(state="lactating", start=18, end=21)],
-        )
-
-    def test_lactation_state_13(self):
-        self.assertEqual(
-            parse("reproductive data=OSN;"),
-            [LactationState(state="not lactating", start=18, end=21)],
-        )
-
-    def test_lactation_state_14(self):
-        self.assertEqual(
             parse("; NIPPLES INDICATE PREVIOUS LACTATION"),
             [LactationState(state="not lactating", start=19, end=37)],
         )

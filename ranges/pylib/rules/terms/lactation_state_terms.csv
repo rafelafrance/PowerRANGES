@@ -1,8 +1,5 @@
 label,pattern
-lac,cel
-lac,celact
-lac,cml
-lac,csl
+lac,lac
 lac,lact
 lac,lactacting
 lac,lactaing
@@ -17,10 +14,6 @@ lac,lactational
 lac,lactatng
 lac,lactatting
 lac,nursing
-lac,oel
-lac,oelact
-lac,oml
-lac,osl
 lac,suckling
 not,no
 not,non
@@ -28,12 +21,6 @@ not,non-
 not,none
 not,not
 not,not-
-not_lac,cen
-not_lac,cmn
-not_lac,csn
-not_lac,oen
-not_lac,omn
-not_lac,osn
 post,after
 post,finished
 post,just recently finished

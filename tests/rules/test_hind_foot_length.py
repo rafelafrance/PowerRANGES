@@ -11,7 +11,6 @@ class TestHindFootLength(unittest.TestCase):
             parse("hind foot with claw=30 mm;"),
             [
                 HindFootLength(
-                    trait="hind_foot_length",
                     length=30,
                     includes="claw",
                     start=0,
@@ -26,7 +25,6 @@ class TestHindFootLength(unittest.TestCase):
             parse("; HindFoot: 30.0; "),
             [
                 HindFootLength(
-                    trait="hind_foot_length",
                     length=30,
                     units_inferred=True,
                     start=2,
@@ -40,14 +38,14 @@ class TestHindFootLength(unittest.TestCase):
         self.maxDiff = None
         self.assertEqual(
             parse("HF-30mm,"),
-            [HindFootLength(trait="hind_foot_length", length=30, start=0, end=7)],
+            [HindFootLength(length=30, start=0, end=7)],
         )
 
     def test_hind_foot_length_04(self):
         """It parses a key with units."""
         self.assertEqual(
             parse('"footLengthInMillimeters"="31",'),
-            [HindFootLength(trait="hind_foot_length", length=31, start=1, end=29)],
+            [HindFootLength(length=31, start=1, end=29)],
         )
 
     def test_hind_foot_length_05(self):
@@ -56,7 +54,6 @@ class TestHindFootLength(unittest.TestCase):
             parse("; hind foot with claw=2 in;"),
             [
                 HindFootLength(
-                    trait="hind_foot_length",
                     length=50.8,
                     includes="claw",
                     start=2,

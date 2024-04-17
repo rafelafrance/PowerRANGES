@@ -10,7 +10,7 @@ class TestTotalLength(unittest.TestCase):
     def test_total_length_01(self):
         self.assertEqual(
             parse('{"totalLengthInMM":"123" };'),
-            [TotalLength(trait="total_length", length=123, start=2, end=23)],
+            [TotalLength(length=123, start=2, end=23)],
         )
 
     def test_total_length_02(self):
@@ -19,7 +19,6 @@ class TestTotalLength(unittest.TestCase):
             parse("measurements: ToL=230;"),
             [
                 TotalLength(
-                    trait="total_length",
                     length=230,
                     units_inferred=True,
                     start=14,
@@ -33,7 +32,7 @@ class TestTotalLength(unittest.TestCase):
         self.assertEqual(
             parse(" total length=231 mm;"),
             [
-                TotalLength(trait="total_length", length=231, start=0, end=19),
+                TotalLength(length=231, start=0, end=19),
             ],
         )
 
@@ -42,7 +41,7 @@ class TestTotalLength(unittest.TestCase):
         self.assertEqual(
             parse("snout-vent length=54 mm;"),
             [
-                TotalLength(trait="total_length", length=54, start=0, end=23),
+                TotalLength(length=54, start=0, end=23),
             ],
         )
 
@@ -52,7 +51,6 @@ class TestTotalLength(unittest.TestCase):
             parse("t.l.= 2 feet 3.1 - 4.5 inches "),
             [
                 TotalLength(
-                    trait="total_length",
                     length=[688.34, 723.9],
                     start=0,
                     end=29,
@@ -66,7 +64,6 @@ class TestTotalLength(unittest.TestCase):
             parse("2 ft. 3.1 - 4.5 in. "),
             [
                 TotalLength(
-                    trait="total_length",
                     length=[688.34, 723.9],
                     ambiguous=True,
                     start=0,
@@ -79,7 +76,7 @@ class TestTotalLength(unittest.TestCase):
         """It handles different units."""
         self.assertEqual(
             parse("total length= 2 ft."),
-            [TotalLength(trait="total_length", length=609.6, start=0, end=19)],
+            [TotalLength(length=609.6, start=0, end=19)],
         )
 
     def test_total_length_08(self):
@@ -88,7 +85,6 @@ class TestTotalLength(unittest.TestCase):
             parse("length=8 mm"),
             [
                 TotalLength(
-                    trait="total_length",
                     length=8,
                     ambiguous=True,
                     start=0,
@@ -103,7 +99,6 @@ class TestTotalLength(unittest.TestCase):
             parse("SVL=0 g"),
             [
                 BodyMass(
-                    trait="body_mass",
                     start=3,
                     end=7,
                     mass=0.0,
@@ -116,7 +111,7 @@ class TestTotalLength(unittest.TestCase):
         """It handles a suffix key."""
         self.assertEqual(
             parse("Size=13 cm TL"),
-            [TotalLength(trait="total_length", length=130, start=5, end=13)],
+            [TotalLength(length=130, start=5, end=13)],
         )
 
     def test_total_length_11(self):
@@ -125,7 +120,6 @@ class TestTotalLength(unittest.TestCase):
             parse("det_comments:31.5-58.3inTL"),
             [
                 TotalLength(
-                    trait="total_length",
                     length=[31.5, 58.3],
                     units_inferred=True,
                     start=13,
@@ -138,7 +132,7 @@ class TestTotalLength(unittest.TestCase):
         """It handles key, length, and units all in a single word."""
         self.assertEqual(
             parse("SVL52mm"),
-            [TotalLength(trait="total_length", length=52, start=0, end=7)],
+            [TotalLength(length=52, start=0, end=7)],
         )
 
     def test_total_length_13(self):
@@ -146,7 +140,7 @@ class TestTotalLength(unittest.TestCase):
         self.assertEqual(
             parse("TL (mm) 44, xx"),
             [
-                TotalLength(trait="total_length", length=44, start=0, end=10),
+                TotalLength(length=44, start=0, end=10),
             ],
         )
 
@@ -156,7 +150,6 @@ class TestTotalLength(unittest.TestCase):
             parse('{"length":"20-29" }'),
             [
                 TotalLength(
-                    trait="total_length",
                     length=[20, 29],
                     ambiguous=True,
                     units_inferred=True,
@@ -170,7 +163,7 @@ class TestTotalLength(unittest.TestCase):
         """It parses a merged units and key."""
         self.assertEqual(
             parse("Length: 12-34 mmSL"),
-            [TotalLength(trait="total_length", length=[12, 34], start=0, end=18)],
+            [TotalLength(length=[12, 34], start=0, end=18)],
         )
 
     def test_total_length_16(self):
@@ -179,7 +172,6 @@ class TestTotalLength(unittest.TestCase):
             parse("LENGTH 3/8 IN."),
             [
                 TotalLength(
-                    trait="total_length",
                     length=9.52,
                     ambiguous=True,
                     start=0,
@@ -194,7 +186,6 @@ class TestTotalLength(unittest.TestCase):
             parse("LENGTH 1 1/2 IN."),
             [
                 TotalLength(
-                    trait="total_length",
                     length=38.1,
                     ambiguous=True,
                     start=0,
@@ -207,7 +198,7 @@ class TestTotalLength(unittest.TestCase):
         """It handles the parentheses enclosing the measurement."""
         self.assertEqual(
             parse("measurement on tag for T. L. (141 mm) cannot be correct"),
-            [TotalLength(trait="total_length", length=141, start=23, end=37)],
+            [TotalLength(length=141, start=23, end=37)],
         )
 
     def test_total_length_19(self):
@@ -216,7 +207,6 @@ class TestTotalLength(unittest.TestCase):
             parse("L: 275."),
             [
                 TotalLength(
-                    trait="total_length",
                     length=275,
                     units_inferred=True,
                     ambiguous=True,
@@ -231,7 +221,6 @@ class TestTotalLength(unittest.TestCase):
             parse("Body and tail: 1690 mm;"),
             [
                 TotalLength(
-                    trait="total_length",
                     length=1690,
                     start=0,
                     end=22,
@@ -245,7 +234,6 @@ class TestTotalLength(unittest.TestCase):
             parse("Other Measurements: nose-tail=60in., girth=39in."),
             [
                 TotalLength(
-                    trait="total_length",
                     length=1524,
                     start=20,
                     end=35,
@@ -259,11 +247,8 @@ class TestTotalLength(unittest.TestCase):
         self.assertEqual(
             parse("Imm., L. snout to tip of tail 1510,"),
             [
-                LifeStage(
-                    trait="life_stage", start=0, end=4, _text="Imm.", life_stage="imm."
-                ),
+                LifeStage(start=0, end=4, _text="Imm.", life_stage="imm."),
                 TotalLength(
-                    trait="total_length",
                     length=1510,
                     units_inferred=True,
                     start=9,

@@ -1,0 +1,172 @@
+label,pattern,replace
+count_label,#
+count_label,no.
+count_label,no:
+count_label,number
+eq,=
+eq,eq
+eq,equal
+eq,equals
+eq,is
+mammaries,mamm
+mammaries,mamm gland
+mammaries,mamm tisssue
+mammaries,mamm tissue
+mammaries,mamm. gland
+mammaries,mammae
+mammaries,mammae gland
+mammaries,mammae glands
+mammaries,mammae tisssue
+mammaries,mammae tissue
+mammaries,mammaries
+mammaries,mammaries gland
+mammaries,mammaries glands
+mammaries,mammaries tisssue
+mammaries,mammaries tissue
+mammaries,mammary
+mammaries,mammary gland
+mammaries,mammary glands
+mammaries,mammary tisssue
+mammaries,mammary tissue
+mammaries,mammery
+mammaries,mammery gland
+mammaries,mammery glands
+mammaries,mammery tisssue
+mammaries,mammery tissue
+modifier,false
+modifier,ing
+modifier,inguinal
+modifier,pec
+modifier,pectoral
+modifier,pr
+nip,nip
+nip,nipp
+nip,nipple
+nip,nipples
+nip,nipps
+nip,nips
+nip,teat
+nip,teats
+none,no,not
+none,non,not
+none,none,not
+none,not,not
+side,both
+side,both side
+side,both sides
+side,each side
+side,f
+side,fem
+side,female
+side,females
+side,l
+side,l side
+side,l side
+side,l x
+side,l.
+side,l. side
+side,l. x
+side,left
+side,left side
+side,lf
+side,lf side
+side,lf.
+side,lf. side
+side,lft
+side,lft side
+side,lft.
+side,lft. side
+side,lt
+side,lt.
+side,lx
+side,on left
+side,on right
+side,r
+side,r side
+side,r x
+side,r.
+side,r. side
+side,r. x
+side,right
+side,right side
+side,rt
+side,rt side
+side,rt.
+side,rt. side
+side,rx
+side,rx.
+state,absent,absent
+state,active,active
+state,bare,bare
+state,black,black
+state,brown,brown
+state,conspicuous,visible
+state,dark black,black
+state,dark brown,brown
+state,dark gray,gray
+state,dark grey,gray
+state,dark pink,pink
+state,dark red,red
+state,dark white,white
+state,definite,visible
+state,dev,developed
+state,devel,developed
+state,develop,developed
+state,developed,developed
+state,distended,distended
+state,enlarge,enlarged
+state,enlarged,enlarged
+state,extended,extended
+state,faint,faint
+state,gray,gray
+state,grey,gray
+state,hidden,invisible
+state,invisible,invisible
+state,large,large
+state,lg,large
+state,light black,black
+state,light brown,brown
+state,light gray,gray
+state,light grey,gray
+state,light pink,pink
+state,light red,red
+state,light white,white
+state,med,medium
+state,medium,medium
+state,minute,small
+state,mod,medium
+state,moderate,medium
+state,not enlarged,small
+state,not state,small
+state,not-enlarged,small
+state,not-state,small
+state,notenlarged,small
+state,notlarge,small
+state,pale black,black
+state,pale brown,brown
+state,pale gray,gray
+state,pale grey,gray
+state,pale pink,pink
+state,pale red,red
+state,pale white,white
+state,pigmented,pigmented
+state,pink,pink
+state,present,present
+state,prominen,prominent
+state,prominent,prominent
+state,prominent,prominent
+state,protuberant,protuberant
+state,red,red
+state,seen,visible
+state,showing,showing
+state,shrunk,shrunk
+state,shrunken,shrunken
+state,sm,small
+state,sm-med,small
+state,small,small
+state,swollen,swollen
+state,tiny,small
+state,unobservable,invisible
+state,visible,visible
+state,white,white
+state,worn,worn

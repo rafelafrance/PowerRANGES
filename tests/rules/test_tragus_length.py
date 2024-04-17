@@ -9,9 +9,5 @@ class TestTragusLength(unittest.TestCase):
         """It parses a length without units."""
         self.assertEqual(
             parse("Tragus 7;"),
-            [
-                TragusLength(
-                    trait="tragus_length", length=7, units_inferred=True, start=0, end=8
-                )
-            ],
+            [TragusLength(length=7, units_inferred=True, start=0, end=8)],
         )

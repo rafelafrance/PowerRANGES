@@ -1,6 +1,7 @@
 import unittest
 
 from ranges.pylib.rules.embryo import Embryo
+from ranges.pylib.rules.nipple import Nipple
 from tests.setup import parse
 
 
@@ -10,7 +11,7 @@ class TestEmbryo(unittest.TestCase):
         self.maxDiff = None
         self.assertEqual(
             parse("pregnant; 4 emb"),
-            [Embryo(trait="embryo", count=4, start=10, end=15)],
+            [Embryo(count=4, start=10, end=15)],
         )
 
     def test_embryo_02(self):
@@ -18,8 +19,8 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("not pregnant; no embs"),
             [
-                Embryo(trait="embryo", count=0, start=0, end=12),
-                Embryo(trait="embryo", count=0, start=14, end=21),
+                Embryo(count=0, start=0, end=12),
+                Embryo(count=0, start=14, end=21),
             ],
         )
 
@@ -27,14 +28,14 @@ class TestEmbryo(unittest.TestCase):
         """It parses counts per side."""
         self.assertEqual(
             parse("pregnant; 4 emb 3L 1R"),
-            [Embryo(trait="embryo", count=4, left=3, right=1, start=10, end=21)],
+            [Embryo(count=4, left=3, right=1, start=10, end=21)],
         )
 
     def test_embryo_04(self):
         """It parses sides without a total."""
         self.assertEqual(
             parse("embryos 2R-1L"),
-            [Embryo(trait="embryo", count=3, left=1, right=2, start=0, end=13)],
+            [Embryo(count=3, left=1, right=2, start=0, end=13)],
         )
 
     def test_embryo_05(self):
@@ -45,46 +46,42 @@ class TestEmbryo(unittest.TestCase):
         """It parses another left/right separated by a comma."""
         self.assertEqual(
             parse("emb.1R,1L; "),
-            [Embryo(trait="embryo", count=2, left=1, right=1, start=0, end=9)],
+            [Embryo(count=2, left=1, right=1, start=0, end=9)],
         )
 
     def test_embryo_07(self):
         """It handles female/male counts."""
         self.assertEqual(
             parse("7 embryos, 4 male, and 3 female"),
-            [Embryo(trait="embryo", count=7, male=4, female=3, start=0, end=31)],
+            [Embryo(count=7, male=4, female=3, start=0, end=31)],
         )
 
     def test_embryo_08(self):
         """It handles count surrounded by parentheses."""
         self.assertEqual(
             parse("reproductive data=5 embryos (3L, 2R);"),
-            [Embryo(trait="embryo", count=5, left=3, right=2, start=18, end=36)],
+            [Embryo(count=5, left=3, right=2, start=18, end=36)],
         )
 
     def test_embryo_09(self):
         """It handles an adjective between the count and label."""
         self.assertEqual(
             parse("reproductive data= 4 small embryos."),
-            [Embryo(trait="embryo", count=4, start=19, end=34)],
+            [Embryo(count=4, start=19, end=34)],
         )
 
     def test_embryo_10(self):
         """It handles a length before the side counts."""
         self.assertEqual(
             parse("; 4 emb. x 07 mm, 3L2R"),
-            [
-                Embryo(
-                    trait="embryo", length=7, count=4, left=3, right=2, start=2, end=22
-                )
-            ],
+            [Embryo(length=7, count=4, left=3, right=2, start=2, end=22)],
         )
 
     def test_embryo_11(self):
         """It handles a count length combo without sides."""
         self.assertEqual(
             parse('; 3 emb. x 06 mm.",'),
-            [Embryo(trait="embryo", length=6, count=3, start=2, end=17)],
+            [Embryo(length=6, count=3, start=2, end=17)],
         )
 
     def test_embryo_12(self):
@@ -93,7 +90,6 @@ class TestEmbryo(unittest.TestCase):
             parse("reproductive data: 3 embryos - 14 mm, 2R/1L;"),
             [
                 Embryo(
-                    trait="embryo",
                     length=14,
                     count=3,
                     left=1,
@@ -108,7 +104,10 @@ class TestEmbryo(unittest.TestCase):
         """It gets a zero count with separating words."""
         self.assertEqual(
             parse("Med. nipples, no scars or embryos, mod. fat"),
-            [Embryo(trait="embryo", count=0, start=14, end=33)],
+            [
+                Nipple(state="medium", start=0, end=12),
+                Embryo(count=0, start=14, end=33),
+            ],
         )
 
     def test_embryo_14(self):
@@ -119,21 +118,21 @@ class TestEmbryo(unittest.TestCase):
         """It parses longer side notations."""
         self.assertEqual(
             parse(", 4 fetuses on left, 1 on right"),
-            [Embryo(trait="embryo", count=5, left=4, right=1, start=2, end=31)],
+            [Embryo(count=5, left=4, right=1, start=2, end=31)],
         )
 
     def test_embryo_16(self):
         """It handles words between the count and label."""
         self.assertEqual(
             parse("ONLY. 3 VERY LARGE FOETI(50)."),
-            [Embryo(trait="embryo", count=3, start=6, end=24)],
+            [Embryo(count=3, start=6, end=24)],
         )
 
     def test_embryo_17(self):
         """It parses the total count at the end."""
         self.assertEqual(
             parse("Foeti: 2R4L=6;"),
-            [Embryo(trait="embryo", count=6, left=4, right=2, start=0, end=13)],
+            [Embryo(count=6, left=4, right=2, start=0, end=13)],
         )
 
     def test_embryo_18(self):
@@ -141,10 +140,8 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("pregnant; 1 emb; CR-74; emb W-25; emb WT-4.8"),
             [
-                Embryo(trait="embryo", count=1, start=10, end=15),
-                Embryo(
-                    trait="embryo", length=74, units_inferred=True, start=17, end=22
-                ),
+                Embryo(count=1, start=10, end=15),
+                Embryo(length=74, units_inferred=True, start=17, end=22),
             ],
         )
 
@@ -154,7 +151,6 @@ class TestEmbryo(unittest.TestCase):
             parse("no scars, horns R 2 emb x 11, L 4 emb x 11,"),
             [
                 Embryo(
-                    trait="embryo",
                     length=11,
                     count=6,
                     left=4,
@@ -169,14 +165,14 @@ class TestEmbryo(unittest.TestCase):
         """It parses a numeric word count."""
         self.assertEqual(
             parse("FOUR EMBS, 25MM"),
-            [Embryo(trait="embryo", length=25, count=4, start=0, end=15)],
+            [Embryo(length=25, count=4, start=0, end=15)],
         )
 
     def test_embryo_21(self):
         """It parses a crown-rump length."""
         self.assertEqual(
             parse("crown-rump length=13 mm"),
-            [Embryo(trait="embryo", length=13, start=0, end=23)],
+            [Embryo(length=13, start=0, end=23)],
         )
 
     def test_embryo_22(self):
@@ -185,7 +181,6 @@ class TestEmbryo(unittest.TestCase):
             parse("Embryo crown-rump length 22"),
             [
                 Embryo(
-                    trait="embryo",
                     length=22,
                     units_inferred=True,
                     start=0,
@@ -199,8 +194,8 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("3 embs/2L+2R/cr=X34mm"),
             [
-                Embryo(trait="embryo", start=0, end=12, count=3, left=2, right=2),
-                Embryo(trait="embryo", start=13, end=21, length=34.0),
+                Embryo(start=0, end=12, count=3, left=2, right=2),
+                Embryo(start=13, end=21, length=34.0),
             ],
         )
 
@@ -210,7 +205,6 @@ class TestEmbryo(unittest.TestCase):
             parse(", cr=5x5 ;"),
             [
                 Embryo(
-                    trait="embryo",
                     length=5,
                     width=5,
                     units_inferred=True,
@@ -224,7 +218,7 @@ class TestEmbryo(unittest.TestCase):
         """It parses a length with a width and units."""
         self.assertEqual(
             parse("; reproductive data=cr=9x8mm"),
-            [Embryo(trait="embryo", length=9, width=8, start=20, end=28)],
+            [Embryo(length=9, width=8, start=20, end=28)],
         )
 
     def test_embryo_26(self):
@@ -233,7 +227,6 @@ class TestEmbryo(unittest.TestCase):
             parse("2 embryo scars left horn, 1 right"),
             [
                 Embryo(
-                    trait="embryo",
                     count=3,
                     left=2,
                     right=1,
@@ -249,7 +242,6 @@ class TestEmbryo(unittest.TestCase):
             parse("2 embryo scars, 1 in each horn,"),
             [
                 Embryo(
-                    trait="embryo",
                     count=2,
                     start=0,
                     end=8,
@@ -261,14 +253,14 @@ class TestEmbryo(unittest.TestCase):
         """It picks up the presence of an embryo."""
         self.assertEqual(
             parse("Near-term fetus"),
-            [Embryo(trait="embryo", count=1, start=0, end=15)],
+            [Embryo(count=1, start=0, end=15)],
         )
 
     def test_embryo_29(self):
         """It gets a count with a presence term."""
         self.assertEqual(
             parse("6 near-term embryos."),
-            [Embryo(trait="embryo", count=6, start=0, end=19)],
+            [Embryo(count=6, start=0, end=19)],
         )
 
     def test_embryo_30(self):
@@ -277,7 +269,6 @@ class TestEmbryo(unittest.TestCase):
             parse("2 embryos right horn, 3 left, ~9x10mm"),
             [
                 Embryo(
-                    trait="embryo",
                     count=5,
                     length=9,
                     width=10,
@@ -294,8 +285,8 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("Fetus on left, 18mm crown to rump."),
             [
-                Embryo(trait="embryo", count=1, left=1, start=0, end=13),
-                Embryo(trait="embryo", length=18, start=15, end=33),
+                Embryo(count=1, left=1, start=0, end=13),
+                Embryo(length=18, start=15, end=33),
             ],
         )
 
@@ -303,7 +294,7 @@ class TestEmbryo(unittest.TestCase):
         """It handles this key format."""
         self.assertEqual(
             parse("3 embryos L side, 1 R. Mammaries developing."),
-            [Embryo(trait="embryo", count=4, left=3, right=1, start=0, end=22)],
+            [Embryo(count=4, left=3, right=1, start=0, end=22)],
         )
 
     def test_embryo_33(self):
@@ -311,8 +302,8 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("Embryos: 5R x 4L c.r. 3 mm."),
             [
-                Embryo(trait="embryo", count=9, left=4, right=5, start=0, end=16),
-                Embryo(trait="embryo", length=3, start=17, end=27),
+                Embryo(count=9, left=4, right=5, start=0, end=16),
+                Embryo(length=3, start=17, end=27),
             ],
         )
 
@@ -320,7 +311,7 @@ class TestEmbryo(unittest.TestCase):
         """It handles a single side."""
         self.assertEqual(
             parse("embs.=1R,!L"),
-            [Embryo(trait="embryo", count=1, right=1, start=0, end=8)],
+            [Embryo(count=1, right=1, start=0, end=8)],
         )
 
     def test_embryo_35(self):
@@ -329,7 +320,6 @@ class TestEmbryo(unittest.TestCase):
             parse("1 embryo right horn 4x8mm, 1 embryo left horn"),
             [
                 Embryo(
-                    trait="embryo",
                     start=0,
                     end=40,
                     length=4.0,
@@ -347,7 +337,6 @@ class TestEmbryo(unittest.TestCase):
             parse("embs=1R (CR=32 mm), 1L (CR=32&28mm) ;"),
             [
                 Embryo(
-                    trait="embryo",
                     start=0,
                     end=22,
                     length=32,
@@ -355,9 +344,7 @@ class TestEmbryo(unittest.TestCase):
                     left=1,
                     right=1,
                 ),
-                Embryo(
-                    trait="embryo", start=24, end=29, length=32, units_inferred=True
-                ),
+                Embryo(start=24, end=29, length=32, units_inferred=True),
             ],
         )
 
@@ -367,7 +354,6 @@ class TestEmbryo(unittest.TestCase):
             parse("R horn 5embsx18mm, L horn 1 resorb embx5mm, 1embx18mm; "),
             [
                 Embryo(
-                    trait="embryo",
                     start=0,
                     end=27,
                     length=18,
@@ -375,8 +361,8 @@ class TestEmbryo(unittest.TestCase):
                     left=1,
                     right=5,
                 ),
-                Embryo(trait="embryo", start=35, end=42, length=5),
-                Embryo(trait="embryo", start=44, end=53, length=18, count=1),
+                Embryo(start=35, end=42, length=5),
+                Embryo(start=44, end=53, length=18, count=1),
             ],
         )
 
@@ -386,7 +372,6 @@ class TestEmbryo(unittest.TestCase):
             parse("emb 5x21 (R2 L3),"),
             [
                 Embryo(
-                    trait="embryo",
                     start=0,
                     end=16,
                     length=21,
@@ -403,7 +388,6 @@ class TestEmbryo(unittest.TestCase):
             parse("emb 1x13( R), 1+ pl sc (L),"),
             [
                 Embryo(
-                    trait="embryo",
                     start=0,
                     end=26,
                     length=13,
@@ -420,7 +404,6 @@ class TestEmbryo(unittest.TestCase):
             parse("reproductive data=3 large, 20mm embryos: 2R, 1L."),
             [
                 Embryo(
-                    trait="embryo",
                     start=27,
                     end=48,
                     length=20,
@@ -437,7 +420,6 @@ class TestEmbryo(unittest.TestCase):
             parse("reproductive data=5 3mm embryos: 1R, 4L"),
             [
                 Embryo(
-                    trait="embryo",
                     start=18,
                     end=39,
                     length=3,
@@ -454,7 +436,6 @@ class TestEmbryo(unittest.TestCase):
             parse("""L 1 emb x 3 mm and 1 emb 2.5 mm;"""),
             [
                 Embryo(
-                    trait="embryo",
                     start=0,
                     end=14,
                     length=3,
@@ -462,7 +443,6 @@ class TestEmbryo(unittest.TestCase):
                     left=1,
                 ),
                 Embryo(
-                    trait="embryo",
                     start=19,
                     end=31,
                     length=2.5,
@@ -477,7 +457,6 @@ class TestEmbryo(unittest.TestCase):
             parse("2 embryos each side (4 total), 3x4mm"),
             [
                 Embryo(
-                    trait="embryo",
                     start=0,
                     end=36,
                     length=3,
@@ -495,7 +474,6 @@ class TestEmbryo(unittest.TestCase):
             parse("reproductive data=2Rx1Lx23 mm fetuses"),
             [
                 Embryo(
-                    trait="embryo",
                     start=18,
                     end=37,
                     length=23,
@@ -513,7 +491,6 @@ class TestEmbryo(unittest.TestCase):
             parse("Pregnant with 4 embryos (rt = 1, lt = 3;"),
             [
                 Embryo(
-                    trait="embryo",
                     start=14,
                     end=39,
                     count=4,
@@ -529,7 +506,6 @@ class TestEmbryo(unittest.TestCase):
             parse("RBS 4029; EMB-R 2, EMB-L 3, CR 8 mm"),
             [
                 Embryo(
-                    trait="embryo",
                     start=10,
                     end=35,
                     length=8,
@@ -546,7 +522,6 @@ class TestEmbryo(unittest.TestCase):
             parse("reproductive data=Emb = 4 : CR = 17mm : 2R x 2L"),
             [
                 Embryo(
-                    trait="embryo",
                     end=47,
                     length=17,
                     left=2,
@@ -561,22 +536,14 @@ class TestEmbryo(unittest.TestCase):
         """It allows parentheses around all values."""
         self.assertEqual(
             parse("Embryos (R2, L4, 10mm)."),
-            [
-                Embryo(
-                    trait="embryo", length=10, end=22, left=4, right=2, start=0, count=6
-                )
-            ],
+            [Embryo(length=10, end=22, left=4, right=2, start=0, count=6)],
         )
 
     def test_embryo_49(self):
         """It handles the length at index 3."""
         self.assertEqual(
             parse("4 embs: 2(R)&2(L)=9mm"),
-            [
-                Embryo(
-                    trait="embryo", length=9, start=0, end=21, left=2, right=2, count=4
-                )
-            ],
+            [Embryo(length=9, start=0, end=21, left=2, right=2, count=4)],
         )
 
     def test_embryo_50(self):
@@ -584,7 +551,7 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("embryos 1 + 2 = 3 (29763, 29764) CR = 30 mm."),
             [
-                Embryo(trait="embryo", count=3, side1=1, side2=2, start=0, end=17),
-                Embryo(trait="embryo", length=30.0, start=33, end=44),
+                Embryo(count=3, side1=1, side2=2, start=0, end=17),
+                Embryo(length=30.0, start=33, end=44),
             ],
         )

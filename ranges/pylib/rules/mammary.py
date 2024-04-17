@@ -13,8 +13,8 @@ from traiter.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
-class Nipple(Base):
-    # Class vars ----------y
+class Mammary(Base):
+    # Class vars ----------
     csv: ClassVar[list[Path]] = Path(__file__).parent / "terms" / "mammary_terms.csv"
 
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csv, "replace")
@@ -30,7 +30,7 @@ class Nipple(Base):
         "any": {},
         "dev": {"ENT_TYPE": "dev", "OP": "+"},
         "mod": {"ENT_TYPE": "modifier"},
-        "nipple": {"ENT_TYPE": "nip", "OP": "+"},
+        "mammary": {"ENT_TYPE": "mammaries", "OP": "+"},
         "none": {"ENT_TYPE": "none"},
         "side": {"ENT_TYPE": "side"},
         "state": {"ENT_TYPE": "state", "OP": "+"},
@@ -42,54 +42,54 @@ class Nipple(Base):
 
     def to_dwc(self, dwc) -> DarwinCore:
         if self.count is not None:
-            dwc.add_dyn(nippleCount=self.count)
+            dwc.add_dyn(mammaryCount=self.count)
 
         if self.state is not None:
-            dwc.add_dyn(nippleState=self.state)
+            dwc.add_dyn(mammaryState=self.state)
 
         return dwc
 
     @classmethod
     def pipe(cls, nlp: Language):
-        add.term_pipe(nlp, name="nipple_terms", path=cls.csv)
+        add.term_pipe(nlp, name="mammary_terms", path=cls.csv)
 
         add.trait_pipe(
             nlp,
-            name="nipple_bad_patterns",
-            compiler=cls.nipple_bad_patterns(),
+            name="mammary_bad_patterns",
+            compiler=cls.mammary_bad_patterns(),
             overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
-            name="nipple_count_state_patterns",
-            compiler=cls.nipple_count_state_patterns(),
+            name="mammary_count_state_patterns",
+            compiler=cls.mammary_count_state_patterns(),
             overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
-            name="nipple_count_patterns",
-            compiler=cls.nipple_count_patterns(),
+            name="mammary_count_patterns",
+            compiler=cls.mammary_count_patterns(),
             overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
-            name="nipple_state_patterns",
-            compiler=cls.nipple_state_patterns(),
+            name="mammary_state_patterns",
+            compiler=cls.mammary_state_patterns(),
         )
         # add.debug_tokens(nlp)  # #############################################
 
-        add.cleanup_pipe(nlp, name="nipple_cleanup")
+        add.cleanup_pipe(nlp, name="mammary_cleanup")
         # add.debug_ents(nlp)  # #############################################
 
     @classmethod
-    def nipple_bad_patterns(cls):
+    def mammary_bad_patterns(cls):
         return [
             Compiler(
-                label="bad_nipple_count",
-                on_match="nipple_bad_match",
+                label="bad_mammary_count",
+                on_match="mammary_bad_match",
                 decoder=cls.decoder,
                 patterns=[
                     " 9 % ",
@@ -99,55 +99,55 @@ class Nipple(Base):
         ]
 
     @classmethod
-    def nipple_count_patterns(cls):
+    def mammary_count_patterns(cls):
         return [
             Compiler(
-                label="nipple",
-                keep="nipple",
-                on_match="nipple_count_match",
+                label="mammary",
+                keep="mammary",
+                on_match="mammary_count_match",
                 decoder=cls.decoder,
                 patterns=[
-                    " 9  mod?                     nipple ",
-                    " 9  mod? [+] 9 mod?          nipple ",
-                    " 9  mod? [+] 9 mod? = 9 mod? nipple ",
-                    " nipple , [+]? mod? 9 ",
-                    " nipple , [+]? mod? 9 mod? [+] mod? 9 ",
-                    " nipple , [+]? mod? 9 mod? [+] mod? 9 mod? = mod? 9 ",
+                    " 9  mod?                     mammary ",
+                    " 9  mod? [+] 9 mod?          mammary ",
+                    " 9  mod? [+] 9 mod? = 9 mod? mammary ",
+                    " mammary , [+]? mod? 9 ",
+                    " mammary , [+]? mod? 9 mod? [+] mod? 9 ",
+                    " mammary , [+]? mod? 9 mod? [+] mod? 9 mod? = mod? 9 ",
                 ],
             ),
         ]
 
     @classmethod
-    def nipple_state_patterns(cls):
+    def mammary_state_patterns(cls):
         return [
             Compiler(
-                label="nipple",
-                keep="nipple",
-                on_match="nipple_state_match",
+                label="mammary",
+                keep="mammary",
+                on_match="mammary_state_match",
                 decoder=cls.decoder,
                 patterns=[
-                    " none? state  any? any? nipple ",
-                    " none? nipple any? any? state ",
-                    "       nipple any? any? state , none",
-                    " none  nipple ",
+                    " none? state  any? any? mammary ",
+                    " none? mammary any? any? state ",
+                    "       mammary any? any? state , none",
+                    " none  mammary ",
                 ],
             )
         ]
 
     @classmethod
-    def nipple_count_state_patterns(cls):
+    def mammary_count_state_patterns(cls):
         return Compiler(
-            label="nipple",
-            keep="nipple",
-            on_match="nipple_count_state_match",
+            label="mammary",
+            keep="mammary",
+            on_match="mammary_count_state_match",
             decoder=cls.decoder,
             patterns=[
-                " 9  mod?                     nipple state  ",
-                " 9  mod? [+] 9 mod?          nipple state  ",
-                " 9  mod? [+] 9 mod? = 9 mod? nipple state  ",
-                " 9  mod?                     state  nipple ",
-                " 9  mod? [+] 9 mod?          state  nipple ",
-                " 9  mod? [+] 9 mod? = 9 mod? state  nipple ",
+                " 9  mod?                     mammary state  ",
+                " 9  mod? [+] 9 mod?          mammary state  ",
+                " 9  mod? [+] 9 mod? = 9 mod? mammary state  ",
+                " 9  mod?                     state  mammary ",
+                " 9  mod? [+] 9 mod?          state  mammary ",
+                " 9  mod? [+] 9 mod? = 9 mod? state  mammary ",
             ],
         )
 
@@ -178,24 +178,22 @@ class Nipple(Base):
         if neg and states:
             neg = cls.replace.get(neg, neg)
             states = [f"{neg} {s}" for s in states]
-        elif neg and len(states) == 0:
-            states = ["none"]
         return " ".join(states) if states else None
 
     @classmethod
-    def nipple_count_match(cls, ent):
+    def mammary_count_match(cls, ent):
         return cls.from_ent(ent, count=cls.get_count(ent))
 
     @classmethod
-    def nipple_bad_match(cls, ent):
+    def mammary_bad_match(cls, ent):
         return cls.from_ent(ent)
 
     @classmethod
-    def nipple_state_match(cls, ent):
+    def mammary_state_match(cls, ent):
         return cls.from_ent(ent, state=cls.get_state(ent))
 
     @classmethod
-    def nipple_count_state_match(cls, ent):
+    def mammary_count_state_match(cls, ent):
         return cls.from_ent(
             ent,
             count=cls.get_count(ent),
@@ -203,21 +201,21 @@ class Nipple(Base):
         )
 
 
-@registry.misc("nipple_count_match")
-def nipple_count_match(ent):
-    return Nipple.nipple_count_match(ent)
+@registry.misc("mammary_count_match")
+def mammary_count_match(ent):
+    return Mammary.mammary_count_match(ent)
 
 
-@registry.misc("nipple_bad_match")
-def nipple_bad_match(ent):
-    return Nipple.nipple_bad_match(ent)
+@registry.misc("mammary_bad_match")
+def mammary_bad_match(ent):
+    return Mammary.mammary_bad_match(ent)
 
 
-@registry.misc("nipple_state_match")
-def nipple_state_match(ent):
-    return Nipple.nipple_state_match(ent)
+@registry.misc("mammary_state_match")
+def mammary_state_match(ent):
+    return Mammary.mammary_state_match(ent)
 
 
-@registry.misc("nipple_count_state_match")
-def nipple_count_state_match(ent):
-    return Nipple.nipple_count_state_match(ent)
+@registry.misc("mammary_count_state_match")
+def mammary_count_state_match(ent):
+    return Mammary.mammary_count_state_match(ent)

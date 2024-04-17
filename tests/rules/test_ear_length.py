@@ -8,7 +8,7 @@ class TestEarLength(unittest.TestCase):
     def test_total_length_01(self):
         self.assertEqual(
             parse('{"earLengthInMM":"9" };'),
-            [EarLength(trait="ear_length", length=9, start=2, end=19)],
+            [EarLength(length=9, start=2, end=19)],
         )
 
     def test_ear_length_02(self):
@@ -17,7 +17,6 @@ class TestEarLength(unittest.TestCase):
             parse('ear 9/16"'),
             [
                 EarLength(
-                    trait="ear_length",
                     length=14.29,
                     start=0,
                     end=9,
@@ -31,7 +30,6 @@ class TestEarLength(unittest.TestCase):
             parse('E 1",'),
             [
                 EarLength(
-                    trait="ear_length",
                     length=25.4,
                     ambiguous=True,
                     start=0,
@@ -54,7 +52,6 @@ class TestEarLength(unittest.TestCase):
             parse("ear from notch=17 mm;"),
             [
                 EarLength(
-                    trait="ear_length",
                     length=17,
                     measured_from="notch",
                     start=0,
@@ -69,7 +66,6 @@ class TestEarLength(unittest.TestCase):
             parse("earfromcrown=17mm;"),
             [
                 EarLength(
-                    trait="ear_length",
                     length=17,
                     measured_from="crown",
                     start=0,

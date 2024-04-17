@@ -9,7 +9,7 @@ class TestForearmLength(unittest.TestCase):
         """It parses a forearm notation."""
         self.assertEqual(
             parse("Forearm 33 mm;"),
-            [ForearmLength(trait="forearm_length", length=33, start=0, end=13)],
+            [ForearmLength(length=33, start=0, end=13)],
         )
 
     def test_forearm_length_02(self):
@@ -18,7 +18,6 @@ class TestForearmLength(unittest.TestCase):
             parse("For.A. 33;"),
             [
                 ForearmLength(
-                    trait="forearm_length",
                     length=33,
                     units_inferred=True,
                     start=0,
@@ -31,7 +30,7 @@ class TestForearmLength(unittest.TestCase):
         """It parses a key with units."""
         self.assertEqual(
             parse("forearmleninmm 90"),
-            [ForearmLength(trait="forearm_length", length=90, start=0, end=17)],
+            [ForearmLength(length=90, start=0, end=17)],
         )
 
     def test_forearm_length_04(self):
@@ -40,7 +39,6 @@ class TestForearmLength(unittest.TestCase):
             parse('{"measurements":"44.0 (FA)" }'),
             [
                 ForearmLength(
-                    trait="forearm_length",
                     length=44,
                     units_inferred=True,
                     start=17,

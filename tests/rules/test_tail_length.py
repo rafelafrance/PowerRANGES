@@ -9,14 +9,14 @@ class TestTailLength(unittest.TestCase):
         """It parses a tail length with a label with keys."""
         self.assertEqual(
             parse("tailLengthInmm: 102"),
-            [TailLength(trait="tail_length", length=102, start=0, end=19)],
+            [TailLength(length=102, start=0, end=19)],
         )
 
     def test_tail_length_02(self):
         """It parses a tail length."""
         self.assertEqual(
             parse("tail length=95 mm;"),
-            [TailLength(trait="tail_length", length=95, start=0, end=17)],
+            [TailLength(length=95, start=0, end=17)],
         )
 
     def test_tail_length_03(self):

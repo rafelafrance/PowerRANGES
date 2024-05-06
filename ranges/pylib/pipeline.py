@@ -23,6 +23,7 @@ from ranges.pylib.rules.shorthand import Shorthand
 from ranges.pylib.rules.tail_length import TailLength
 from ranges.pylib.rules.total_length import TotalLength
 from ranges.pylib.rules.tragus_length import TragusLength
+from ranges.pylib.rules.vagina_state import VaginaState
 
 
 def build():
@@ -66,6 +67,8 @@ def build():
     Nipple.pipe(nlp)
     LactationState.pipe(nlp)
     PregnancyState.pipe(nlp)
+    # Scrotum.pipe(nlp)
+    VaginaState.pipe(nlp)
 
     delete.pipe(nlp)
 

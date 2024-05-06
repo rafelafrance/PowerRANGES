@@ -1,0 +1,30 @@
+label,pattern
+label,reproductive condition
+label,reproductive data
+label,reproductive state
+none,no
+none,no evidence
+none,no evidence of
+none,non
+none,non-
+none,none
+none,not
+none,not evident
+none,not visibly
+scrotal,nonscrotal
+scrotal,nscr
+scrotal,scr
+scrotal,scrot
+scrotal,scrotal
+scrotal,scrotum
+scrotal_neg,nonscrotal
+scrotal_neg,nscr
+scrotal_pos,scr
+scrotal_pos,scrot
+scrotal_pos,scrotal
+scrotal_pos,scrotum
+testes,test
+testes,testes
+testes,testicle
+testes,testicles
+testes,testis

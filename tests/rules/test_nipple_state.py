@@ -120,8 +120,8 @@ class TestNippleState(unittest.TestCase):
 
     def test_nipple_state_15(self):
         self.assertEqual(
-            parse("VO, NE, mamm. lg."),
-            [Mammary(state="large", start=8, end=16)],
+            parse("nipples small, moderate"),
+            [Nipple(state="small medium", start=0, end=23)],
         )
 
     def test_nipple_state_16(self):
@@ -164,10 +164,4 @@ class TestNippleState(unittest.TestCase):
         self.assertEqual(
             parse("; reproductive data=no nipples showing;"),
             [Nipple(state="not showing", start=20, end=38)],
-        )
-
-    def test_nipple_state_21(self):
-        self.assertEqual(
-            parse("nipples small, moderate"),
-            [Nipple(state="small medium", start=0, end=23)],
         )

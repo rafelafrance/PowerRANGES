@@ -67,8 +67,8 @@ class TestNippleEnlarged(unittest.TestCase):
 
     def test_nipple_enlarged_11(self):
         self.assertEqual(
-            parse("VO, NE, mamm. lg."),
-            [Mammary(state="large", start=8, end=16)],
+            parse("NE, mamm. lg."),
+            [Mammary(state="large", start=4, end=12)],
         )
 
     def test_nipple_enlarged_12(self):

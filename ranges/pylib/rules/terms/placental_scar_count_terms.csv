@@ -1,0 +1,152 @@
+label,pattern,replace
+absent,missing
+absent,none
+absent,none visible
+absent,not visible
+adj,faint
+adj,old
+adj,possible
+adj,prominent
+adj,recent
+count_label,#
+count_label,no.
+count_label,no:
+count_label,number
+eq,=
+eq,eq
+eq,equal
+eq,equals
+eq,is
+plac_scar,p scar
+plac_scar,p scarring
+plac_scar,p scars
+plac_scar,p-scar
+plac_scar,p-scarring
+plac_scar,p-scars
+plac_scar,p.scar
+plac_scar,p.scarring
+plac_scar,p.scars
+plac_scar,pac scar
+plac_scar,pac scarring
+plac_scar,pac scars
+plac_scar,pac.scar
+plac_scar,pac.scarring
+plac_scar,pac.scars
+plac_scar,pacscar
+plac_scar,pacscarring
+plac_scar,pacscars
+plac_scar,pl scar
+plac_scar,pl scarring
+plac_scar,pl scars
+plac_scar,pl.scar
+plac_scar,pl.scarring
+plac_scar,pl.scars
+plac_scar,plac
+plac_scar,plac scar
+plac_scar,plac scarring
+plac_scar,plac scars
+plac_scar,plac.scar
+plac_scar,plac.scarring
+plac_scar,plac.scars
+plac_scar,placental scar
+plac_scar,placental scarring
+plac_scar,placental scars
+plac_scar,placental.scar
+plac_scar,placental.scarring
+plac_scar,placental.scars
+plac_scar,placentalscar
+plac_scar,placentalscarring
+plac_scar,placentalscars
+plac_scar,placscar
+plac_scar,placscarring
+plac_scar,placscars
+plac_scar,plsc
+plac_scar,plscar
+plac_scar,plscarring
+plac_scar,plscars
+plac_scar,plscr
+plac_scar,postnatal scar
+plac_scar,postnatal scarring
+plac_scar,postnatal scars
+plac_scar,postnatal.scar
+plac_scar,postnatal.scarring
+plac_scar,postnatal.scars
+plac_scar,postnatalscar
+plac_scar,postnatalscarring
+plac_scar,postnatalscars
+plac_scar,ps
+plac_scar,pslc
+plac_scar,scar
+plac_scar,scarring
+plac_scar,scars
+plac_scar,ut scar
+plac_scar,ut scarring
+plac_scar,ut scars
+plac_scar,ut.scar
+plac_scar,ut.scarring
+plac_scar,ut.scars
+plac_scar,uterine scar
+plac_scar,uterine scarring
+plac_scar,uterine scars
+plac_scar,uterine.scar
+plac_scar,uterine.scarring
+plac_scar,uterine.scars
+plac_scar,uterinescar
+plac_scar,uterinescarring
+plac_scar,uterinescars
+plac_scar,uterus scar
+plac_scar,uterus scarring
+plac_scar,uterus scars
+plac_scar,uterus.scar
+plac_scar,uterus.scarring
+plac_scar,uterus.scars
+plac_scar,uterusscar
+plac_scar,uterusscarring
+plac_scar,uterusscars
+plac_scar,utscar
+plac_scar,utscarring
+plac_scar,utscars
+side,both side,both
+side,both sides,both
+side,both,both
+side,each side,both
+side,f,female
+side,fem,female
+side,female,female
+side,females,female
+side,l side,left
+side,l side,left
+side,l x,left
+side,l,left
+side,l. side,left
+side,l. x,left
+side,l.,left
+side,left side,left
+side,left,left
+side,lf side,left
+side,lf,left
+side,lf. side,left
+side,lf.,left
+side,lft side,left
+side,lft,left
+side,lft. side,left
+side,lft.,left
+side,lt,left
+side,lt.,left
+side,lx,left
+side,on left,left
+side,on right,right
+side,r side,right
+side,r x,right
+side,r,right
+side,r. side,right
+side,r. x,right
+side,r.,right
+side,right side,right
+side,right,right
+side,rt side,right
+side,rt,right
+side,rt. side,right
+side,rt.,right
+side,rx,right
+side,rx.,right

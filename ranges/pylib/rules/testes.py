@@ -10,10 +10,10 @@ from traiter.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
-class Scrotum(Base):
+class Testes(Base):
     # Class vars ----------
     csvs: ClassVar[list[Path]] = [
-        Path(__file__).parent / "terms" / "scrotal_state_terms.csv",
+        Path(__file__).parent / "terms" / "testes_state_terms.csv",
     ]
     # ---------------------
 
@@ -24,17 +24,17 @@ class Scrotum(Base):
 
     @classmethod
     def pipe(cls, nlp):
-        add.term_pipe(nlp, name="scrotal_state_terms", path=cls.csvs)
+        add.term_pipe(nlp, name="testes_state_terms", path=cls.csvs)
         # add.debug_tokens(nlp)  # ############################################
         add.trait_pipe(
             nlp,
-            name="scrotal_state_patterns",
-            compiler=cls.scrotal_state_patterns(),
+            name="testes_state_patterns",
+            compiler=cls.testes_state_patterns(),
         )
-        add.cleanup_pipe(nlp, name="scrotal_state_cleanup")
+        add.cleanup_pipe(nlp, name="testes_state_cleanup")
 
     @classmethod
-    def scrotal_state_patterns(cls):
+    def testes_state_patterns(cls):
         decoder = {
             # "not": {"ENT_TYPE": {"IN": cls.nots}, "OP": "+"},
             "not_pregnant": {"ENT_TYPE": "not_pregnant", "OP": "+"},
@@ -44,9 +44,9 @@ class Scrotum(Base):
         }
         return [
             Compiler(
-                label="scrotal_state",
-                keep="scrotal_state",
-                on_match="scrotal_state_match",
+                label="testes_state",
+                keep="testes_state",
+                on_match="testes_state_match",
                 decoder=decoder,
                 patterns=[
                     "     pregnant ",
@@ -58,13 +58,13 @@ class Scrotum(Base):
         ]
 
     @classmethod
-    def scrotal_state_match(cls, ent):
+    def testes_state_match(cls, ent):
         # state = "pregnant"
         # if next((e for e in ent.ents if e.label_ in cls.not_preg), None):
         #     state = "not pregnant"
         return cls.from_ent(ent)
 
 
-@registry.misc("scrotal_state_match")
-def scrotal_state_match(ent):
-    return Scrotum.scrotal_state_match(ent)
+@registry.misc("testes_state_match")
+def testes_state_match(ent):
+    return Testes.testes_state_match(ent)

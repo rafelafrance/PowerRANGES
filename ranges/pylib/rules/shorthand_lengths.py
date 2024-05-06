@@ -40,11 +40,11 @@ class Bat:
 
 
 @dataclass(eq=False)
-class Shorthand(Base):
+class ShorthandLengths(Base):
     # Class vars ----------
     csvs: ClassVar[list[Path]] = [
         Path(t_terms.__file__).parent / "unit_mass_terms.csv",
-        Path(__file__).parent / "terms" / "shorthand_terms.csv",
+        Path(__file__).parent / "terms" / "shorthand_length_terms.csv",
     ]
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
 
@@ -126,12 +126,12 @@ class Shorthand(Base):
 
     @classmethod
     def pipe(cls, nlp: Language, _overwrite: list[str] | None = None):
-        add.term_pipe(nlp, name="shorthand_terms", path=cls.csvs)
+        add.term_pipe(nlp, name="shorthand_length_terms", path=cls.csvs)
         # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
-            name="missing_patterns",
+            name="shorthand_missing_patterns",
             compiler=cls.missing_patterns(),
             overwrite=["metric_mass", "number"],
             # merge=["cell"],
@@ -140,7 +140,7 @@ class Shorthand(Base):
 
         add.trait_pipe(
             nlp,
-            name="cell_patterns",
+            name="shorthand_cell_patterns",
             compiler=cls.cell_patterns(),
             overwrite=["metric_mass", "number"],
             # merge=["cell"],
@@ -149,7 +149,7 @@ class Shorthand(Base):
 
         add.trait_pipe(
             nlp,
-            name="shorthand_patterns",
+            name="shorthand_length_patterns",
             compiler=cls.shorthand_patterns(),
             overwrite=["metric_mass", "cell", "number", "missing"],
         )
@@ -157,13 +157,13 @@ class Shorthand(Base):
 
         add.trait_pipe(
             nlp,
-            name="shorthand_triple_patterns",
+            name="shorthand_length_triple_patterns",
             compiler=cls.shorthand_triple_patterns(),
             overwrite=["metric_mass", "cell", "triple_key", "number", "missing"],
         )
         # add.debug_tokens(nlp)  # ###########################################
 
-        add.cleanup_pipe(nlp, name="shorthand_cleanup", clear=False)
+        add.cleanup_pipe(nlp, name="shorthand_length_cleanup", clear=False)
         # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
@@ -339,9 +339,9 @@ class Shorthand(Base):
 
 @registry.misc("cell_match")
 def cell_match(ent):
-    return Shorthand.cell_match(ent)
+    return ShorthandLengths.cell_match(ent)
 
 
 @registry.misc("shorthand_match")
 def shorthand_match(ent):
-    return Shorthand.shorthand_match(ent)
+    return ShorthandLengths.shorthand_match(ent)

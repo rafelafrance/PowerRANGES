@@ -17,9 +17,11 @@ from ranges.pylib.rules.lactation_state import LactationState
 from ranges.pylib.rules.life_stage import LifeStage
 from ranges.pylib.rules.mammary import Mammary
 from ranges.pylib.rules.nipple import Nipple
+from ranges.pylib.rules.placenta_scar_count import PlacentalScarCount
 from ranges.pylib.rules.pregnancy_state import PregnancyState
 from ranges.pylib.rules.sex import Sex
-from ranges.pylib.rules.shorthand import Shorthand
+from ranges.pylib.rules.shorthand_female_states import ShorthandFemaleStates
+from ranges.pylib.rules.shorthand_lengths import ShorthandLengths
 from ranges.pylib.rules.tail_length import TailLength
 from ranges.pylib.rules.total_length import TotalLength
 from ranges.pylib.rules.tragus_length import TragusLength
@@ -39,7 +41,7 @@ def build():
 
     Number.pipe(nlp)
 
-    Shorthand.pipe(nlp)
+    ShorthandLengths.pipe(nlp)
     Number.pipe(nlp)
 
     BodyMass.pipe(nlp)
@@ -63,12 +65,15 @@ def build():
     LifeStage.pipe(nlp)
     Sex.pipe(nlp)
 
+    ShorthandFemaleStates.pipe(nlp)
     Mammary.pipe(nlp)
     Nipple.pipe(nlp)
     LactationState.pipe(nlp)
     PregnancyState.pipe(nlp)
-    # Scrotum.pipe(nlp)
     VaginaState.pipe(nlp)
+
+    Number.pipe(nlp)
+    PlacentalScarCount.pipe(nlp)
 
     delete.pipe(nlp)
 

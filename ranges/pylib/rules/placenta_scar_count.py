@@ -4,11 +4,9 @@ from typing import Any, ClassVar
 
 from spacy import Language, registry
 from traiter.pylib import const as t_const
-from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
-from traiter.pylib.pipes.reject_match import RejectMatch
 from traiter.pylib.rules.base import Base
 
 
@@ -19,19 +17,28 @@ class PlacentalScarCount(Base):
         Path(__file__).parent / "terms" / "placental_scar_count_terms.csv"
     )
 
-    replace: ClassVar[dict[str, str]] = term_util.look_up_table(csv, "replace")
-
-    sep: ClassVar[list[str]] = t_const.PLUS + t_const.COLON + t_const.COMMA + ["&"]
+    sides: ClassVar[list[str]] = ["both", "left", "right"]
+    sep: ClassVar[list[str]] = (
+        t_const.DASH
+        + t_const.PLUS
+        + t_const.COLON
+        + t_const.COMMA
+        + t_const.DOT
+        + ["&"]
+    )
 
     decoder: ClassVar[dict[str, Any]] = {
+        "(": {"LOWER": {"IN": t_const.OPEN}, "OP": "?"},
+        ")": {"LOWER": {"IN": t_const.CLOSE}, "OP": "?"},
         "%": {"LOWER": {"IN": ["%"]}},
-        ",": {"LOWER": {"IN": list(":,.")}, "OP": "?"},
+        ",": {"LOWER": {"IN": sep}, "OP": "?"},
         "9": {"ENT_TYPE": {"IN": ["number"]}},
-        "=": {"ENT_TYPE": "eq"},
-        "[+]": {"LOWER": {"IN": sep}},
+        "=": {"ENT_TYPE": "eq", "OP": "?"},
+        "absent": {"ENT_TYPE": "absent", "OP": "+"},
         "adj": {"ENT_TYPE": "adj", "OP": "*"},
+        "bad": {"ENT_TYPE": "bad", "OP": "+"},
         "plac_scar": {"ENT_TYPE": "plac_scar", "OP": "+"},
-        "side": {"ENT_TYPE": "side", "OP": "+"},
+        "side": {"ENT_TYPE": {"IN": sides}, "OP": "+"},
     }
     # ---------------------
 
@@ -41,8 +48,6 @@ class PlacentalScarCount(Base):
     count: int = None
     left: int = None
     right: int = None
-    female: int = None
-    male: int = None
     side1: int = None
     side2: int = None
 
@@ -60,12 +65,6 @@ class PlacentalScarCount(Base):
 
         if self.right is not None:
             value |= {"placentalScarCountRight": self.right}
-
-        if self.female is not None:
-            value |= {"placentalScarCountFemale": self.female}
-
-        if self.male is not None:
-            value |= {"placentalScarCountMale": self.male}
 
         if self.side1 is not None:
             value |= {"placentalScarCountSide1": self.side1}
@@ -88,12 +87,47 @@ class PlacentalScarCount(Base):
 
         add.trait_pipe(
             nlp,
-            name="placental_scar_count_patterns",
-            compiler=cls.placental_scar_count_patterns(),
+            name="placental_scar_count_at_0_patterns",
+            compiler=cls.placental_scar_total_at_0_patterns(),
             overwrite=["number"],
         )
 
-        add.debug_tokens(nlp)  # #############################################
+        add.trait_pipe(
+            nlp,
+            name="placental_scar_total_at_2_patterns",
+            compiler=cls.placental_scar_total_at_2_patterns(),
+            overwrite=["number"],
+        )
+
+        add.trait_pipe(
+            nlp,
+            name="placental_scar_total_missing_patterns",
+            compiler=cls.placental_scar_total_missing_patterns(),
+            overwrite=["number"],
+        )
+
+        add.trait_pipe(
+            nlp,
+            name="placental_scar_total_only_patterns",
+            compiler=cls.placental_scar_total_only_patterns(),
+            overwrite=["number"],
+        )
+
+        add.trait_pipe(
+            nlp,
+            name="placental_scar_absent_patterns",
+            compiler=cls.placental_scar_absent_patterns(),
+            overwrite=["number"],
+        )
+
+        add.trait_pipe(
+            nlp,
+            name="placental_scar_present_patterns",
+            compiler=cls.placental_scar_present_patterns(),
+            overwrite=["number"],
+        )
+
+        # add.debug_tokens(nlp)  # #############################################
 
         add.cleanup_pipe(nlp, name="placental_scar_cleanup")
 
@@ -106,60 +140,173 @@ class PlacentalScarCount(Base):
                 decoder=cls.decoder,
                 patterns=[
                     " 9 % ",
+                    " bad plac_scar ",
+                    " plac_scar bad ",
                 ],
             ),
         ]
 
     @classmethod
-    def placental_scar_count_patterns(cls):
+    def placental_scar_total_at_0_patterns(cls):
         return [
             Compiler(
                 label="placental_scar_count",
                 keep="placental_scar_count",
-                on_match="placental_scar_count_match",
+                on_match="placental_scar_total_at_0_match",
                 decoder=cls.decoder,
                 patterns=[
-                    " 9 adj plac_scar ",
-                    " 9 adj plac_scar , 9 side , 9 side ",
+                    " 9 adj plac_scar , 9 ( side ) , 9 ( side ) ",
+                    " 9 adj plac_scar , 9          , 9          ",
                 ],
             ),
         ]
 
     @classmethod
-    def get_count(cls, ent) -> int:
-        nums = [t._.trait.number for t in ent if t._.flag == "number"]
+    def placental_scar_total_at_2_patterns(cls):
+        return [
+            Compiler(
+                label="placental_scar_count",
+                keep="placental_scar_count",
+                on_match="placental_scar_total_at_2_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " 9 side , 9 side , = 9 plac_scar",
+                    " 9      , 9      , = 9 plac_scar",
+                ],
+            ),
+        ]
 
-        if len(nums) == 0:
-            return 0
+    @classmethod
+    def placental_scar_total_missing_patterns(cls):
+        return [
+            Compiler(
+                label="placental_scar_count",
+                keep="placental_scar_count",
+                on_match="placental_scar_total_missing_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " 9 side ,  9 side , plac_scar ",
+                    " 9      ,  9      , plac_scar ",
+                    " plac_scar 9      , 9      ",
+                    " plac_scar 9 side , 9 side ",
+                    " plac_scar , 9 side          ",
+                    " plac_scar = 9 side          ",
+                    " 9 plac_scar ,   side   , 9 plac_scar   side ",
+                    " 9 plac_scar ,   side   , 9             side ",
+                    "   plac_scar , 9 side   ,             9 side ",
+                    "   plac_scar , 9 side   ,   plac_scar 9 side ",
+                    "   plac_scar ,   side 9 ,   plac_scar   side 9 ",
+                    " side 9 , adj plac_scar , side 9 , adj plac_scar ",
+                    " 9 side adj plac_scar , 9 side ",
+                ],
+            ),
+        ]
 
-        if len(nums) == 1:
-            count = nums[0]
-        elif len(nums) == 2:  # noqa: PLR2004
-            count = sum(nums)
-        else:
-            count = nums[-1]
+    @classmethod
+    def placental_scar_present_patterns(cls):
+        return [
+            Compiler(
+                label="placental_scar_count",
+                keep="placental_scar_count",
+                on_match="placental_scar_present_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " plac_scar ",
+                ],
+            ),
+        ]
 
-        if count != int(count):
-            raise RejectMatch
+    @classmethod
+    def placental_scar_absent_patterns(cls):
+        return [
+            Compiler(
+                label="placental_scar_count",
+                keep="placental_scar_count",
+                on_match="placental_scar_absent_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " absent plac_scar        ",
+                    "        plac_scar absent ",
+                ],
+            ),
+        ]
 
-        return int(count)
+    @classmethod
+    def placental_scar_total_only_patterns(cls):
+        return [
+            Compiler(
+                label="placental_scar_count",
+                keep="placental_scar_count",
+                on_match="placental_scar_total_only_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " 9 adj plac_scar ",
+                    " plac_scar 9 ",
+                ],
+            ),
+        ]
+
+    @classmethod
+    def get_counts(cls, ent) -> list[int]:
+        nums = [int(t._.trait.number) for t in ent if t._.flag == "number"]
+        return nums
+
+    @classmethod
+    def get_sides(cls, ent) -> list[str]:
+        sides = [e.label_ for e in ent.ents if e.label_ in cls.sides]
+        sides += ["side1", "side2"]
+        return sides
 
     @classmethod
     def placental_scar_bad_match(cls, ent):
         return cls.from_ent(ent)
 
     @classmethod
-    def placental_scar_count_match(cls, ent):
-        count = cls.get_count(ent)
-        if count < 1:
-            count = None
-        present = count > 0
-        return cls.from_ent(ent, count=count, present=present)
+    def placental_scar_match(cls, ent, total_at=None):
+        counts = cls.get_counts(ent)
+        sides = cls.get_sides(ent)
+
+        total = sum(counts) if total_at is None else counts.pop(total_at)
+
+        data = {"count": total}
+        data |= dict(zip(sides, counts, strict=False))
+        data["present"] = total > 0
+
+        return cls.from_ent(ent, **data)
+
+    @classmethod
+    def placental_scar_no_counts_match(cls, ent, *, present):
+        return cls.from_ent(ent, present=present)
 
 
-@registry.misc("placental_scar_count_match")
-def placental_scar_count_match(ent):
-    return PlacentalScarCount.placental_scar_count_match(ent)
+@registry.misc("placental_scar_total_at_0_match")
+def placental_scar_total_at_0_match(ent):
+    return PlacentalScarCount.placental_scar_match(ent, 0)
+
+
+@registry.misc("placental_scar_total_only_match")
+def placental_scar_total_only_match(ent):
+    return PlacentalScarCount.placental_scar_match(ent, 0)
+
+
+@registry.misc("placental_scar_total_at_2_match")
+def placental_scar_total_at_2_match(ent):
+    return PlacentalScarCount.placental_scar_match(ent, 2)
+
+
+@registry.misc("placental_scar_total_missing_match")
+def placental_scar_total_missing_match(ent):
+    return PlacentalScarCount.placental_scar_match(ent)
+
+
+@registry.misc("placental_scar_present_match")
+def placental_scar_present_match(ent):
+    return PlacentalScarCount.placental_scar_no_counts_match(ent, present=True)
+
+
+@registry.misc("placental_scar_absent_match")
+def placental_scar_absent_match(ent):
+    return PlacentalScarCount.placental_scar_no_counts_match(ent, present=False)
 
 
 @registry.misc("placental_scar_bad_match")

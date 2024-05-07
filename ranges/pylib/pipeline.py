@@ -46,6 +46,9 @@ def build():
 
     BodyMass.pipe(nlp)
 
+    PlacentalScarCount.pipe(nlp)
+    Number.pipe(nlp)
+
     Embryo.pipe(nlp)
 
     EarLength.pipe(nlp)
@@ -59,9 +62,6 @@ def build():
     TailLength.pipe(nlp)
     Number.pipe(nlp)
 
-    TotalLength.pipe(nlp)
-    Number.pipe(nlp)
-
     LifeStage.pipe(nlp)
     Sex.pipe(nlp)
 
@@ -72,8 +72,8 @@ def build():
     PregnancyState.pipe(nlp)
     VaginaState.pipe(nlp)
 
-    Number.pipe(nlp)
-    PlacentalScarCount.pipe(nlp)
+    TotalLength.pipe(nlp)
+    # Number.pipe(nlp)
 
     delete.pipe(nlp)
 

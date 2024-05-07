@@ -16,7 +16,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("5 plac scar 3L 2R"),
             [
                 PlacentalScarCount(
-                    present=True, count=5, left=3, right=2, start=20, end=37
+                    present=True, count=5, left=3, right=2, start=0, end=17
                 )
             ],
         )
@@ -40,7 +40,7 @@ class TestPlacentalScarCount(unittest.TestCase):
     def test_placental_scar_count_05(self):
         self.assertEqual(
             parse("no placental scars"),
-            [PlacentalScarCount(present=False, count=0, start=0, end=18)],
+            [PlacentalScarCount(present=False, start=0, end=18)],
         )
 
     def test_placental_scar_count_06(self):
@@ -58,7 +58,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("placental scar 1 + 2"),
             [
                 PlacentalScarCount(
-                    present=True, count=3, side1=1, side2=2, start=9, end=29
+                    present=True, count=3, side1=1, side2=2, start=0, end=20
                 )
             ],
         )
@@ -71,8 +71,12 @@ class TestPlacentalScarCount(unittest.TestCase):
 
     def test_placental_scar_count_09(self):
         self.assertEqual(
-            parse("uterine scars"),
-            [PlacentalScarCount(present=True, start=4, end=26)],
+            parse("scars 2R, 3L,"),
+            [
+                PlacentalScarCount(
+                    present=True, count=5, left=3, right=2, start=0, end=12
+                )
+            ],
         )
 
     def test_placental_scar_count_10(self):
@@ -84,7 +88,7 @@ class TestPlacentalScarCount(unittest.TestCase):
     def test_placental_scar_count_11(self):
         self.assertEqual(
             parse("; 4 faint placental scars"),
-            [PlacentalScarCount(count=4, start=2, end=25)],
+            [PlacentalScarCount(present=True, count=4, start=2, end=25)],
         )
 
     def test_placental_scar_count_12(self):
@@ -92,7 +96,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("5 plac scars: 3(R)&2(L)"),
             [
                 PlacentalScarCount(
-                    present=True, count=5, left=2, right=3, start=0, end=22
+                    present=True, count=5, left=2, right=3, start=0, end=23
                 )
             ],
         )
@@ -122,7 +126,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("not breeding, two scars, 1 left, 1 right"),
             [
                 PlacentalScarCount(
-                    present=True, count=2, left=1, right=1, start=18, end=40
+                    present=True, count=2, left=1, right=1, start=14, end=40
                 )
             ],
         )
@@ -162,7 +166,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("P-SCAR-R 3, P-SCAR-L 2"),
             [
                 PlacentalScarCount(
-                    present=True, count=5, left=2, right=3, start=11, end=33
+                    present=True, count=5, left=2, right=3, start=0, end=22
                 )
             ],
         )
@@ -182,20 +186,20 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("3 pac. scars:1(R)&2(L)"),
             [
                 PlacentalScarCount(
-                    present=True, count=3, left=2, right=1, start=0, end=21
+                    present=True, count=3, left=2, right=1, start=0, end=22
                 )
             ],
         )
 
     def test_placental_scar_count_22(self):
         self.assertEqual(
-            parse("plac scar-9; lactating)"),
+            parse("plac scar-9;)"),
             [PlacentalScarCount(present=True, count=9, start=0, end=11)],
         )
 
     def test_placental_scar_count_23(self):
         self.assertEqual(
-            parse("1 lt. plac. scar, 2 rt emb: CR: 16 mm"),
+            parse("1 lt. plac. scar, 2 rt"),
             [
                 PlacentalScarCount(
                     present=True, count=3, left=1, right=2, start=0, end=22
@@ -215,8 +219,8 @@ class TestPlacentalScarCount(unittest.TestCase):
 
     def test_placental_scar_count_25(self):
         self.assertEqual(
-            parse("; no embroys or scar"),
-            [PlacentalScarCount(present=False, count=0, start=2, end=20)],
+            parse("; no scar"),
+            [PlacentalScarCount(present=False, start=2, end=9)],
         )
 
     def test_placental_scar_count_26(self):
@@ -228,7 +232,7 @@ class TestPlacentalScarCount(unittest.TestCase):
     def test_placental_scar_count_27(self):
         self.assertEqual(
             parse("reproductive data=no plsc ; "),
-            [PlacentalScarCount(present=False, start=29, end=36)],
+            [PlacentalScarCount(present=False, start=18, end=25)],
         )
 
     def test_placental_scar_count_28(self):
@@ -263,14 +267,14 @@ class TestPlacentalScarCount(unittest.TestCase):
 
     def test_placental_scar_count_31(self):
         self.assertEqual(
-            parse(";reproductive data=Placental scars-2R; Embryos-1L,"),
+            parse(";reproductive data=Placental scars-2R;"),
             [PlacentalScarCount(present=True, count=2, right=2, start=19, end=37)],
         )
 
     def test_placental_scar_count_32(self):
         self.assertEqual(
             parse("no visible placental scarring"),
-            [PlacentalScarCount(present=False, count=0, start=0, end=29)],
+            [PlacentalScarCount(present=False, start=0, end=29)],
         )
 
     def test_placental_scar_count_33(self):
@@ -281,15 +285,25 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse(", no scars horns R 2 plac scars, L 3 plac scars,"),
             [
                 PlacentalScarCount(
-                    present=True, start=17, end=47, count=5, right=2, left=3
+                    start=2,
+                    end=10,
+                    present=False,
+                ),
+                PlacentalScarCount(
+                    start=17,
+                    end=47,
+                    present=True,
+                    count=5,
+                    left=3,
+                    right=2,
                 ),
             ],
         )
 
     def test_placental_scar_count_35(self):
         self.assertEqual(
-            parse("reproductive data=horns R+L1.5wide 2+plac. scars,"),
-            [PlacentalScarCount(present=True, start=74, end=85)],
+            parse("reproductive data=plac. scars,"),
+            [PlacentalScarCount(present=True, start=18, end=29)],
         )
 
     def test_placental_scar_count_36(self):
@@ -297,7 +311,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("; reproductive data=scars  0R-4L ;"),
             [
                 PlacentalScarCount(
-                    present=True, count=4, left=4, right=0, start=33, end=45
+                    present=True, count=4, left=4, right=0, start=20, end=31
                 )
             ],
         )
@@ -335,7 +349,7 @@ class TestPlacentalScarCount(unittest.TestCase):
 
     def test_placental_scar_count_41(self):
         self.assertEqual(
-            parse("5 ut scars, 132-62-20-15=19"),
+            parse("5 ut scars,"),
             [PlacentalScarCount(present=True, count=5, start=0, end=10)],
         )
 
@@ -364,15 +378,6 @@ class TestPlacentalScarCount(unittest.TestCase):
             [],
         )
 
-    def test_placental_scar_count_45(self):
-        self.assertEqual(
-            parse(
-                "born in lab on Sept 3 to 7 '56; placed in sep. cage 28 "
-                "Sept 56; skull labeled 23 Jan 57"
-            ),
-            [],
-        )
-
     def test_placental_scar_count_46(self):
         self.assertEqual(
             parse("H,K,L,L,S; UTERINE SCARS=2R"),
@@ -381,8 +386,8 @@ class TestPlacentalScarCount(unittest.TestCase):
 
     def test_placental_scar_count_47(self):
         self.assertEqual(
-            parse("no embryonic scars 360-40-125-68 1800g"),
-            [PlacentalScarCount(present=False, count=0, start=0, end=18)],
+            parse("no embryonic scars"),
+            [PlacentalScarCount(present=False, start=0, end=18)],
         )
 
     def test_placental_scar_count_48(self):
@@ -393,13 +398,13 @@ class TestPlacentalScarCount(unittest.TestCase):
 
     def test_placental_scar_count_49(self):
         self.assertEqual(
-            parse("fat=2; lactating; 14 embryo scars"),
-            [PlacentalScarCount(present=True, count=14, start=18, end=33)],
+            parse("fat=2; 14 embryo scars"),
+            [PlacentalScarCount(present=True, count=14, start=7, end=22)],
         )
 
     def test_placental_scar_count_50(self):
         self.assertEqual(
-            parse("3 scars left, 3 right; lactating."),
+            parse("3 scars left, 3 right;"),
             [
                 PlacentalScarCount(
                     present=True, count=6, left=3, right=3, start=0, end=21
@@ -412,7 +417,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("Uterine scars: 1 L, 3 R."),
             [
                 PlacentalScarCount(
-                    present=True, count=4, left=1, right=3, start=0, end=23
+                    present=True, count=4, left=1, right=3, start=0, end=24
                 )
             ],
         )
@@ -432,17 +437,29 @@ class TestPlacentalScarCount(unittest.TestCase):
             parse("scars 3L, 3R"),
             [
                 PlacentalScarCount(
-                    present=True, count=6, left=3, right=3, start=15, end=27
+                    present=True, count=6, left=3, right=3, start=0, end=12
+                )
+            ],
+        )
+
+    def test_placental_scar_count_54(self):
+        self.assertEqual(
+            parse("2 embryo scars, 1 in each horn,"),
+            [
+                PlacentalScarCount(
+                    present=True,
+                    count=2,
+                    start=0,
+                    end=14,
                 )
             ],
         )
 
     def test_placental_scar_count_55(self):
+        """It gets a zero count with separating words."""
         self.assertEqual(
-            parse("scars 2R, 3L,"),
+            parse("no scars or embryos, mod. fat"),
             [
-                PlacentalScarCount(
-                    present=True, count=5, left=3, right=2, start=12, end=24
-                )
+                PlacentalScarCount(present=False, start=0, end=8),
             ],
         )

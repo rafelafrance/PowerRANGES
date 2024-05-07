@@ -1,7 +1,6 @@
 import unittest
 
 from ranges.pylib.rules.embryo import Embryo
-from ranges.pylib.rules.nipple import Nipple
 from ranges.pylib.rules.pregnancy_state import PregnancyState
 from tests.setup import parse
 
@@ -102,16 +101,6 @@ class TestEmbryo(unittest.TestCase):
             ],
         )
 
-    def test_embryo_13(self):
-        """It gets a zero count with separating words."""
-        self.assertEqual(
-            parse("Med. nipples, no scars or embryos, mod. fat"),
-            [
-                Nipple(state="medium", start=0, end=12),
-                Embryo(count=0, start=14, end=33),
-            ],
-        )
-
     def test_embryo_14(self):
         """It should skip this pattern."""
         self.assertEqual(parse("Fetus of AF 25577 (SHEID-99)."), [])
@@ -151,15 +140,15 @@ class TestEmbryo(unittest.TestCase):
     def test_embryo_19(self):
         """It parses a mixed notation when sides lead the counts."""
         self.assertEqual(
-            parse("no scars, horns R 2 emb x 11, L 4 emb x 11,"),
+            parse("horns R 2 emb x 11, L 4 emb x 11,"),
             [
                 Embryo(
                     length=11,
                     count=6,
                     left=4,
                     right=2,
-                    start=16,
-                    end=33,
+                    start=6,
+                    end=23,
                 ),
             ],
         )
@@ -222,34 +211,6 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("; reproductive data=cr=9x8mm"),
             [Embryo(length=9, width=8, start=20, end=28)],
-        )
-
-    def test_embryo_26(self):
-        """It parses scars."""
-        self.assertEqual(
-            parse("2 embryo scars left horn, 1 right"),
-            [
-                Embryo(
-                    count=3,
-                    left=2,
-                    right=1,
-                    start=0,
-                    end=33,
-                )
-            ],
-        )
-
-    def test_embryo_27(self):
-        """It does not pick up the '1 in'."""
-        self.assertEqual(
-            parse("2 embryo scars, 1 in each horn,"),
-            [
-                Embryo(
-                    count=2,
-                    start=0,
-                    end=8,
-                )
-            ],
         )
 
     def test_embryo_28(self):

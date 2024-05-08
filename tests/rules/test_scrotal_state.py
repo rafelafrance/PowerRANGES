@@ -1,10 +1,13 @@
-# import unittest
-#
+import unittest
+
 # from ranges.pylib.rules.testes import Testes
 # from tests.setup import parse
-#
-#
-# class TestScrotalState(unittest.TestCase):
+
+
+class TestScrotalState(unittest.TestCase):
+    pass
+
+
 #     def test_scrotal_state_01(self):
 #         self.assertEqual(
 #             parse("testes not-scrotal"),

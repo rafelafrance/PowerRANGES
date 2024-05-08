@@ -40,11 +40,11 @@ class Bat:
 
 
 @dataclass(eq=False)
-class ShorthandLengths(Base):
+class LengthShorthand(Base):
     # Class vars ----------
     csvs: ClassVar[list[Path]] = [
         Path(t_terms.__file__).parent / "unit_mass_terms.csv",
-        Path(__file__).parent / "terms" / "shorthand_length_terms.csv",
+        Path(__file__).parent / "terms" / "length_shorthand_terms.csv",
     ]
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
 
@@ -339,9 +339,9 @@ class ShorthandLengths(Base):
 
 @registry.misc("cell_match")
 def cell_match(ent):
-    return ShorthandLengths.cell_match(ent)
+    return LengthShorthand.cell_match(ent)
 
 
 @registry.misc("shorthand_match")
 def shorthand_match(ent):
-    return ShorthandLengths.shorthand_match(ent)
+    return LengthShorthand.shorthand_match(ent)

@@ -8,7 +8,7 @@ from traiter.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
-class ShorthandFemaleStates(Base):
+class FemaleStateShorthand(Base):
     vagina_state: str = None
     nipple_state: str = None
     lactation_state: str = None
@@ -77,4 +77,4 @@ class ShorthandFemaleStates(Base):
 
 @registry.misc("shorthand_female_states_match")
 def shorthand_female_states_match(ent):
-    return ShorthandFemaleStates.shorthand_female_states_match(ent)
+    return FemaleStateShorthand.shorthand_female_states_match(ent)

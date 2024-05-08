@@ -1,15 +1,15 @@
 import unittest
 
-from ranges.pylib.rules.shorthand_female_states import ShorthandFemaleStates
+from ranges.pylib.rules.female_state_shorthand import FemaleStateShorthand
 from tests.setup import parse
 
 
-class TestFemaleStates(unittest.TestCase):
-    def test_shorthand_female_states_state_01(self):
+class TestFemaleStateShorthand(unittest.TestCase):
+    def test_female_state_shorthand_01(self):
         self.assertEqual(
             parse("oen"),
             [
-                ShorthandFemaleStates(
+                FemaleStateShorthand(
                     vagina_state="open",
                     nipple_state="enlarged",
                     lactation_state="not lactating",
@@ -19,11 +19,11 @@ class TestFemaleStates(unittest.TestCase):
             ],
         )
 
-    def test_shorthand_female_states_state_02(self):
+    def test_female_state_shorthand_02(self):
         self.assertEqual(
             parse("cmlac"),
             [
-                ShorthandFemaleStates(
+                FemaleStateShorthand(
                     vagina_state="closed",
                     nipple_state="medium",
                     lactation_state="lactating",

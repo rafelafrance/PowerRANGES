@@ -19,6 +19,7 @@ from ranges.pylib.rules.length_shorthand import LengthShorthand
 from ranges.pylib.rules.life_stage import LifeStage
 from ranges.pylib.rules.mammary import Mammary
 from ranges.pylib.rules.nipple import Nipple
+from ranges.pylib.rules.ovary import Ovary
 from ranges.pylib.rules.placenta_scar_count import PlacentalScarCount
 from ranges.pylib.rules.pregnancy_state import PregnancyState
 from ranges.pylib.rules.sex import Sex
@@ -62,18 +63,19 @@ def build():
     TailLength.pipe(nlp)
     Number.pipe(nlp)
 
-    LifeStage.pipe(nlp)
-    Sex.pipe(nlp)
-
     FemaleStateShorthand.pipe(nlp)
     Mammary.pipe(nlp)
     Nipple.pipe(nlp)
     LactationState.pipe(nlp)
     PregnancyState.pipe(nlp)
     VaginaState.pipe(nlp)
+    Ovary.pipe(nlp)
 
     TotalLength.pipe(nlp)
     # Number.pipe(nlp)
+
+    LifeStage.pipe(nlp)
+    Sex.pipe(nlp)
 
     delete.pipe(nlp)
 

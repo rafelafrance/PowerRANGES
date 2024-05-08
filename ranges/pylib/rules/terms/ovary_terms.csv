@@ -1,0 +1,445 @@
+label,pattern
+active,active
+active,inactive
+albicans,alb
+albicans,alb.
+albicans,albicans
+and,&
+and,and
+both,both
+both,both side
+both,both sides
+both,each side
+color,black
+color,brown
+color,dark black
+color,dark brown
+color,dark pigmented
+color,dark pink
+color,dark red
+color,dark white
+color,darkblack
+color,darkbrown
+color,darkpigmented
+color,darkpink
+color,darkred
+color,darkwhite
+color,light black
+color,light brown
+color,light pigmented
+color,light pink
+color,light red
+color,light white
+color,lightblack
+color,lightbrown
+color,lightpigmented
+color,lightpink
+color,lightred
+color,lightwhite
+color,pale black
+color,pale brown
+color,pale pigmented
+color,pale pink
+color,pale red
+color,pale white
+color,paleblack
+color,palebrown
+color,palepigmented
+color,palepink
+color,palered
+color,palewhite
+color,pigmented
+color,pink
+color,red
+color,white
+corpus,c
+corpus,c.
+corpus,c.l
+corpus,c.l.
+corpus,cl
+corpus,cl.
+corpus,cor
+corpus,cor.
+corpus,corp
+corpus,corp.
+corpus,corpora
+corpus,corpus
+covered,coverage
+covered,covered
+covered,covered in
+cyst,bodies
+cyst,cancer
+cyst,cancerous
+cyst,cyst
+cyst,cysts
+destroyed,destroy
+destroyed,destroyed
+developed,dev
+developed,dev none
+developed,dev: none
+developed,dev:none
+developed,devel
+developed,develope
+developed,developed
+developed,development
+developed,fully dev
+developed,fully devel
+developed,fully develope
+developed,fully developed
+developed,fully development
+developed,fully devnone
+developed,fully indist
+developed,fully undev
+developed,fully undevel
+developed,fully undevelope
+developed,fully undeveloped
+developed,fully-dev
+developed,fully-devel
+developed,fully-develope
+developed,fully-developed
+developed,fully-development
+developed,fully-devnone
+developed,fully-indist
+developed,fully-undev
+developed,fully-undevel
+developed,fully-undevelope
+developed,fully-undeveloped
+developed,incompletely dev
+developed,incompletely devel
+developed,incompletely develope
+developed,incompletely developed
+developed,incompletely development
+developed,incompletely devnone
+developed,incompletely indist
+developed,incompletely undev
+developed,incompletely undevel
+developed,incompletely undevelope
+developed,incompletely undeveloped
+developed,incompletely-dev
+developed,incompletely-dev none
+developed,incompletely-dev: none
+developed,incompletely-dev:none
+developed,incompletely-devel
+developed,incompletely-develope
+developed,incompletely-developed
+developed,incompletely-development
+developed,incompletely-devnone
+developed,incompletely-indist
+developed,incompletely-undev
+developed,incompletely-undevel
+developed,incompletely-undevelope
+developed,incompletely-undeveloped
+developed,indist
+developed,part dev
+developed,part devel
+developed,part develope
+developed,part developed
+developed,part development
+developed,part devnone
+developed,part indist
+developed,part undev
+developed,part undevel
+developed,part undevelope
+developed,part undeveloped
+developed,part-dev
+developed,part-devel
+developed,part-develope
+developed,part-developed
+developed,part-development
+developed,part-devnone
+developed,part-indist
+developed,part-undev
+developed,part-undevel
+developed,part-undevelope
+developed,part-undeveloped
+developed,partially dev
+developed,partially devel
+developed,partially develope
+developed,partially developed
+developed,partially development
+developed,partially devnone
+developed,partially indist
+developed,partially undev
+developed,partially undevel
+developed,partially undevelope
+developed,partially undeveloped
+developed,partially-dev
+developed,partially-devel
+developed,partially-develope
+developed,partially-developed
+developed,partially-development
+developed,partially-indist
+developed,partially-undev
+developed,partially-undevel
+developed,partially-undevelope
+developed,partially-undeveloped
+developed,undev
+developed,undevel
+developed,undevelope
+developed,undeveloped
+developed,well dev
+developed,well devel
+developed,well develope
+developed,well developed
+developed,well development
+developed,well indist
+developed,well undev
+developed,well undevel
+developed,well undevelope
+developed,well undeveloped
+developed,well-dev
+developed,well-devel
+developed,well-developed
+fallopian,fallopian
+fallopian,fallopian tube
+fallopian,fallopian tubes
+fallopian,foll
+fallopian,foll tube
+fallopian,foll tubes
+fallopian,foll.
+fallopian,foll. tube
+fallopian,foll. tubes
+fallopian,folls
+fat,fat
+fat,fats
+fat,fatty
+horn,horn
+horn,horns
+left,emb-l
+left,l
+left,l side
+left,l x
+left,l.
+left,l. side
+left,l. x
+left,left
+left,left side
+left,lf
+left,lf side
+left,lf.
+left,lf. side
+left,lft
+left,lft side
+left,lft.
+left,lft. side
+left,lt
+left,lt.
+left,lx
+left,on left
+luteum,lut
+luteum,lut.
+luteum,lute
+luteum,lute.
+luteum,luteum
+mature,imm
+mature,imm.
+mature,immature
+mature,mature
+non,no
+non,non
+non,not
+non,semi
+non,sub
+other,few
+other,sev
+other,sev.
+other,somewhat
+ovary,ov
+ovary,ovaries
+ovary,ovary
+ovary,ovarys
+right,emb-r
+right,on right
+right,r
+right,r side
+right,r x
+right,r.
+right,r. side
+right,r. x
+right,right
+right,right side
+right,rt
+right,rt side
+right,rt.
+right,rt. side
+right,rx
+right,rx.
+size,enlarge
+size,enlarge size
+size,enlarge sized
+size,enlarge+
+size,enlarged
+size,enlarged size
+size,enlarged sized
+size,enlarged+
+size,enlargedsize
+size,enlargedsized
+size,enlargesize
+size,enlargesized
+size,extended
+size,extended size
+size,extended sized
+size,extended+
+size,extendedsize
+size,extendedsized
+size,large
+size,large size
+size,large sized
+size,large+
+size,largesize
+size,largesized
+size,lg
+size,lg size
+size,lg sized
+size,lg+
+size,lgsize
+size,lgsized
+size,med
+size,med size
+size,med sized
+size,med+
+size,medium
+size,medium size
+size,medium sized
+size,medium+
+size,mediumsize
+size,mediumsized
+size,medsize
+size,medsized
+size,minute
+size,minute size
+size,minute sized
+size,minute+
+size,minutesize
+size,minutesized
+size,mod
+size,mod size
+size,mod sized
+size,mod+
+size,moderate
+size,moderate size
+size,moderate sized
+size,moderate+
+size,moderatesize
+size,moderatesized
+size,modsize
+size,modsized
+size,shrunk
+size,shrunk size
+size,shrunk sized
+size,shrunk+
+size,shrunken
+size,shrunken size
+size,shrunken sized
+size,shrunken+
+size,shrunkensize
+size,shrunkensized
+size,shrunksize
+size,shrunksized
+size,sm
+size,sm size
+size,sm sized
+size,sm+
+size,sm-med
+size,sm-med size
+size,sm-med sized
+size,sm-med+
+size,sm-medsize
+size,sm-medsized
+size,small
+size,small size
+size,small sized
+size,small+
+size,smallsize
+size,smallsized
+size,smsize
+size,smsized
+size,swollen
+size,swollen size
+size,swollen sized
+size,swollen+
+size,tiny
+size,tiny size
+size,tiny sized
+size,tiny+
+size,tinysize
+size,tinysized
+size,unobservable
+size,unobservable size
+size,unobservable+
+size,very moderate size
+size,very moderate sized
+size,very moderate+
+size,very moderatesize
+size,very moderatesized
+size,very modsize
+size,very modsized
+size,very shrunk
+size,very shrunk size
+size,very shrunk sized
+size,very shrunk+
+size,very shrunken
+size,very shrunken size
+size,very shrunken sized
+size,very shrunken+
+size,very shrunkensize
+size,very shrunkensized
+size,very shrunksize
+size,very shrunksized
+size,very sm
+size,very sm size
+size,very sm sized
+size,very sm+
+size,very sm-med
+size,very sm-med size
+size,very sm-med sized
+size,very sm-med+
+size,very sm-medsize
+size,very sm-medsized
+size,very small
+size,very small size
+size,very small sized
+size,very small+
+size,very smallsize
+size,very smallsized
+size,very smsize
+size,very smsized
+size,very swollen
+size,very swollen size
+size,very swollen sized
+size,very swollen+
+size,very swollensize
+size,very swollensized
+size,very tiny
+size,very tiny size
+size,very tiny sized
+size,very tiny+
+size,very tinysize
+size,very tinysized
+size,very unobservable
+size,very unobservable size
+size,very unobservable+
+texture,smooth
+uterus,ut
+uterus,uterine
+uterus,uterus
+visible,bare
+visible,conspicuous
+visible,definite
+visible,faint
+visible,hidden
+visible,invisible
+visible,prominen
+visible,prominent
+visible,seen
+visible,very bare
+visible,very conspicuous
+visible,very definite
+visible,very faint
+visible,very hidden
+visible,very invisible
+visible,very prominen
+visible,very prominent
+visible,very seen
+visible,very visible
+visible,visible

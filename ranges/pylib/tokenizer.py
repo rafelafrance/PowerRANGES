@@ -18,8 +18,8 @@ def setup(nlp):
     tokenizer.append_infix_regex(
         nlp,
         [
-            rf"(?<=[{ALPHA}])\.(?=[{ALPHA}\d])",  # Break on interior dot
-            rf"(?<=[{ALPHA}])\.",  # Break on a dot
+            rf"(?<=[{ALPHA}])[.](?=[{ALPHA}\d])",  # Break on interior dot
+            rf"(?<=[{ALPHA}])[.]",  # Break on a dot
             rf"(?<=\d)(?=[{ALPHA}])",  # Break on digit followed by a letter
             rf"(?<=[{ALPHA}])(?=\d)",  # Break on letter followed by a digit
             # Always break on these characters
@@ -44,6 +44,7 @@ def setup(nlp):
     tokenizer.append_suffix_regex(
         nlp,
         [
+            rf"(?<=[{ALPHA}])[.]",  # Break on a dot
             rf"(?<=\d)[{ALPHA}]+",  # Break on a digit followed by letters
             #
             # Break on a letter followed by digits but don't break up UUIDs

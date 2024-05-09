@@ -68,8 +68,8 @@ def build():
     Nipple.pipe(nlp)
     LactationState.pipe(nlp)
     PregnancyState.pipe(nlp)
-    VaginaState.pipe(nlp)
     Ovary.pipe(nlp)
+    VaginaState.pipe(nlp)
 
     TotalLength.pipe(nlp)
     # Number.pipe(nlp)

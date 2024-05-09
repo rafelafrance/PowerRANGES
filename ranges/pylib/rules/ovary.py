@@ -32,8 +32,12 @@ class Ovary(Base):
         "left": "left_side",
         "right": "right_side",
         "both": "both_sides",
+        "left_ovary": "left_side",
+        "right_ovary": "right_side",
     }
-    sides: ClassVar[list[str]] = list(side_key.keys())
+    sides: ClassVar[list[str]] = ["left", "right", "both"]
+    side_ovary: ClassVar[list[str]] = ["left_ovary", "right_ovary"]
+    all_sides: ClassVar[list[str]] = sides + side_ovary
 
     factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
     factor_mm: ClassVar[dict[str, str]] = {
@@ -52,6 +56,7 @@ class Ovary(Base):
         ",": {"LOWER": {"IN": list(":;,.-=")}, "OP": "?"},
         "[+]": {"LOWER": {"IN": t_const.PLUS + t_const.DASH}, "OP": "?"},
         "9": {"ENT_TYPE": "number"},
+        "adp": {"POS": "ADP", "OP": "*"},
         "albicans": {"ENT_TYPE": "albicans", "OP": "+"},
         "and": {"ENT_TYPE": "and", "OP": "+"},
         "corpus": {"ENT_TYPE": "corpus", "OP": "+"},
@@ -61,6 +66,7 @@ class Ovary(Base):
         "fallopian": {"ENT_TYPE": "fallopian", "OP": "+"},
         "fat": {"ENT_TYPE": "fat", "OP": "+"},
         "horn": {"ENT_TYPE": "horn", "OP": "+"},
+        "linker": {"ENT_TYPE": "linker", "OP": "*"},
         "luteum": {"ENT_TYPE": "luteum", "OP": "+"},
         "mm": {"ENT_TYPE": {"IN": units}, "OP": "+"},
         "non": {"ENT_TYPE": "non", "OP": "+"},
@@ -68,6 +74,7 @@ class Ovary(Base):
         "ovaries": {"ENT_TYPE": "ovaries", "OP": "+"},
         "uterus": {"ENT_TYPE": "uterus", "OP": "+"},
         "side": {"ENT_TYPE": {"IN": sides}, "OP": "+"},
+        "side_ovary": {"ENT_TYPE": {"IN": side_ovary}, "OP": "+"},
         "side_prefix": {"ENT_TYPE": {"IN": sides}, "OP": "*"},
         "word": {"LOWER": {"REGEX": r"^[a-z]\w*$"}},
         "x": {"LOWER": {"IN": t_const.CROSS}},
@@ -101,6 +108,7 @@ class Ovary(Base):
             nlp,
             name="ovary_description_patterns",
             compiler=cls.ovary_description_patterns(),
+            overwrite=cls.overwrite,
         )
 
         add.trait_pipe(
@@ -144,6 +152,8 @@ class Ovary(Base):
                 on_match="ovary_description_match",
                 decoder=cls.decoder,
                 patterns=[
+                    " 9? adp descriptors ",
+                    " 9? non descriptors ",
                     " [+] descriptors ",
                     " [+] descriptors , and? non? descriptors ",
                     " [+] descriptors word? word? fat  ",
@@ -161,8 +171,18 @@ class Ovary(Base):
                 decoder=cls.decoder,
                 patterns=[
                     " ovaries , descr ",
+                    " ovaries , side descr , side descr ",
+                    " ovaries , side descr ",
+                    " ovaries , side adp    descr ",
+                    " ovaries , side linker descr ",
+                    " descr , ovaries ",
+                    " descr , adp    ovaries ",
                     " descr , side , ovaries ",
-                    " ovaries , side 9? descr , side 9? descr ",
+                    " descr , adp side , ovaries ",
+                    " side ,  ovaries , descr ",
+                    " side adp ovaries , descr ",
+                    " side linker ovaries linker , descr ",
+                    " side_ovary descr , side_ovary descr , side ovaries descr ",
                 ],
             ),
         ]
@@ -210,7 +230,7 @@ class Ovary(Base):
     def ovary_state_match(cls, ent):
         data = {}
 
-        sides = [e.label_ for e in ent.ents if e.label_ in cls.sides]
+        sides = [e.label_ for e in ent.ents if e.label_ in cls.all_sides]
         descr = [e.text.lower() for e in ent.ents if e.label_ == "description"]
         if sides and descr:
             for side, desc in zip(sides, descr, strict=False):
@@ -230,7 +250,7 @@ class Ovary(Base):
         data["length"] = nums[0] if nums else None
         data["width"] = nums[1] if len(nums) > 1 else None
 
-        sides = [e.label_ for e in ent.ents if e.label_ in cls.sides]
+        sides = [e.label_ for e in ent.ents if e.label_ in cls.all_sides]
         descr = [e.text.lower() for e in ent.ents if e.label_ == "description"]
         if sides and descr:
             for side, desc in zip(sides, descr, strict=False):

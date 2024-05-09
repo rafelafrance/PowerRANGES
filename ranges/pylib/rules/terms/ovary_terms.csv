@@ -4,6 +4,7 @@ active,inactive
 albicans,alb
 albicans,alb.
 albicans,albicans
+albicans,c.alb
 and,&
 and,and
 both,both
@@ -226,6 +227,8 @@ left,lt
 left,lt.
 left,lx
 left,on left
+left_ovary,lov
+linker,w/
 luteum,lut
 luteum,lut.
 luteum,lute
@@ -264,6 +267,7 @@ right,rt.
 right,rt. side
 right,rx
 right,rx.
+right_ovary,rov
 size,enlarge
 size,enlarge size
 size,enlarge sized

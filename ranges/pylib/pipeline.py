@@ -61,9 +61,6 @@ def build():
 
     HindFootLength.pipe(nlp)
 
-    TailLength.pipe(nlp)
-    Number.pipe(nlp)
-
     FemaleStateShorthand.pipe(nlp)
     Mammary.pipe(nlp)
     Nipple.pipe(nlp)
@@ -72,6 +69,9 @@ def build():
     Testicle.pipe(nlp)
     Ovary.pipe(nlp)
     VaginaState.pipe(nlp)
+
+    TailLength.pipe(nlp)
+    Number.pipe(nlp)
 
     TotalLength.pipe(nlp)
     # Number.pipe(nlp)

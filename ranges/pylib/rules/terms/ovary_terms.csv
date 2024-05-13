@@ -228,6 +228,7 @@ left,lt.
 left,lx
 left,on left
 left_ovary,lov
+left_ovary,lovary
 linker,w/
 luteum,lut
 luteum,lut.
@@ -251,6 +252,24 @@ ovary,ov
 ovary,ovaries
 ovary,ovary
 ovary,ovarys
+ovary_len,ovary len
+ovary_len,ovary length
+ovary_len,ovarylen
+ovary_len,ovarylength
+ovary_len_mm,ovary len im mm
+ovary_len_mm,ovary len mm
+ovary_len_mm,ovary length in mm
+ovary_len_mm,ovary length mm
+ovary_len_mm,ovarylengthinmm
+ovary_len_mm,ovarylengthmm
+ovary_len_mm,ovaryleninmm
+ovary_len_mm,ovarylenmm
+ovary_width,ovary width
+ovary_width,ovarywidth
+ovary_width_mm,ovary width in mm
+ovary_width_mm,ovary width mm
+ovary_width_mm,ovarywidthinmm
+ovary_width_mm,ovarywidthmm
 right,emb-r
 right,on right
 right,r
@@ -268,6 +287,7 @@ right,rt. side
 right,rx
 right,rx.
 right_ovary,rov
+right_ovary,rovary
 size,enlarge
 size,enlarge size
 size,enlarge sized
@@ -433,6 +453,7 @@ visible,definite
 visible,faint
 visible,hidden
 visible,invisible
+visible,listed
 visible,prominen
 visible,prominent
 visible,seen

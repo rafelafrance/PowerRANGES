@@ -24,6 +24,7 @@ from ranges.pylib.rules.placenta_scar_count import PlacentalScarCount
 from ranges.pylib.rules.pregnancy_state import PregnancyState
 from ranges.pylib.rules.sex import Sex
 from ranges.pylib.rules.tail_length import TailLength
+from ranges.pylib.rules.testicle import Testicle
 from ranges.pylib.rules.total_length import TotalLength
 from ranges.pylib.rules.tragus_length import TragusLength
 from ranges.pylib.rules.vagina_state import VaginaState
@@ -68,6 +69,7 @@ def build():
     Nipple.pipe(nlp)
     LactationState.pipe(nlp)
     PregnancyState.pipe(nlp)
+    Testicle.pipe(nlp)
     Ovary.pipe(nlp)
     VaginaState.pipe(nlp)
 

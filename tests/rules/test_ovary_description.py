@@ -4,7 +4,7 @@ from ranges.pylib.rules.ovary import Ovary
 from tests.setup import parse
 
 
-class TestOvariesState(unittest.TestCase):
+class TestOvaryState(unittest.TestCase):
     def test_ovary_description_01(self):
         self.assertEqual(
             parse("reproductive data=Ovaries and uterus small, immature"),
@@ -64,7 +64,15 @@ class TestOvariesState(unittest.TestCase):
                 "reproductive data=Left ovary=3x1.5mm, "
                 "pale pink in color; uterus thin"
             ),
-            [Ovary(left_side="pale pink", length=3.0, width=1.5, start=18, end=47)],
+            [
+                Ovary(
+                    left_side="pale pink",
+                    left_length=3.0,
+                    left_width=1.5,
+                    start=18,
+                    end=47,
+                ),
+            ],
         )
 
     def test_ovary_description_10(self):

@@ -7,7 +7,7 @@
 # from vertnet.pylib.trait import Trait
 #
 #
-# class TestTestesSize(unittest.TestCase):
+# class TestTesticleSize(unittest.TestCase):
 #     def test_parse_01(self):
 #         self.assertEqual(
 #             TESTES_SIZE.parse("testes = 8x5 mm"),

@@ -16,6 +16,7 @@ from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
+from traiter.pylib.pipes.reject_match import RejectMatch
 from traiter.pylib.rules import terms as t_terms
 from traiter.pylib.rules.base import Base
 
@@ -28,13 +29,33 @@ class Ovary(Base):
         Path(__file__).parent / "terms" / "ovary_terms.csv",
     ]
 
-    side_key: ClassVar[dict[str, str]] = {
+    side_map: ClassVar[dict[str, str]] = {
         "left": "left_side",
         "right": "right_side",
         "both": "both_sides",
         "left_ovary": "left_side",
         "right_ovary": "right_side",
     }
+
+    len_map: ClassVar[dict[str, str]] = {
+        "left": "left_length",
+        "right": "right_length",
+        "both": "both_lengths",
+        "left_ovary": "left_length",
+        "right_ovary": "right_length",
+    }
+
+    width_map: ClassVar[dict[str, str]] = {
+        "left": "left_width",
+        "right": "right_width",
+        "both": "both_widths",
+        "left_ovary": "left_width",
+        "right_ovary": "right_width",
+    }
+
+    keys: ClassVar[list[str]] = """
+        ovary_len ovary_len_mm ovary_width ovary_width_mm """.split()
+
     sides: ClassVar[list[str]] = ["left", "right", "both"]
     side_ovary: ClassVar[list[str]] = ["left_ovary", "right_ovary"]
     all_sides: ClassVar[list[str]] = sides + side_ovary
@@ -53,9 +74,10 @@ class Ovary(Base):
         """.split()
 
     decoder: ClassVar[dict[str, dict]] = {
-        ",": {"LOWER": {"IN": list(":;,.-=")}, "OP": "?"},
-        "[+]": {"LOWER": {"IN": t_const.PLUS + t_const.DASH}, "OP": "?"},
+        "'": {"LOWER": {"IN": t_const.QUOTE}, "OP": "?"},
+        ",": {"LOWER": {"IN": list(":;,.-=<>")}, "OP": "?"},
         "9": {"ENT_TYPE": "number"},
+        "[+]": {"LOWER": {"IN": t_const.PLUS + t_const.DASH}, "OP": "?"},
         "adp": {"POS": "ADP", "OP": "*"},
         "albicans": {"ENT_TYPE": "albicans", "OP": "+"},
         "and": {"ENT_TYPE": "and", "OP": "+"},
@@ -66,16 +88,16 @@ class Ovary(Base):
         "fallopian": {"ENT_TYPE": "fallopian", "OP": "+"},
         "fat": {"ENT_TYPE": "fat", "OP": "+"},
         "horn": {"ENT_TYPE": "horn", "OP": "+"},
+        "key": {"ENT_TYPE": {"IN": keys}, "OP": "+"},
         "linker": {"ENT_TYPE": "linker", "OP": "*"},
         "luteum": {"ENT_TYPE": "luteum", "OP": "+"},
-        "mm": {"ENT_TYPE": {"IN": units}, "OP": "+"},
+        "mm": {"ENT_TYPE": {"IN": units}, "OP": "*"},
         "non": {"ENT_TYPE": "non", "OP": "+"},
-        "ovary": {"ENT_TYPE": "ovary", "OP": "+"},
         "ovaries": {"ENT_TYPE": "ovaries", "OP": "+"},
-        "uterus": {"ENT_TYPE": "uterus", "OP": "+"},
-        "side": {"ENT_TYPE": {"IN": sides}, "OP": "+"},
+        "ovary": {"ENT_TYPE": "ovary", "OP": "+"},
+        "side": {"ENT_TYPE": {"IN": sides}},
         "side_ovary": {"ENT_TYPE": {"IN": side_ovary}, "OP": "+"},
-        "side_prefix": {"ENT_TYPE": {"IN": sides}, "OP": "*"},
+        "uterus": {"ENT_TYPE": "uterus", "OP": "+"},
         "word": {"LOWER": {"REGEX": r"^[a-z]\w*$"}},
         "x": {"LOWER": {"IN": t_const.CROSS}},
     }
@@ -87,7 +109,19 @@ class Ovary(Base):
     both_sides: str = None
 
     length: float = None
+    left_length: float = None
+    right_length: float = None
+    both_lengths: float = None
+    side1_length: float = None
+    side2_length: float = None
+
     width: float = None
+    left_width: float = None
+    right_width: float = None
+    both_widths: float = None
+    side1_width: float = None
+    side2_width: float = None
+
     units_inferred: bool = None
 
     def to_dwc(self, dwc) -> DarwinCore:
@@ -108,6 +142,13 @@ class Ovary(Base):
             nlp,
             name="ovary_description_patterns",
             compiler=cls.ovary_description_patterns(),
+            overwrite=cls.overwrite,
+        )
+
+        add.trait_pipe(
+            nlp,
+            name="ovary_keyed_size_patterns",
+            compiler=cls.ovary_keyed_size_patterns(),
             overwrite=cls.overwrite,
         )
 
@@ -170,19 +211,14 @@ class Ovary(Base):
                 on_match="ovary_state_match",
                 decoder=cls.decoder,
                 patterns=[
+                    " descr , adp , side* , ovaries ",
                     " ovaries , descr ",
-                    " ovaries , side descr , side descr ",
-                    " ovaries , side descr ",
-                    " ovaries , side adp    descr ",
-                    " ovaries , side linker descr ",
-                    " descr , ovaries ",
-                    " descr , adp    ovaries ",
-                    " descr , side , ovaries ",
-                    " descr , adp side , ovaries ",
-                    " side ,  ovaries , descr ",
-                    " side adp ovaries , descr ",
-                    " side linker ovaries linker , descr ",
-                    " side_ovary descr , side_ovary descr , side ovaries descr ",
+                    " ovaries , side* , adp , descr ",
+                    " ovaries , side* descr , side* descr ",
+                    " ovaries , side* linker descr ",
+                    " side+ , adp , ovaries        , descr ",
+                    " side+ linker  ovaries linker , descr ",
+                    " side_ovary descr , side_ovary descr , side* ovaries descr ",
                 ],
             ),
         ]
@@ -196,13 +232,30 @@ class Ovary(Base):
                 on_match="ovary_size_match",
                 decoder=cls.decoder,
                 patterns=[
-                    " side_prefix ovaries , 9        , descr ",
-                    " side_prefix ovaries , 9     mm , descr ",
-                    " side_prefix ovaries , 9 x 9    , descr ",
-                    " side_prefix ovaries , 9 x 9 mm , descr ",
-                    " side_prefix ovaries , descr , 9     mm ",
-                    " side_prefix ovaries , descr , 9 x 9    ",
-                    " side_prefix ovaries , descr , 9 x 9 mm ",
+                    " side* ovaries ,         9        mm ",
+                    " side* ovaries ,         9 mm x 9 mm ",
+                    " side* ovaries ,         9        mm , descr ",
+                    " side* ovaries ,         9 mm x 9 mm , descr ",
+                    " side* ovaries , descr , 9        mm ",
+                    " side* ovaries , descr , 9 mm x 9 mm ",
+                    " side* ovaries , descr , 9 mm x 9 mm , 9 mm x 9 mm ",
+                    " side* ovaries ,         9 mm x 9 mm , 9 mm x 9 mm ",
+                    " ovaries , descr , side* 9 mm x 9 mm , side* 9 mm x 9 mm ",
+                    " ovaries ,         side* 9 mm x 9 mm , side* 9 mm x 9 mm ",
+                ],
+            ),
+        ]
+
+    @classmethod
+    def ovary_keyed_size_patterns(cls):
+        return [
+            Compiler(
+                label="ovary",
+                keep="ovary",
+                on_match="ovary_keyed_size_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " key ' , ' 9 mm ",
                 ],
             ),
         ]
@@ -234,7 +287,7 @@ class Ovary(Base):
         descr = [e.text.lower() for e in ent.ents if e.label_ == "description"]
         if sides and descr:
             for side, desc in zip(sides, descr, strict=False):
-                data[cls.side_key[side]] = desc
+                data[cls.side_map[side]] = desc
         elif descr:
             data["description"] = descr[0]
 
@@ -246,19 +299,81 @@ class Ovary(Base):
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
 
-        nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
-        data["length"] = nums[0] if nums else None
-        data["width"] = nums[1] if len(nums) > 1 else None
-
         sides = [e.label_ for e in ent.ents if e.label_ in cls.all_sides]
-        descr = [e.text.lower() for e in ent.ents if e.label_ == "description"]
-        if sides and descr:
-            for side, desc in zip(sides, descr, strict=False):
-                data[cls.side_key[side]] = desc
-        elif descr:
-            data["description"] = descr[0]
 
-        data["units_inferred"] = True if units is None and nums else None
+        nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
+
+        cls.link_nums_sides(data, nums, sides)
+
+        # Match the description to the side
+        descr = next(
+            (e.text.lower() for e in ent.ents if e.label_ == "description"), None
+        )
+        if sides and descr:
+            data[cls.side_map[sides[0]]] = descr
+        elif descr:
+            data["description"] = descr
+
+        data["units_inferred"] = True if units is None else None
+
+        return cls.from_ent(ent, **data)
+
+    @classmethod
+    def link_nums_sides(cls, data, nums, sides):
+        one_pair = 2
+        two_pairs = 4
+        # Matching sides with the values
+        if len(sides) == 0 and len(nums) <= one_pair:
+            data["length"] = nums[0]
+            data["width"] = nums[1] if len(nums) > 1 else None
+        elif len(sides) == 0 and len(nums) > one_pair:
+            data["side1_length"] = nums[0]
+            data["side1_width"] = nums[1]
+            data["side2_length"] = nums[2]
+            data["side2_width"] = nums[3] if len(nums) >= two_pairs else None
+        elif len(sides) == 1 and len(nums) <= one_pair:
+            data[cls.len_map[sides[0]]] = nums[0]
+            data[cls.width_map[sides[0]]] = nums[1]
+        elif len(sides) == 1 and len(nums) > one_pair:
+            match cls.len_map[sides[0]]:
+                case "left_length":
+                    data["left_length"] = nums[0]
+                    data["left_width"] = nums[1]
+                    data["right_length"] = nums[2]
+                    data["right_width"] = nums[3] if len(nums) >= two_pairs else None
+                case "right_length":
+                    data["right_length"] = nums[0]
+                    data["right_width"] = nums[1]
+                    data["left_length"] = nums[2]
+                    data["left_width"] = nums[3] if len(nums) >= two_pairs else None
+                case _:
+                    raise RejectMatch
+        elif len(sides) >= one_pair:
+            data[cls.len_map[sides[0]]] = nums[0]
+            if len(nums) > 1:
+                data[cls.width_map[sides[0]]] = nums[1]
+            if len(nums) > one_pair:
+                data[cls.len_map[sides[1]]] = nums[2]
+            if len(nums) >= two_pairs:
+                data[cls.width_map[sides[1]]] = nums[3]
+
+    @classmethod
+    def ovary_keyed_size_match(cls, ent):
+        data = {}
+        units = next((e for e in ent.ents if e.label_ in cls.units), None)
+        key = next((e.label_ for e in ent.ents if e.label_ in cls.keys), None)
+        val = next(
+            (cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"),
+            None,
+        )
+
+        if not units and key in ("ovary_len", "ovary_width"):
+            data["units_inferred"] = True
+
+        if key in ("ovary_len", "ovary_len_mm"):
+            data["length"] = val
+        else:
+            data["width"] = val
 
         return cls.from_ent(ent, **data)
 
@@ -281,3 +396,8 @@ def ovary_state_match(ent):
 @registry.misc("ovary_size_match")
 def ovary_size_match(ent):
     return Ovary.ovary_size_match(ent)
+
+
+@registry.misc("ovary_keyed_size_match")
+def ovary_keyed_size_match(ent):
+    return Ovary.ovary_keyed_size_match(ent)

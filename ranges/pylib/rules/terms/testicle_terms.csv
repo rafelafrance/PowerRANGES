@@ -1,15 +1,13 @@
 label,pattern
 abbrev,t
 abbrev,ta
-abbrev,td
 abbrev,tes
-abbrev,tnd
-abbrev,tns
-abbrev,ts
 abdominal,abd
 abdominal,abdom
 abdominal,abdomin
 abdominal,abdominal
+and,&
+and,and
 descended,decend
 descended,decended
 descended,deend
@@ -32,6 +30,7 @@ descended,undesend
 descended,undesended
 fully,complete
 fully,completely
+fully,fully
 fully,incomplete
 fully,incompletely
 non,no
@@ -49,8 +48,13 @@ scrotal,scr
 scrotal,scrot
 scrotal,scrotal
 scrotal,scrotum
-scrotal_neg,nonscrotal
-scrotal_neg,nscr
+scrotal,nonscrotal
+scrotal,ns
+scrotal,nscr
+scrotal,tnd
+scrotal,tns
+scrotal,ts
+scrotal,td
 size,enlarge
 size,enlarge size
 size,enlarge sized

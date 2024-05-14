@@ -82,7 +82,6 @@ class Mammary(Base):
         # add.debug_tokens(nlp)  # #############################################
 
         add.cleanup_pipe(nlp, name="mammary_cleanup")
-        # add.debug_ents(nlp)  # #############################################
 
     @classmethod
     def mammary_bad_patterns(cls):

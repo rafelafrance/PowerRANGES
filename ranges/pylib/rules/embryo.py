@@ -142,7 +142,7 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_mix_0_patterns",
             compiler=cls.embryo_mix_0_patterns(),
-            overwrite="number metric_length imperial_length".split(),
+            overwrite=["number"],
         )
 
     @classmethod
@@ -152,7 +152,7 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_mix_1_patterns",
             compiler=cls.embryo_mix_1_patterns(),
-            overwrite="number metric_length imperial_length".split(),
+            overwrite=["number"],
         )
 
     @classmethod
@@ -162,7 +162,7 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_mix_1_2_patterns",
             compiler=cls.embryo_mix_1_2_patterns(),
-            overwrite="number metric_length imperial_length".split(),
+            overwrite=["number"],
         )
 
     @classmethod
@@ -172,7 +172,7 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_mix_2_patterns",
             compiler=cls.embryo_mix_2_patterns(),
-            overwrite="number metric_length imperial_length".split(),
+            overwrite=["number"],
         )
 
     @classmethod
@@ -182,7 +182,7 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_mix_2_3_patterns",
             compiler=cls.embryo_mix_2_3_patterns(),
-            overwrite="number metric_length imperial_length".split(),
+            overwrite=["number"],
         )
 
     @classmethod
@@ -192,7 +192,7 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_mix_3_patterns",
             compiler=cls.embryo_mix_3_patterns(),
-            overwrite="number metric_length imperial_length".split(),
+            overwrite=["number"],
         )
 
     @classmethod
@@ -201,7 +201,7 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_width_patterns",
             compiler=cls.embryo_width_patterns(),
-            overwrite="number metric_length imperial_length".split(),
+            overwrite=["number"],
         )
 
     @classmethod

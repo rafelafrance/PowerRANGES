@@ -127,44 +127,37 @@ class LengthShorthand(Base):
     @classmethod
     def pipe(cls, nlp: Language, _overwrite: list[str] | None = None):
         add.term_pipe(nlp, name="shorthand_length_terms", path=cls.csvs)
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
             name="shorthand_missing_patterns",
             compiler=cls.missing_patterns(),
-            overwrite=["metric_mass", "number"],
-            # merge=["cell"],
+            overwrite=["number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
             name="shorthand_cell_patterns",
             compiler=cls.cell_patterns(),
-            overwrite=["metric_mass", "number"],
-            # merge=["cell"],
+            overwrite=["number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
             name="shorthand_length_patterns",
             compiler=cls.shorthand_patterns(),
-            overwrite=["metric_mass", "cell", "number", "missing"],
+            overwrite=["number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
             name="shorthand_length_triple_patterns",
             compiler=cls.shorthand_triple_patterns(),
-            overwrite=["metric_mass", "cell", "triple_key", "number", "missing"],
+            overwrite=["number"],
         )
         # add.debug_tokens(nlp)  # ###########################################
 
         add.cleanup_pipe(nlp, name="shorthand_length_cleanup", clear=False)
-        # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
     def missing_patterns(cls):

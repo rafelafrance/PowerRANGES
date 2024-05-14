@@ -50,42 +50,37 @@ class BodyMass(Base):
     @classmethod
     def pipe(cls, nlp: Language, _overwrite: list[str] | None = None):
         add.term_pipe(nlp, name="body_mass_terms", path=cls.csvs)
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
             name="not_mass_patterns",
             compiler=cls.not_mass_patterns(),
-            overwrite=["metric_mass", "imperial_mass", "number"],
+            overwrite=["number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
             name="compound_mass_patterns",
             compiler=cls.compound_mass_patterns(),
-            overwrite=["metric_mass", "imperial_mass", "number"],
+            overwrite=["number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
             name="mass_range_patterns",
             compiler=cls.mass_range_patterns(),
-            overwrite=["metric_mass", "imperial_mass", "number"],
+            overwrite=["number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.trait_pipe(
             nlp,
             name="body_mass_patterns",
             compiler=cls.body_mass_patterns(),
-            overwrite=["metric_mass", "imperial_mass", "number"],
+            overwrite=["number"],
         )
         # add.debug_tokens(nlp)  # ###########################################
 
         add.cleanup_pipe(nlp, name="body_mass_cleanup")
-        # add.debug_tokens(nlp)  # ###########################################
 
     @classmethod
     def not_mass_patterns(cls):

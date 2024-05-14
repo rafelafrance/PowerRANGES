@@ -13,6 +13,7 @@ from ranges.pylib.rules.ear_length import EarLength
 from ranges.pylib.rules.embryo import Embryo
 from ranges.pylib.rules.female_state_shorthand import FemaleStateShorthand
 from ranges.pylib.rules.forearm_length import ForearmLength
+from ranges.pylib.rules.gonad import Gonad
 from ranges.pylib.rules.hind_foot_length import HindFootLength
 from ranges.pylib.rules.lactation_state import LactationState
 from ranges.pylib.rules.length_shorthand import LengthShorthand
@@ -66,8 +67,13 @@ def build():
     Nipple.pipe(nlp)
     LactationState.pipe(nlp)
     PregnancyState.pipe(nlp)
+
     Testicle.pipe(nlp)
+
     Ovary.pipe(nlp)
+
+    Gonad.pipe(nlp)
+
     VaginaState.pipe(nlp)
 
     TailLength.pipe(nlp)

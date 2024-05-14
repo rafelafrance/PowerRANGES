@@ -31,7 +31,6 @@ class LactationState(Base):
             nlp,
             name="lactation_state_patterns",
             compiler=cls.lactation_state_patterns(),
-            overwrite=cls.lac_labels,
         )
         # add.debug_tokens(nlp)  # ############################################
         add.cleanup_pipe(nlp, name="lactation_state_cleanup")

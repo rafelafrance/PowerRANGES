@@ -32,12 +32,11 @@ class Sex(Base):
     @classmethod
     def pipe(cls, nlp):
         add.term_pipe(nlp, name="sex_terms", path=cls.csvs)
-        # add.debug_tokens(nlp)  # ############################################
         add.trait_pipe(
             nlp,
             name="sex_patterns",
             compiler=cls.sex_patterns(),
-            overwrite=cls.sex_labels,
+            overwrite=["sex"],
         )
         add.cleanup_pipe(nlp, name="sex_cleanup")
 

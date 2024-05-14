@@ -82,7 +82,6 @@ class Nipple(Base):
         # add.debug_tokens(nlp)  # #############################################
 
         add.cleanup_pipe(nlp, name="nipple_cleanup")
-        # add.debug_ents(nlp)  # #############################################
 
     @classmethod
     def nipple_bad_patterns(cls):

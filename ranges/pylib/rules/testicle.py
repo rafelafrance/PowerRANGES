@@ -30,7 +30,7 @@ class Testicle(Base):
     units: ClassVar[list[str]] = ["metric_length", "imperial_length"]
     sides: ClassVar[list[str]] = ["left", "right", "both"]
 
-    overwrite: ClassVar[list[str]] = ["number", *units]
+    overwrite: ClassVar[list[str]] = ["number"]
 
     decoder: ClassVar[dict[str, dict]] = {
         ",": {"LOWER": {"IN": list(":;,.-=\"()>'")}, "OP": "*"},
@@ -65,7 +65,7 @@ class Testicle(Base):
     units_inferred: bool = None
 
     def to_dwc(self, dwc) -> DarwinCore:
-        return dwc.add_dyn(scrotalState=self.description)
+        return dwc.add_dyn(scrotalDescription=self.description)
 
     @classmethod
     def pipe(cls, nlp):
@@ -75,42 +75,42 @@ class Testicle(Base):
             nlp,
             name="not_testicle_size_patterns",
             compiler=cls.not_testicle_size_patterns(),
-            overwrite=["metric_mass", "imperial_mass", "number"],
+            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="testicle_description_patterns",
             compiler=cls.testicle_description_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="testicle_descr_alone_patterns",
             compiler=cls.testicle_descr_alone_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="testicle_double_patterns",
             compiler=cls.testicle_double_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="testicle_size_patterns",
             compiler=cls.testicle_size_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="testicle_state_patterns",
             compiler=cls.testicle_state_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         # add.debug_tokens(nlp)  # ############################################

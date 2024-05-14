@@ -49,7 +49,6 @@ class Ovary(Base):
     }
 
     units: ClassVar[list[str]] = ["metric_length", "imperial_length"]
-    overwrite: ClassVar[list[str]] = ["number", *units]
 
     descriptors: ClassVar[list[str]] = """
         active albicans color corpus covered cyst destroyed developed fallopian luteum
@@ -117,28 +116,28 @@ class Ovary(Base):
             nlp,
             name="ovary_description_patterns",
             compiler=cls.ovary_description_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="ovary_keyed_size_patterns",
             compiler=cls.ovary_keyed_size_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="ovary_size_patterns",
             compiler=cls.ovary_size_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="ovary_state_patterns",
             compiler=cls.ovary_state_patterns(),
-            overwrite=cls.overwrite,
+            overwrite=["number"],
         )
 
         # add.debug_tokens(nlp)  # ###########################################

@@ -27,7 +27,6 @@ class PregnancyState(Base):
     @classmethod
     def pipe(cls, nlp):
         add.term_pipe(nlp, name="pregnancy_state_terms", path=cls.csvs)
-        # add.debug_tokens(nlp)  # ############################################
         add.trait_pipe(
             nlp,
             name="pregnancy_state_patterns",

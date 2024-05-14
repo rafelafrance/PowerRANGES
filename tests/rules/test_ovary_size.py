@@ -22,12 +22,7 @@ class TestOvarySize(unittest.TestCase):
             parse("[right ovary listed, left ovary: 4 x 2 mm]"),
             [
                 Ovary(start=1, end=19, right_side="listed"),
-                Ovary(
-                    left_length=4,
-                    left_width=2,
-                    start=21,
-                    end=41,
-                ),
+                Ovary(length=4, width=2, start=21, end=41),
             ],
         )
 
@@ -36,14 +31,14 @@ class TestOvarySize(unittest.TestCase):
             parse("Rt Ovary 2.0x3.5mm, Lft Ovary 2.1x4.0mm."),
             [
                 Ovary(
-                    right_length=2,
-                    right_width=3.5,
+                    length=2,
+                    width=3.5,
                     start=0,
                     end=18,
                 ),
                 Ovary(
-                    left_length=2.1,
-                    left_width=4,
+                    length=2.1,
+                    width=4,
                     start=20,
                     end=40,
                 ),
@@ -55,10 +50,10 @@ class TestOvarySize(unittest.TestCase):
             parse("ovaries: 20mm X 12mm, 18mm X 9mm."),
             [
                 Ovary(
-                    side1_length=20,
-                    side1_width=12,
-                    side2_length=18,
-                    side2_width=9,
+                    length=20,
+                    width=12,
+                    length2=18,
+                    width2=9,
                     start=0,
                     end=33,
                 ),

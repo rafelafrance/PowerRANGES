@@ -18,6 +18,7 @@ class Testicle(Base):
     # Class vars ----------
     csvs: ClassVar[list[Path]] = [
         Path(t_terms.__file__).parent / "unit_length_terms.csv",
+        Path(t_terms.__file__).parent / "unit_mass_terms.csv",
         Path(__file__).parent / "terms" / "testicle_terms.csv",
     ]
 
@@ -27,10 +28,12 @@ class Testicle(Base):
     }
 
     units: ClassVar[list[str]] = ["metric_length", "imperial_length"]
+    sides: ClassVar[list[str]] = ["left", "right", "both"]
+
     overwrite: ClassVar[list[str]] = ["number", *units]
 
     decoder: ClassVar[dict[str, dict]] = {
-        ",": {"LOWER": {"IN": list(':;,.-="()>')}, "OP": "*"},
+        ",": {"LOWER": {"IN": list(":;,.-=\"()>'")}, "OP": "*"},
         "-": {"LOWER": {"IN": list(':;,.-="<>')}, "OP": "*"},
         "9": {"ENT_TYPE": "number"},
         "abbrev": {"ENT_TYPE": "abbrev", "OP": "*"},
@@ -40,19 +43,25 @@ class Testicle(Base):
         "descended": {"ENT_TYPE": "descended", "OP": "+"},
         "descr": {"ENT_TYPE": "description", "OP": "+"},
         "fully": {"ENT_TYPE": "fully", "OP": "+"},
+        "g": {"ENT_TYPE": {"IN": ["metric_mass", "imperial_mass"]}},
+        "left": {"ENT_TYPE": {"IN": sides}, "OP": "+"},
         "mm": {"ENT_TYPE": {"IN": units}, "OP": "*"},
         "non": {"ENT_TYPE": "non", "OP": "+"},
         "partially": {"ENT_TYPE": "partially", "OP": "+"},
+        "right": {"ENT_TYPE": {"IN": sides}, "OP": "+"},
         "scrotal": {"ENT_TYPE": "scrotal", "OP": "+"},
+        "side": {"ENT_TYPE": {"IN": sides}, "OP": "*"},
         "size": {"ENT_TYPE": "size", "OP": "+"},
         "testes": {"ENT_TYPE": {"IN": ["testes", "abbrev"]}, "OP": "+"},
-        "x": {"LOWER": {"IN": t_const.CROSS}},
+        "x": {"LOWER": {"IN": t_const.CROSS + t_const.DASH}},
     }
     # ---------------------
 
     description: str = None
     length: float = None
     width: float = None
+    length2: float = None
+    width2: float = None
     units_inferred: bool = None
 
     def to_dwc(self, dwc) -> DarwinCore:
@@ -61,6 +70,13 @@ class Testicle(Base):
     @classmethod
     def pipe(cls, nlp):
         add.term_pipe(nlp, name="testicle_terms", path=cls.csvs)
+
+        add.trait_pipe(
+            nlp,
+            name="not_testicle_size_patterns",
+            compiler=cls.not_testicle_size_patterns(),
+            overwrite=["metric_mass", "imperial_mass", "number"],
+        )
 
         add.trait_pipe(
             nlp,
@@ -73,6 +89,13 @@ class Testicle(Base):
             nlp,
             name="testicle_descr_alone_patterns",
             compiler=cls.testicle_descr_alone_patterns(),
+            overwrite=cls.overwrite,
+        )
+
+        add.trait_pipe(
+            nlp,
+            name="testicle_double_patterns",
+            compiler=cls.testicle_double_patterns(),
             overwrite=cls.overwrite,
         )
 
@@ -92,6 +115,19 @@ class Testicle(Base):
 
         # add.debug_tokens(nlp)  # ############################################
         add.cleanup_pipe(nlp, name="testicle_description_cleanup")
+
+    @classmethod
+    def not_testicle_size_patterns(cls):
+        return [
+            Compiler(
+                label="not_length",
+                on_match="not_testicle_size_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " 9 g ",
+                ],
+            ),
+        ]
 
     @classmethod
     def testicle_description_patterns(cls):
@@ -157,18 +193,36 @@ class Testicle(Base):
                 on_match="testicle_size_match",
                 decoder=cls.decoder,
                 patterns=[
-                    " testes , 9 mm ",
-                    " testes , 9 mm , descr ",
-                    " testes , 9 mm , alone ",
-                    " testes , 9 mm x 9 mm ",
-                    " testes , 9 mm x 9 mm , alone ",
-                    " testes , 9 mm x 9 mm , descr ",
+                    " testes , side , 9 mm ",
+                    " testes , side , 9 mm , descr ",
+                    " testes , side , 9 mm , alone ",
+                    " testes , side , 9 mm x 9 mm ",
+                    " testes , side , 9 mm x 9 mm and 9 mm x 9 mm ",
+                    " testes , side , 9 mm x 9 mm , alone ",
+                    " testes , side , 9 mm x 9 mm , descr ",
                     " testes , descr , abbrev , 9 mm ",
                     " testes , descr , abbrev , 9 mm x 9 mm ",
                     " testes , alone , abbrev , 9 mm ",
                     " testes , alone , abbrev , 9 mm x 9 mm ",
                     " alone , abbrev , 9 mm x 9 mm ",
                     " testes , x 9 mm ",
+                    " testes ,   9 mm , descr ",
+                    " testes ,   9 mm , alone ",
+                ],
+            ),
+        ]
+
+    @classmethod
+    def testicle_double_patterns(cls):
+        return [
+            Compiler(
+                label="testicle",
+                keep="testicle",
+                on_match="testicle_double_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " testes , left , 9 mm , right   9 mm ",
+                    " testes , left , 9 mm , right x 9 mm ",
                 ],
             ),
         ]
@@ -183,6 +237,10 @@ class Testicle(Base):
         factor = cls.factor_mm.get(units, 1.0)
         value = factor * number._.trait.number
         return round(value, 2)
+
+    @classmethod
+    def not_testicle_size_match(cls, ent):
+        return cls.from_ent(ent)
 
     @classmethod
     def testicle_description_match(cls, ent):
@@ -214,8 +272,34 @@ class Testicle(Base):
         ]
         nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
 
+        one_pair = 2
+        two_pairs = 4
+
         data["length"] = nums[0]
         data["width"] = nums[1] if len(nums) > 1 else None
+        data["length2"] = nums[2] if len(nums) > one_pair else None
+        data["width2"] = nums[3] if len(nums) >= two_pairs else None
+
+        if descr:
+            data["description"] = " ".join(descr)
+
+        data["units_inferred"] = True if units is None else None
+
+        return cls.from_ent(ent, **data)
+
+    @classmethod
+    def testicle_double_match(cls, ent):
+        data = {}
+        units = next((e for e in ent.ents if e.label_ in cls.units), None)
+        descr = [
+            e.text.lower()
+            for e in ent.ents
+            if e.label_ in ("description", "descr_alone")
+        ]
+        nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
+
+        data["length"] = nums[0]
+        data["length2"] = nums[1] if len(nums) > 1 else None
 
         if descr:
             data["description"] = " ".join(descr)
@@ -243,3 +327,13 @@ def testicle_state_match(ent):
 @registry.misc("testicle_size_match")
 def testicle_size_match(ent):
     return Testicle.testicle_size_match(ent)
+
+
+@registry.misc("not_testicle_size_match")
+def not_testicle_size_match(ent):
+    return Testicle.not_testicle_size_match(ent)
+
+
+@registry.misc("testicle_double_match")
+def testicle_double_match(ent):
+    return Testicle.testicle_double_match(ent)

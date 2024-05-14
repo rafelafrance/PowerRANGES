@@ -67,8 +67,8 @@ class TestOvaryState(unittest.TestCase):
             [
                 Ovary(
                     left_side="pale pink",
-                    left_length=3.0,
-                    left_width=1.5,
+                    length=3.0,
+                    width=1.5,
                     start=18,
                     end=47,
                 ),

@@ -16,7 +16,6 @@ from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
-from traiter.pylib.pipes.reject_match import RejectMatch
 from traiter.pylib.rules import terms as t_terms
 from traiter.pylib.rules.base import Base
 
@@ -35,22 +34,6 @@ class Ovary(Base):
         "both": "both_sides",
         "left_ovary": "left_side",
         "right_ovary": "right_side",
-    }
-
-    len_map: ClassVar[dict[str, str]] = {
-        "left": "left_length",
-        "right": "right_length",
-        "both": "both_lengths",
-        "left_ovary": "left_length",
-        "right_ovary": "right_length",
-    }
-
-    width_map: ClassVar[dict[str, str]] = {
-        "left": "left_width",
-        "right": "right_width",
-        "both": "both_widths",
-        "left_ovary": "left_width",
-        "right_ovary": "right_width",
     }
 
     keys: ClassVar[list[str]] = """
@@ -109,18 +92,10 @@ class Ovary(Base):
     both_sides: str = None
 
     length: float = None
-    left_length: float = None
-    right_length: float = None
-    both_lengths: float = None
-    side1_length: float = None
-    side2_length: float = None
+    length2: float = None
 
     width: float = None
-    left_width: float = None
-    right_width: float = None
-    both_widths: float = None
-    side1_width: float = None
-    side2_width: float = None
+    width2: float = None
 
     units_inferred: bool = None
 
@@ -303,7 +278,13 @@ class Ovary(Base):
 
         nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
 
-        cls.link_nums_sides(data, nums, sides)
+        one_pair = 2
+        two_pairs = 4
+
+        data["length"] = nums[0]
+        data["width"] = nums[1] if len(nums) > 1 else None
+        data["length2"] = nums[2] if len(nums) > one_pair else None
+        data["width2"] = nums[3] if len(nums) >= two_pairs else None
 
         # Match the description to the side
         descr = next(
@@ -317,45 +298,6 @@ class Ovary(Base):
         data["units_inferred"] = True if units is None else None
 
         return cls.from_ent(ent, **data)
-
-    @classmethod
-    def link_nums_sides(cls, data, nums, sides):
-        one_pair = 2
-        two_pairs = 4
-        # Matching sides with the values
-        if len(sides) == 0 and len(nums) <= one_pair:
-            data["length"] = nums[0]
-            data["width"] = nums[1] if len(nums) > 1 else None
-        elif len(sides) == 0 and len(nums) > one_pair:
-            data["side1_length"] = nums[0]
-            data["side1_width"] = nums[1]
-            data["side2_length"] = nums[2]
-            data["side2_width"] = nums[3] if len(nums) >= two_pairs else None
-        elif len(sides) == 1 and len(nums) <= one_pair:
-            data[cls.len_map[sides[0]]] = nums[0]
-            data[cls.width_map[sides[0]]] = nums[1]
-        elif len(sides) == 1 and len(nums) > one_pair:
-            match cls.len_map[sides[0]]:
-                case "left_length":
-                    data["left_length"] = nums[0]
-                    data["left_width"] = nums[1]
-                    data["right_length"] = nums[2]
-                    data["right_width"] = nums[3] if len(nums) >= two_pairs else None
-                case "right_length":
-                    data["right_length"] = nums[0]
-                    data["right_width"] = nums[1]
-                    data["left_length"] = nums[2]
-                    data["left_width"] = nums[3] if len(nums) >= two_pairs else None
-                case _:
-                    raise RejectMatch
-        elif len(sides) >= one_pair:
-            data[cls.len_map[sides[0]]] = nums[0]
-            if len(nums) > 1:
-                data[cls.width_map[sides[0]]] = nums[1]
-            if len(nums) > one_pair:
-                data[cls.len_map[sides[1]]] = nums[2]
-            if len(nums) >= two_pairs:
-                data[cls.width_map[sides[1]]] = nums[3]
 
     @classmethod
     def ovary_keyed_size_match(cls, ent):

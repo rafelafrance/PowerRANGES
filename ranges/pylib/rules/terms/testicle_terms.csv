@@ -8,6 +8,10 @@ abdominal,abdomin
 abdominal,abdominal
 and,&
 and,and
+both,both
+both,both side
+both,both sides
+both,each side
 descended,decend
 descended,decended
 descended,deend
@@ -33,11 +37,48 @@ fully,completely
 fully,fully
 fully,incomplete
 fully,incompletely
+left,emb-l
+left,l
+left,l side
+left,l x
+left,l.
+left,l. side
+left,l. x
+left,left
+left,left side
+left,lf
+left,lf side
+left,lf.
+left,lf. side
+left,lft
+left,lft side
+left,lft.
+left,lft. side
+left,lt
+left,lt.
+left,lx
+left,on left
 non,no
 non,non
 non,not
 non,semi
 non,sub
+right,emb-r
+right,on right
+right,r
+right,r side
+right,r x
+right,r.
+right,r. side
+right,r. x
+right,right
+right,right side
+right,rt
+right,rt side
+right,rt.
+right,rt. side
+right,rx
+right,rx.
 partially,barely
 partially,part
 partially,partially

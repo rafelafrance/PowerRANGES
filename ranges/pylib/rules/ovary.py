@@ -100,6 +100,34 @@ class Ovary(Base):
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}
+
+        if self.description is not None:
+            value |= {"ovaryDescription": self.description}
+
+        if self.left_side is not None:
+            value |= {"ovaryDescriptionLeft": self.left_side}
+
+        if self.right_side is not None:
+            value |= {"ovaryDescriptionRight": self.right_side}
+
+        if self.both_sides is not None:
+            value |= {"ovaryDescriptionBothSides": self.both_sides}
+
+        if self.length is not None:
+            value |= {"ovaryLength": self.length}
+
+        if self.length2 is not None:
+            value |= {"ovaryLength2": self.length2}
+
+        if self.width is not None:
+            value |= {"ovaryWidth": self.width}
+
+        if self.width2 is not None:
+            value |= {"ovaryWidth2": self.width2}
+
+        if self.units_inferred is not None:
+            value |= {"ovaryUnitsInferred": self.units_inferred}
+
         return dwc.add_dyn(**value)
 
     @classmethod

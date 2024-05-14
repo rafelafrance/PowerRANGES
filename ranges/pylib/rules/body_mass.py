@@ -42,7 +42,7 @@ class BodyMass(Base):
         if self.ambiguous:
             value |= {"bodyMassAmbiguous": True}
 
-        if self.ambiguous:
+        if self.estimated:
             value |= {"bodyMassEstimated": True}
 
         return dwc.add_dyn()

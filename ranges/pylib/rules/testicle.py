@@ -65,7 +65,27 @@ class Testicle(Base):
     units_inferred: bool = None
 
     def to_dwc(self, dwc) -> DarwinCore:
-        return dwc.add_dyn(scrotalDescription=self.description)
+        value = {}
+
+        if self.description is not None:
+            value |= {"testicleDescription": self.description}
+
+        if self.length is not None:
+            value |= {"testicleLength": self.length}
+
+        if self.length2 is not None:
+            value |= {"testicleLength2": self.length2}
+
+        if self.width is not None:
+            value |= {"testicleWidth": self.width}
+
+        if self.width2 is not None:
+            value |= {"testicleWidth2": self.width2}
+
+        if self.units_inferred is not None:
+            value |= {"testicleUnitsInferred": self.units_inferred}
+
+        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp):

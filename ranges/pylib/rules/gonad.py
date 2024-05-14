@@ -49,6 +49,19 @@ class Gonad(Base):
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}
+
+        if self.description is not None:
+            value |= {"gonadDescription": self.description}
+
+        if self.length is not None:
+            value |= {"gonadLength": self.length}
+
+        if self.width is not None:
+            value |= {"gonadWidth": self.width}
+
+        if self.units_inferred is not None:
+            value |= {"gonadUnitsInferred": self.units_inferred}
+
         return dwc.add_dyn(**value)
 
     @classmethod

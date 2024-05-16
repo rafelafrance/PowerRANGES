@@ -31,7 +31,7 @@ class TestBodyMass(unittest.TestCase):
                 BodyMass(
                     mass=10177.48,
                     start=0,
-                    end=20,
+                    end=21,
                 )
             ],
         )
@@ -68,7 +68,7 @@ class TestBodyMass(unittest.TestCase):
         """It handles other units."""
         self.assertEqual(
             parse('"weight":"94 gr."'),
-            [BodyMass(mass=94, start=1, end=15)],
+            [BodyMass(mass=94, start=1, end=16)],
         )
 
     def test_body_mass_07(self):

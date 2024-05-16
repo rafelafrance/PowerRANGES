@@ -38,7 +38,8 @@
 #
 #     def test_nipple_state_06(self):
 #         self.assertEqual(
-#             parse("Nipples pigmented."), [Nipple(state="pigmented", start=0, end=17)]
+#             parse("Nipples pigmented."), [Nipple(state="pigmented",
+#             start=0, end=17)]
 #         )
 #
 #     def test_nipple_state_07(self):
@@ -73,7 +74,8 @@
 #
 #     def test_nipple_state_12(self):
 #         self.assertEqual(
-#             parse("mammary glands active"), [Mammary(state="active", start=0, end=21)]
+#             parse("mammary glands active"),
+#             [Mammary(state="active", start=0, end=21)]
 #         )
 #
 #     def test_nipple_state_13(self):

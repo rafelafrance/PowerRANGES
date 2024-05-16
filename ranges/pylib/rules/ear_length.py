@@ -38,7 +38,7 @@ class EarLength(BaseLength):
         super().to_dwc(dwc)
 
         if self.measured_from:
-            dwc.add_dyn({"earLengthMeasuredFrom": self.measured_from})
+            dwc.add_dyn(earLengthMeasuredFrom=self.measured_from)
 
         return dwc
 

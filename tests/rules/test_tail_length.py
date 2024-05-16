@@ -20,5 +20,5 @@ class TestTailLength(unittest.TestCase):
         )
 
     def test_tail_length_03(self):
-        """It does not parse an elevation."""
+        """It does not parse_fields an elevation."""
         self.assertEqual(parse("ELEV G.T. 3900 FT"), [])

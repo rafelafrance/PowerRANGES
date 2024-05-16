@@ -38,14 +38,44 @@ class LifeStage(Base):
     @classmethod
     def pipe(cls, nlp):
         add.term_pipe(nlp, name="life_stage_terms", path=cls.csvs)
+
+        add.trait_pipe(
+            nlp,
+            name="bad_life_stage_patterns",
+            compiler=cls.bad_life_stage_patterns(),
+            overwrite=["number"],
+        )
+
+        # add.debug_tokens(nlp)  # ############################################
+
         add.trait_pipe(
             nlp,
             name="life_stage_patterns",
             compiler=cls.life_stage_patterns(),
             overwrite=""" number ordinal ordinal_suffix time_units """.split(),
         )
-        # add.debug_tokens(nlp)  # ############################################
+
         add.cleanup_pipe(nlp, name="life_stage_cleanup")
+
+    @classmethod
+    def bad_life_stage_patterns(cls):
+        return [
+            Compiler(
+                label="bad_life_stage",
+                on_match="bad_life_stage_match",
+                decoder={
+                    "99": {"ENT_TYPE": "number", "OP": "+"},
+                    "bad": {"ENT_TYPE": "bad", "OP": "+"},
+                    "intrinsic": {"ENT_TYPE": "intrinsic", "OP": "+"},
+                    "skip": {"LOWER": {"IN": ["young"]}, "OP": "+"},
+                },
+                patterns=[
+                    " 99 skip ",
+                    " intrinsic bad ",
+                    " bad intrinsic ",
+                ],
+            ),
+        ]
 
     @classmethod
     def life_stage_patterns(cls):
@@ -57,29 +87,29 @@ class LifeStage(Base):
                 "99": {"ENT_TYPE": "number", "OP": "+"},
                 "-": {"TEXT": {"IN": cls.dash}, "OP": "?"},
                 "=": {"TEXT": {"IN": cls.eq}, "OP": "?"},
-                "after": {"LOWER": "after", "OP": "?"},
+                "after": {"LOWER": "after"},
                 "intrinsic": {"ENT_TYPE": "intrinsic", "OP": "+"},
                 "key": {"ENT_TYPE": "key", "OP": "+"},
-                "literal": {"LOWER": {"IN": ["hatching", "second"]}},
+                "literal": {"LOWER": {"IN": ["hatching"]}},
                 "ordinal": {"ENT_TYPE": "ordinal", "OP": "+"},
                 "prefix": {"ENT_TYPE": "key_prefix", "OP": "+"},
                 "th": {"LOWER": {"IN": ["nd", "rd", "st", "th"]}},
-                "time": {"ENT_TYPE": "time_units", "OP": "?"},
+                "time": {"ENT_TYPE": "time_units"},
                 "word": {"IS_ALPHA": True},
             },
             patterns=[
-                "       99 th           - time ",
-                "       after 99 th     - time ",
-                "       after literal   - time ",
-                "       after ordinal   - time ",
+                "       after? 99 th     - time+ ",
+                "       after? literal   - time? ",
+                "       after  ordinal   - time? ",
                 "       intrinsic ",
-                " key = 99 th           - time ",
-                " key = after 99 th     - time ",
-                " key = after literal   - time ",
-                " key = after ordinal   - time ",
+                " key = 99 th           - time? ",
+                " key = after? 99 th     - time? ",
+                " key = after? literal   - time? ",
+                " key = after? ordinal   - time? ",
                 " key = intrinsic ",
-                " key = word            - intrinsic ",
-                " key = 99 - 99         - time ",
+                " key = time+ ",
+                " key = word             - intrinsic ",
+                " key = 99 - 99          - time? ",
             ],
         )
 
@@ -93,7 +123,16 @@ class LifeStage(Base):
         life_stage = re.sub(r"(\d)\s(th|st|nd|rd)", r"\1\2", life_stage, flags=re.I)
         return cls.from_ent(ent, life_stage=life_stage)
 
+    @classmethod
+    def bad_life_stage_match(cls, ent):
+        return cls.from_ent(ent)
+
 
 @registry.misc("life_stage_match")
 def life_stage_match(ent):
     return LifeStage.life_stage_match(ent)
+
+
+@registry.misc("bad_life_stage_match")
+def bad_life_stage_match(ent):
+    return LifeStage.bad_life_stage_match(ent)

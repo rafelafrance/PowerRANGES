@@ -1,7 +1,9 @@
 label,pattern
-bad_key,determ
-bad_key,determine
-bad_key,determined
+bad,in pouch
+bad,pouch
+bad,determ
+bad,determine
+bad,determined
 intrinsic,ad
 intrinsic,ad.
 intrinsic,ads

@@ -243,7 +243,6 @@ class TestTotalLength(unittest.TestCase):
 
     def test_total_length_22(self):
         """It handles a long key."""
-        self.maxDiff = None
         self.assertEqual(
             parse("Imm., L. snout to tip of tail 1510,"),
             [
@@ -255,4 +254,16 @@ class TestTotalLength(unittest.TestCase):
                     end=34,
                 ),
             ],
+        )
+
+    def test_total_length_23(self):
+        self.assertEqual(
+            parse("Note in catalog: Collection date given: l953?"),
+            [],
+        )
+
+    def test_total_length_24(self):
+        self.assertEqual(
+            parse("Note in catalog: Tusks,four feet."),
+            [],
         )

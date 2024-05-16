@@ -168,3 +168,16 @@ class TestLifeStage(unittest.TestCase):
             parse("; age=third year"),
             [LifeStage(life_stage="third year", start=2, end=16)],
         )
+
+    def test_life_stage_28(self):
+        """It handles an ordinal alone."""
+        self.assertEqual(
+            parse("Note in catalog: and a second skull"),
+            [],
+        )
+
+    def test_life_stage_29(self):
+        self.assertEqual(
+            parse("; 2nd Asiatnc Eped./"),
+            [],
+        )

@@ -1,6 +1,7 @@
 import unittest
 
 from ranges.pylib.rules.embryo import Embryo
+from ranges.pylib.rules.lactation_state import LactationState
 from ranges.pylib.rules.pregnancy_state import PregnancyState
 from tests.setup import parse
 
@@ -127,7 +128,7 @@ class TestEmbryo(unittest.TestCase):
         )
 
     def test_embryo_18(self):
-        """It should only parse the first & second notations."""
+        """It should only parse_fields the first & second notations."""
         self.assertEqual(
             parse("pregnant; 1 emb; CR-74; emb W-25; emb WT-4.8"),
             [
@@ -518,5 +519,14 @@ class TestEmbryo(unittest.TestCase):
             [
                 Embryo(count=3, side1=1, side2=2, start=0, end=17),
                 Embryo(length=30.0, start=33, end=44),
+            ],
+        )
+
+    def test_embryo_51(self):
+        self.assertEqual(
+            parse("Note in catalog: Lactating - 3 embryos"),
+            [
+                LactationState(state="lactating", start=17, end=26),
+                Embryo(count=3, start=29, end=38),
             ],
         )

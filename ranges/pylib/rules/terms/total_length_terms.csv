@@ -9,6 +9,7 @@ bad_prefix,elev.
 bad_prefix,elevation
 bad_prefix,girth
 bad_prefix,&
+bad_prefix,tusks
 bad_suffix,r
 key_with_units,fork in millimeters,0.1,fork
 key_with_units,fork in mm,0.1,fork
@@ -312,6 +313,7 @@ len_key,to l.,,total
 len_key,tol,,total
 len_key,tol.,,total
 len_key,tol_,,total
+len_key,total,,total
 len_key,total len,,total
 len_key,total len.,,total
 len_key,total length,,total

@@ -11,13 +11,14 @@ from traiter.pylib.pipes import add
 from traiter.pylib.rules.base import Base
 
 SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ + t_const.SLASH
-SEP += r""" & ! + / ~ """.split()
+SEP += r""" & ! + ~ """.split()
 
 BAD = """ tag """.split()
 
 DECODER = {
     ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
     "99": {"ENT_TYPE": "number", "OP": "+"},
+    "=": {"TEXT": {"IN": SEP}},
     ":": {"TEXT": {"IN": SEP}, "OP": "?"},
     "[": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
     "]": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
@@ -30,6 +31,7 @@ DECODER = {
     "in": {"ENT_TYPE": "imperial_length", "OP": "+"},
     "key": {"ENT_TYPE": {"IN": ["len_key", "key_with_units"]}, "OP": "+"},
     "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
+    "sp": {"SPACY": True},
     "to": {"LOWER": {"IN": ["to", *t_const.DASH]}, "OP": "+"},
     '"': {"TEXT": {"IN": t_const.D_QUOTE}},
     "word": {"LOWER": {"REGEX": r"^[a-z]+$"}, "OP": "?"},
@@ -144,11 +146,13 @@ class BaseLength(Base):
     def length_patterns(cls, *, allow_no_key=False, label=None):
         label = label if label else f"{cls.name}_length"
         patterns = [
-            ' key       "? : "? [ 99 ] mm* ] ',
-            '     ambig "? : "? [ 99 ] mm* ] ',
-            ' key ambig "? : "? [ 99 ] mm* ] ',
-            "                   [ 99 ] mm* ] [ key ] ",
-            " key : word   :      99   mm* ",
+            ' key            "? : "? [ 99 ] mm* ] ',
+            '     ambig :    "? : "? [ 99 ] mm+ ] ',
+            '     ambig : sp "? : "? [ 99 ] mm* ] ',
+            '     ambig =    "? : "? [ 99 ] mm* ] ',
+            ' key ambig      "? : "? [ 99 ] mm* ] ',
+            "                        [ 99 ] mm* ] [ key ] ",
+            " key : word        :      99   mm* ",
         ]
         if allow_no_key:
             patterns += [

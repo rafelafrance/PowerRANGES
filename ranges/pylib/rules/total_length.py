@@ -32,7 +32,7 @@ class TotalLength(BaseLength):
         cls.compound_length_pipe(nlp, allow_no_key=True)
         cls.range_length_pipe(nlp, allow_no_key=True)
         cls.tic_pipe(nlp, allow_no_key=True)
-        cls.length_pipe(nlp, allow_no_key=True)
+        cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 
 

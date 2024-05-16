@@ -75,7 +75,7 @@ class TestEarLength(unittest.TestCase):
         )
 
     def test_ear_length_08(self):
-        """It does not parse this."""
+        """It does not parse_fields this."""
         self.assertEqual(parse("Hawaiian chain. Magnemite 610-E 7050."), [])
 
     def test_ear_length_09(self):

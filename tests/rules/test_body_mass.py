@@ -135,7 +135,7 @@ class TestBodyMass(unittest.TestCase):
         )
 
     def test_body_mass_15(self):
-        """It should not parse this."""
+        """It should not parse_fields this."""
         self.assertEqual(parse("Specimen #'s - 5491,5492"), [])
 
     def test_body_mass_16(self):

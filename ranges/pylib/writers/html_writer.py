@@ -1,6 +1,7 @@
 import dataclasses
 import html
 import itertools
+from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any, ClassVar, NamedTuple
@@ -50,6 +51,12 @@ class CssClasses:
         return self.classes[key]
 
 
+@dataclasses.dataclass
+class Counts:
+    total: int = 0
+    with_traits: int = 0
+
+
 class HtmlWriter:
     template_dir: ClassVar[Path] = Path.cwd() / "ranges/pylib/writers/templates"
     template: ClassVar[str] = "html_writer.html"
@@ -59,20 +66,32 @@ class HtmlWriter:
         self.css_classes = CssClasses(spotlight)
         self.formatted = []
 
-    @staticmethod
-    def has_traits(occurrences: Occurrences) -> list[Occurrence]:
-        with_traits = [
-            o for o in occurrences.occurrences if any(len(v) for v in o.traits.values())
-        ]
-        return with_traits
+    def write(self, occurrences: Occurrences):
+        summary = defaultdict(lambda: Counts())
 
-    def write(self, occurrences: Occurrences, sample: int):
-        with_traits = self.has_traits(occurrences)
-        trait_count = len(with_traits)
-        if sample:
-            with_traits = with_traits[:sample]
+        with_data = []
 
-        for occur in with_traits:
+        with_traits = 0
+
+        for occur in occurrences.occurrences:
+            has_traits = 1 if occur.has_traits else 0
+            with_traits += has_traits
+
+            if occur.has_parse:
+                with_data.append(occur)
+
+            if occurrences.summary_field:
+                name = occur.info_fields.get(occurrences.summary_field, "").strip()
+                summary[name].total += 1
+                summary[name].with_traits += has_traits
+
+        summary = dict(sorted(summary.items()))
+
+        summary["Total"] = Counts(
+            total=len(occurrences.occurrences), with_traits=with_traits
+        )
+
+        for occur in with_data:
             self.formatted.append(
                 HtmlWriterRow(
                     occurrence_id=occur.occurrence_id,
@@ -82,19 +101,13 @@ class HtmlWriter:
                 ),
             )
 
-        summary = {
-            "Total occurrences:": len(occurrences.occurrences),
-            "With traits": trait_count,
-            "Sampled": len(with_traits),
-        }
-
-        self.write_template(summary=summary)
+        self.write_template(summary=summary, summary_field=occurrences.summary_field)
 
     def format_text(self, occurrence: Occurrence) -> dict[str, str]:
         formatted_text = {}
         for name, raw_text in occurrence.parse_fields.items():
             traits = occurrence.traits.get(name)
-            text = self.format_text_field(raw_text, traits) if traits else ""
+            text = self.format_text_field(raw_text, traits)
             formatted_text[name] = text
         return formatted_text
 
@@ -103,28 +116,29 @@ class HtmlWriter:
         frags = []
         prev = 0
 
-        for trait in traits:
-            start = trait.start
-            end = trait.end
+        if traits:
+            for trait in traits:
+                start = trait.start
+                end = trait.end
 
-            if prev < start:
-                frags.append(html.escape(raw_text[prev:start]))
+                if prev < start:
+                    frags.append(html.escape(raw_text[prev:start]))
 
-            cls = self.css_classes[trait.key]
+                cls = self.css_classes[trait.key]
 
-            dwc = DarwinCore()
-            dwc = trait.to_dwc(dwc).to_dict()
+                dwc = DarwinCore()
+                dwc = trait.to_dwc(dwc).flatten()
 
-            title = ", ".join(f"{k}:&nbsp;{v}" for k, v in dwc.items())
+                title = ", ".join(f"{k}:&nbsp;{v}" for k, v in dwc.items())
 
-            frags.extend(
-                (
-                    f'<span class="{cls}" title="{title}">',
-                    html.escape(raw_text[start:end]),
-                    "</span>",
+                frags.extend(
+                    (
+                        f'<span class="{cls}" title="{title}">',
+                        html.escape(raw_text[start:end]),
+                        "</span>",
+                    )
                 )
-            )
-            prev = end
+                prev = end
 
         if len(raw_text) > prev:
             frags.append(html.escape(raw_text[prev:]))
@@ -181,7 +195,7 @@ class HtmlWriter:
 
         return formatted
 
-    def write_template(self, summary=None):
+    def write_template(self, summary=None, summary_field=None):
         summary = summary if summary else {}
         env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(self.template_dir),
@@ -193,6 +207,7 @@ class HtmlWriter:
             file_name=self.html_file.stem,
             rows=self.formatted,
             summary=summary,
+            summary_field=summary_field,
         )
 
         with self.html_file.open("w") as html_file:

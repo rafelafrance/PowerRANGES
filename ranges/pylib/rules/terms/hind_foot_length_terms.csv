@@ -125,10 +125,16 @@ len_key,hind footlength
 len_key,hind footwith claw,,claw
 len_key,hind footwithclaw,,claw
 len_key,hindfoot
+len_key,hindfoot claw,,claw
+len_key,hindfoot claw length,,claw
+len_key,hindfoot clawlength,,claw
 len_key,hindfoot len
 len_key,hindfoot length
 len_key,hindfoot with claw,,claw
 len_key,hindfoot withclaw,,claw
+len_key,hindfootclaw length,,claw
+len_key,hindfootclawlength,,claw
+len_key,hindfootclaw,,claw
 len_key,hindfootlen
 len_key,hindfootlength
 len_key,hindfootwith claw,,claw

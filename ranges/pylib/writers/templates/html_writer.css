@@ -61,42 +61,17 @@ td, th {
   text-align: left;
 }
 
-.sub-header {
-  background-color: #f2f2f2;
-  font-weight: 500;
+td.r {
+    text-align: right;
 }
 
 .small {
   font-size: small;
 }
 
-header div {
-  font-size: 16px;
-  width: 280px;
-  margin-bottom: 4px;
-}
-
-header div label, section div label {
-  text-align: right;
-  display: inline-block;
-  width: 200px;
-}
-
-header div span {
-  float: right;
-}
-
 hr.sep {
   color: #fefefe;
   margin-right: 3rem;
-}
-
-td.data {
-  border-bottom: 1px solid black;
-}
-
-section div span {
-  margin-left: 2em;
 }
 
 .bold { font-weight: bold; }

@@ -53,6 +53,9 @@ key_with_units,tailleninmm,0.1
 len_key,tail
 len_key,tail len
 len_key,tail length
+len_key,tail vertebrae
 len_key,taillen
 len_key,taillength
+len_key,tailvertebrae
 len_key,tal
+len_key,tv

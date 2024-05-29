@@ -5,7 +5,7 @@ import textwrap
 from pathlib import Path
 
 from pylib.occurrences import Occurrences
-from pylib.writers import html_writer
+from pylib.writers import csv_writer, html_writer
 from util.pylib import log
 
 
@@ -20,25 +20,36 @@ def main():
         args.csv_dir.mkdir(parents=True, exist_ok=True)
 
     tsv_files = sorted(args.tsv_dir.glob("*"))
-    for path in tsv_files:
-        print(path.name)
+    for input_tsv in tsv_files:
+        print(input_tsv.name)
         occurrences = Occurrences(
-            path, args.id_field, args.parse_field, args.info_field
+            path=input_tsv,
+            id_field=args.id_field,
+            info_fields=args.info_field,
+            parse_fields=args.parse_field,
+            summary_field=args.summary_field,
         )
         occurrences.parse()
 
         if args.html_dir:
-            write_html(args.html_dir, path, occurrences, args.sample)
+            write_html(args.html_dir, input_tsv, occurrences)
 
-        break
+        if args.csv_dir:
+            write_csv(args.csv_dir, input_tsv, occurrences)
 
     log.finished()
 
 
-def write_html(html_dir: Path, path: Path, occurrences: Occurrences, sample: int):
-    html_file = html_dir / f"{path.stem}.html"
+def write_html(html_dir: Path, input_tsv: Path, occurrences: Occurrences) -> None:
+    html_file = html_dir / f"{input_tsv.stem}.html"
     writer = html_writer.HtmlWriter(html_file)
-    writer.write(occurrences, sample)
+    writer.write(occurrences)
+
+
+def write_csv(csv_dir: Path, input_tsv: Path, occurrences: Occurrences) -> None:
+    csv_file = csv_dir / f"{input_tsv.stem}.csv"
+    writer = csv_writer.CsvWriter(csv_file)
+    writer.write(occurrences)
 
 
 def parse_args() -> argparse.Namespace:
@@ -95,13 +106,16 @@ def parse_args() -> argparse.Namespace:
     )
 
     arg_parser.add_argument(
-        "--sample",
-        metavar="INT",
-        type=int,
-        help="""Randomly sample this many records from each input file.""",
+        "--summary-field",
+        metavar="COLUMN",
+        help="""Summarize counts of this field.""",
     )
 
     args = arg_parser.parse_args()
+
+    if args.summary_field and args.summary_field not in args.info_field:
+        args.info_field.append(args.summary_field)
+
     return args
 
 

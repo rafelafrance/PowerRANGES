@@ -1,19 +1,22 @@
 #!/bin/bash
 
 ./ranges/parse_gbif.py \
-  --tsv-dir=data/occurrence \
-  --html-dir=data/occurrence_sample_500_2024-05-15_html \
+  --tsv-dir=data/junk \
+  --html-dir=data/occurrence_2024-05-28_html \
   --id-field=occurrenceID \
   --parse-field=dynamicProperties \
   --parse-field=occurrenceRemarks \
   --parse-field=fieldNotes \
+  --info-field=institutionCode \
+  --info-field=catalogNumber \
+  --info-field=scientificName \
   --info-field=order \
   --info-field=family \
-  --info-field=scientificName \
-  --info-field=eventDate \
+  --info-field=genus \
+  --info-field=specificEpithet \
+  --info-field=day \
+  --info-field=month \
+  --info-field=year \
   --info-field=countryCode \
   --info-field=stateProvince \
-  --info-field=scientificName \
-  --info-field=decimalLatitude \
-  --info-field=decimalLongitude \
-  --sample=500
+  --summary-field=scientificName

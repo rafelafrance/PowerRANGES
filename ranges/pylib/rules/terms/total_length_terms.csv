@@ -312,6 +312,8 @@ len_key,to l,,total
 len_key,to l.,,total
 len_key,tol,,total
 len_key,tol.,,total
+len_key,tot,,total
+len_key,tot.,,total
 len_key,tol_,,total
 len_key,total,,total
 len_key,total len,,total

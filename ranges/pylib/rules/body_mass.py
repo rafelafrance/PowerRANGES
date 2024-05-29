@@ -45,7 +45,7 @@ class BodyMass(Base):
         if self.estimated:
             value |= {"bodyMassEstimated": True}
 
-        return dwc.add_dyn()
+        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language, _overwrite: list[str] | None = None):

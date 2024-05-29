@@ -35,7 +35,7 @@ class HindFootLength(BaseLength):
         super().to_dwc(dwc)
 
         if self.includes:
-            dwc.add_dyn({"hindFootLengthIncludes": self.includes})
+            dwc.add_dyn(hindFootLengthIncludes=self.includes)
 
         return dwc
 

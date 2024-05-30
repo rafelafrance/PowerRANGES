@@ -530,3 +530,10 @@ class TestEmbryo(unittest.TestCase):
                 Embryo(count=3, start=29, end=38),
             ],
         )
+
+    def test_embryo_52(self):
+        self.maxDiff = None
+        self.assertEqual(
+            parse("6 embryos: 2/3 term"),
+            [Embryo(count=6, start=0, end=9)],
+        )

@@ -6,7 +6,7 @@ from spacy import Language, registry
 from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
+from traiter.pylib.pipes import add, reject_match
 from traiter.pylib.rules.base import Base
 
 
@@ -50,6 +50,7 @@ class PlacentalScarCount(Base):
     right: int = None
     side1: int = None
     side2: int = None
+    both: int = None
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}
@@ -71,6 +72,9 @@ class PlacentalScarCount(Base):
 
         if self.side2 is not None:
             value |= {"placentalScarCountSide2": self.side2}
+
+        if self.both is not None:
+            value |= {"placentalScarCountBothSides": self.both}
 
         return dwc.add_dyn(**value)
 
@@ -248,6 +252,8 @@ class PlacentalScarCount(Base):
 
     @classmethod
     def get_counts(cls, ent) -> list[int]:
+        if any(e._.trait.is_fraction for e in ent.ents if e.label_ == "number"):
+            raise reject_match.RejectMatch
         nums = [int(t._.trait.number) for t in ent if t._.flag == "number"]
         return nums
 

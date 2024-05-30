@@ -53,6 +53,7 @@ def build():
     Number.pipe(nlp)
 
     Embryo.pipe(nlp)
+    Number.pipe(nlp)
 
     EarLength.pipe(nlp)
 

@@ -9,6 +9,7 @@ from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
+from traiter.pylib.pipes.reject_match import RejectMatch
 from traiter.pylib.rules import terms as t_terms
 from traiter.pylib.rules.base import Base
 
@@ -291,6 +292,8 @@ class Testicle(Base):
             if e.label_ in ("description", "descr_alone")
         ]
         nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
+        if not nums:
+            raise RejectMatch
 
         one_pair = 2
         two_pairs = 4

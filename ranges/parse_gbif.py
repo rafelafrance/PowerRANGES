@@ -28,6 +28,7 @@ def main():
             info_fields=args.info_field,
             parse_fields=args.parse_field,
             summary_field=args.summary_field,
+            sample=args.sample,
         )
         occurrences.parse()
 
@@ -109,6 +110,13 @@ def parse_args() -> argparse.Namespace:
         "--summary-field",
         metavar="COLUMN",
         help="""Summarize counts of this field.""",
+    )
+
+    arg_parser.add_argument(
+        "--sample",
+        type=int,
+        metavar="INT",
+        help="""How many records to output for the HTML report.""",
     )
 
     args = arg_parser.parse_args()

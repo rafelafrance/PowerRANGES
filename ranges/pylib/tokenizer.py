@@ -45,6 +45,7 @@ def setup(nlp):
         nlp,
         [
             rf"(?<=[{ALPHA}])[.]",  # Break on a dot
+            r"(?<=\d)/",  # Break on digit followed by a slash
             rf"(?<=\d)[{ALPHA}]+",  # Break on a digit followed by letters
             #
             # Break on a letter followed by digits but don't break up UUIDs

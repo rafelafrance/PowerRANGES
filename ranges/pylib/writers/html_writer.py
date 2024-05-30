@@ -1,6 +1,7 @@
 import dataclasses
 import html
 import itertools
+import random
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -54,7 +55,7 @@ class CssClasses:
 @dataclasses.dataclass
 class Counts:
     total: int = 0
-    with_traits: int = 0
+    with_traits: int | str = 0
 
 
 class HtmlWriter:
@@ -90,6 +91,11 @@ class HtmlWriter:
         summary["Total"] = Counts(
             total=len(occurrences.occurrences), with_traits=with_traits
         )
+
+        if occurrences.sample:
+            if len(with_data) > occurrences.sample:
+                with_data = random.sample(with_data, occurrences.sample)
+            summary["Output limit"] = Counts(total=len(with_data), with_traits="")
 
         for occur in with_data:
             self.formatted.append(

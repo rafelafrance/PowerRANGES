@@ -58,7 +58,7 @@ class Ovary(Base):
     decoder: ClassVar[dict[str, dict]] = {
         "'": {"LOWER": {"IN": t_const.QUOTE}, "OP": "?"},
         ",": {"LOWER": {"IN": list(":;,.-=<>")}, "OP": "?"},
-        "9": {"ENT_TYPE": "number"},
+        "9": {"ENT_TYPE": "number", "OP": "+"},
         "[+]": {"LOWER": {"IN": t_const.PLUS + t_const.DASH}, "OP": "?"},
         "adp": {"POS": "ADP", "OP": "*"},
         "albicans": {"ENT_TYPE": "albicans", "OP": "+"},

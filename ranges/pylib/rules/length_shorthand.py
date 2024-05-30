@@ -309,7 +309,9 @@ class LengthShorthand(Base):
         # If there are 5 fields, we need to compare the value against ear length
         elif len(bats) == 1:
             # If the length is grater than ear length it's forearm else it's tragus
-            if bats[0].length > kwargs.get("ear_length", 0.0):
+            if bats[0].length is None:
+                pass
+            elif bats[0].length > kwargs.get("ear_length", 0.0):
                 kwargs["forearm_length"] = bats[0].length
                 kwargs["forearm_length_estimated"] = bats[0].estimated
 

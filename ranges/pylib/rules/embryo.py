@@ -22,6 +22,7 @@ from ranges.pylib.rules.base_length import SEP, BaseLength
 DECODER = {
     "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
     ")": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
+    "/": {"TEXT": {"IN": t_const.SLASH}},
     ",": {"TEXT": {"IN": SEP}, "OP": "{,2}"},
     "9": {"ENT_TYPE": "number"},
     ":": {"TEXT": {"IN": SEP}, "OP": "{,2}"},
@@ -35,6 +36,7 @@ DECODER = {
     "side": {"ENT_TYPE": "side", "OP": "+"},
     "word": {"IS_ALPHA": True, "OP": "{,2}"},
     "x": {"LOWER": {"IN": t_const.CROSS}, "OP": "?"},
+    "xx": {"LOWER": {"IN": t_const.CROSS}},
 }
 
 
@@ -103,6 +105,7 @@ class Embryo(BaseLength):
     def pipe(cls, nlp: Language):
         add.term_pipe(nlp, name="embryo_terms", path=cls.csvs, delete_patterns="in")
 
+        cls.bad_embryo_pipe(nlp)
         cls.bad_length_pipe(nlp)
         cls.embryo_mix_2_3_pipe(nlp)
         cls.embryo_mix_1_2_pipe(nlp)
@@ -110,12 +113,21 @@ class Embryo(BaseLength):
         cls.embryo_mix_2_pipe(nlp)
         cls.embryo_mix_1_pipe(nlp)
         cls.embryo_mix_0_pipe(nlp)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.embryo_width_pipe(nlp)
         cls.length_pipe(nlp, label=cls.name)
         cls.embryo_count_pipe(nlp)
         cls.embryo_present_pipe(nlp)
-        # add.debug_tokens(nlp)  # ###########################################
         cls.cleanup_pipe(nlp)
+
+    @classmethod
+    def bad_embryo_pipe(cls, nlp):
+        add.trait_pipe(
+            nlp,
+            name="bad_embryo_patterns",
+            compiler=cls.bad_embryo_patterns(),
+            overwrite=["number"],
+        )
 
     @classmethod
     def embryo_count_pipe(cls, nlp):
@@ -203,6 +215,19 @@ class Embryo(BaseLength):
             compiler=cls.embryo_width_patterns(),
             overwrite=["number"],
         )
+
+    @classmethod
+    def bad_embryo_patterns(cls):
+        return [
+            Compiler(
+                label="bad_embryo",
+                on_match="bad_embryo_match",
+                decoder=DECODER,
+                patterns=[
+                    " 9 / 9",
+                ],
+            ),
+        ]
 
     @classmethod
     def embryo_count_patterns(cls):
@@ -375,7 +400,7 @@ class Embryo(BaseLength):
                 on_match="embryo_width_match",
                 decoder=DECODER,
                 patterns=[
-                    "key+ : 9 x 9 mm* ",
+                    "key+ : 9 xx 9 mm* ",
                 ],
             ),
         ]
@@ -483,6 +508,10 @@ class Embryo(BaseLength):
 
         return cls.from_ent(ent, **data)
 
+    @classmethod
+    def bad_embryo_match(cls, ent):
+        return cls.from_ent(ent)
+
 
 @registry.misc("embryo_count_match")
 def embryo_count_match(ent):
@@ -537,3 +566,8 @@ def embryo_length_bad_match(ent):
 @registry.misc("embryo_width_match")
 def embryo_width_match(ent):
     return Embryo.embryo_width_match(ent)
+
+
+@registry.misc("bad_embryo_match")
+def bad_embryo_match(ent):
+    return Embryo.bad_embryo_match(ent)

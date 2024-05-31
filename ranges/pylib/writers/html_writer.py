@@ -5,28 +5,16 @@ import random
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, ClassVar, NamedTuple
+from typing import ClassVar
 
 import jinja2
-from traiter.pylib.darwin_core import DYN, DarwinCore
+from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.rules.base import Base
 
 from ranges.pylib.occurrences import Occurrence, Occurrences
 
-COLOR_COUNT = 14
+COLOR_COUNT = 15
 BACKGROUNDS = itertools.cycle([f"cc{i}" for i in range(COLOR_COUNT)])
-
-
-class TraitRow(NamedTuple):
-    label: str
-    data: Any
-
-
-class Sortable(NamedTuple):
-    key: str
-    start: int
-    dwc: str
-    title: str
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -34,9 +22,6 @@ class HtmlWriterRow:
     occurrence_id: str
     info_fields: dict[str, str]
     formatted_text: dict[str, str] = dataclasses.field(default_factory=dict)
-    formatted_traits: dict[str, list[Sortable]] = dataclasses.field(
-        default_factory=dict
-    )
 
 
 class CssClasses:
@@ -53,7 +38,7 @@ class CssClasses:
 
 
 @dataclasses.dataclass
-class Counts:
+class SpeciesCount:
     total: int = 0
     with_traits: int | str = 0
 
@@ -68,7 +53,8 @@ class HtmlWriter:
         self.formatted = []
 
     def write(self, occurrences: Occurrences):
-        summary = defaultdict(lambda: Counts())
+        species_count = defaultdict(lambda: SpeciesCount())
+        trait_count = defaultdict(int)
 
         with_data = []
 
@@ -78,24 +64,33 @@ class HtmlWriter:
             has_traits = 1 if occur.has_traits else 0
             with_traits += has_traits
 
+            # Calculate per trait counts
+            for trait in occur.all_traits:
+                trait_count[trait._trait] += 1
+
             if occur.has_parse:
                 with_data.append(occur)
 
             if occurrences.summary_field:
                 name = occur.info_fields.get(occurrences.summary_field, "").strip()
-                summary[name].total += 1
-                summary[name].with_traits += has_traits
+                species_count[name].total += 1
+                species_count[name].with_traits += has_traits
 
-        summary = dict(sorted(summary.items()))
+        trait_count = dict(sorted(trait_count.items()))
+        trait_count["Grand total"] = sum(c for c in trait_count.values())
 
-        summary["Total"] = Counts(
+        species_count = dict(sorted(species_count.items()))
+
+        species_count["Total"] = SpeciesCount(
             total=len(occurrences.occurrences), with_traits=with_traits
         )
 
         if occurrences.sample:
             if len(with_data) > occurrences.sample:
                 with_data = random.sample(with_data, occurrences.sample)
-            summary["Output limit"] = Counts(total=len(with_data), with_traits="")
+            species_count["Output limit"] = SpeciesCount(
+                total=len(with_data), with_traits=""
+            )
 
         for occur in with_data:
             self.formatted.append(
@@ -103,11 +98,14 @@ class HtmlWriter:
                     occurrence_id=occur.occurrence_id,
                     info_fields=occur.info_fields,
                     formatted_text=self.format_text(occur),
-                    formatted_traits=self.format_traits(occur),
                 ),
             )
 
-        self.write_template(summary=summary, summary_field=occurrences.summary_field)
+        self.write_template(
+            species_count=species_count,
+            summary_field=occurrences.summary_field,
+            trait_count=trait_count,
+        )
 
     def format_text(self, occurrence: Occurrence) -> dict[str, str]:
         formatted_text = {}
@@ -152,57 +150,10 @@ class HtmlWriter:
         text = "".join(frags)
         return text
 
-    def format_traits(self, occurrence: Occurrence) -> dict[str, Any]:
-        formatted_traits = {}
-        for name, raw_text in occurrence.parse_fields.items():
-            if traits := occurrence.traits.get(name):
-                text = self.format_trait_field(raw_text, traits)
-                formatted_traits[name] = text
-        return formatted_traits
+    def write_template(self, species_count=None, summary_field=None, trait_count=None):
+        species_count = species_count if species_count else {}
+        trait_count = trait_count if trait_count else {}
 
-    def format_trait_field(self, raw_text: str, traits: list[Base]):
-        """Group traits for display in their own table."""
-        formatted = []
-
-        sortable = []
-        for trait in traits:
-            dwc = DarwinCore()
-            sortable.append(
-                Sortable(
-                    key=trait._trait,
-                    start=trait.start,
-                    dwc=trait.to_dwc(dwc),
-                    title=raw_text[trait.start : trait.end],
-                ),
-            )
-
-        sortable = sorted(sortable)
-
-        for key, grouped in itertools.groupby(sortable, key=lambda x: x.key):
-            cls = self.css_classes[key]
-            label = f'<span class="{cls}">{key}</span>'
-            trait_list = []
-            for trait in grouped:
-                fields = {}
-                dwc_dict = trait.dwc.to_dict()
-                for k, v in dwc_dict.items():
-                    fields = v if k == DYN else dwc_dict
-                fields = ", ".join(
-                    f'<span title="{trait.title}">{k}:&nbsp;{v}</span>'
-                    for k, v in fields.items()
-                )
-                if fields:
-                    trait_list.append(fields)
-
-            if trait_list:
-                formatted.append(
-                    TraitRow(label, '<br/><hr class="sep"/>'.join(trait_list)),
-                )
-
-        return formatted
-
-    def write_template(self, summary=None, summary_field=None):
-        summary = summary if summary else {}
         env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(self.template_dir),
             autoescape=True,
@@ -212,8 +163,9 @@ class HtmlWriter:
             now=datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M"),
             file_name=self.html_file.stem,
             rows=self.formatted,
-            summary=summary,
+            species_count=species_count,
             summary_field=summary_field,
+            trait_count=trait_count,
         )
 
         with self.html_file.open("w") as html_file:

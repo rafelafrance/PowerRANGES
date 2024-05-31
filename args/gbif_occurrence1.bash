@@ -2,8 +2,8 @@
 
 ./ranges/parse_gbif.py \
   --tsv-dir=data/occurrence_todo1 \
-  --html-dir=data/occurrence_2024-05-29_html \
-  --csv-dir=data/occurrence_2024-05-29_csv \
+  --html-dir=data/occurrence_2024-05-31_html \
+  --csv-dir=data/occurrence_2024-05-31_csv \
   --id-field=occurrenceID \
   --parse-field=dynamicProperties \
   --parse-field=occurrenceRemarks \

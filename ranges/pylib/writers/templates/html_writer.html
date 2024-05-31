@@ -11,7 +11,7 @@
 <body>
 <h1>{{ file_name }}: {{ now }}</h1>
 
-<table class="counts">
+<table class="species">
     <thead>
     <tr>
         <th>
@@ -24,12 +24,34 @@
       </tr>
     </thead>
     <tbody>
-    {% for label, value in summary.items() %}
-    <tr class="term closed summary">
+    {% for label, value in species_count.items() %}
+    <tr class="term closed species">
         <td></td>
         <td>{{ label | safe }}</td>
         <td class="r">{{ value.total | safe }}</td>
         <td class="r">{{ value.with_traits | safe }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<table class="traits">
+    <thead>
+    <tr>
+        <th>
+            <button class="toggle closed summary" title="Show or hide summary">
+            </button>
+        </th>
+        <th>Trait</th>
+        <th>Count</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for trait, count in trait_count.items() %}
+    <tr class="term closed trait">
+        <td></td>
+        <td>{{ trait | safe }}</td>
+        <td class="r">{{ count | safe }}</td>
     </tr>
     {% endfor %}
     </tbody>

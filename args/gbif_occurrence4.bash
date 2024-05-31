@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ./ranges/parse_gbif.py \
-  --tsv-dir=data/occurrence_todo3 \
+  --tsv-dir=data/occurrence_todo4 \
   --html-dir=data/occurrence_2024-05-31_html \
   --csv-dir=data/occurrence_2024-05-31_csv \
   --id-field=occurrenceID \

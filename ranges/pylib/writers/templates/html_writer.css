@@ -77,9 +77,6 @@ hr.sep {
 .bold { font-weight: bold; }
 .bold-italic { font-weight: bold; font-style: italic; }
 
-.ccx { background: #e31a1c88; }
-.bbx { background: #e31a1c88; }
-
 .cc0 { background: #a6cee388; }
 .cc1 { background: #1f78b488; }
 .cc2 { background: #b2df8a88; }
@@ -94,3 +91,4 @@ hr.sep {
 .cc11 { background: #dddddd88; }
 .cc12 { background: #b3b3b388; }
 .cc13 { background: #b3b30088; }
+.cc14 { background: #e31a1c88; }

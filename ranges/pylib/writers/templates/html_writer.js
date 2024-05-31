@@ -22,8 +22,14 @@ document.querySelector('table.text tbody')
         elts.forEach(function(tr) {  tr.classList.toggle('closed'); });
     });
 
-document.querySelector('table.counts thead')
+document.querySelector('table.species thead')
     .addEventListener('click', function(event) {
-        const elts = document.querySelectorAll(".summary");
+        const elts = document.querySelectorAll(".species");
+        elts.forEach(function(tr) {  tr.classList.toggle('closed'); });
+    });
+
+document.querySelector('table.traits thead')
+    .addEventListener('click', function(event) {
+        const elts = document.querySelectorAll(".trait");
         elts.forEach(function(tr) {  tr.classList.toggle('closed'); });
     });

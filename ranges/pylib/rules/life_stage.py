@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib import const as t_const
@@ -10,7 +10,8 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules import terms as t_terms
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -31,6 +32,9 @@ class LifeStage(Base):
     # ---------------------
 
     life_stage: str = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        return {"life stage": {"life stage": self.life_stage}}
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add(lifeStage=self.life_stage)

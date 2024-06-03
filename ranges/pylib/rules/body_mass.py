@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import Language, registry
 from traiter.pylib import const as t_const
@@ -9,7 +9,8 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules import terms as t_terms
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -32,6 +33,20 @@ class BodyMass(Base):
     units_inferred: bool = None
     ambiguous: bool = None
     estimated: bool = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = {"body mass": {"body mass": self.mass}}
+
+        if self.units_inferred:
+            value["body mass"] |= {"body mass units inferred": True}
+
+        if self.ambiguous:
+            value["body mass"] |= {"body mass ambiguous": True}
+
+        if self.estimated:
+            value["body mass"] |= {"body mass estimated": True}
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {"bodyMassInGrams": self.mass}

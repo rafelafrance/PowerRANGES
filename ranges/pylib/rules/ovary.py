@@ -4,10 +4,10 @@ Parse ovary traits: length and size.
 These traits are intermixed in text, and Currently, traiter isn't equipped to deal
 with this easily.
 """
-
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import Language, registry
 from spacy.tokens import Token
@@ -17,7 +17,8 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules import terms as t_terms
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -97,6 +98,40 @@ class Ovary(Base):
     width2: float = None
 
     units_inferred: bool = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = defaultdict(dict)
+
+        if self.description is not None:
+            value["ovary description"] |= {"ovary description": self.description}
+
+        if self.left_side is not None:
+            value["ovary description"] |= {"left ovary description": self.left_side}
+
+        if self.right_side is not None:
+            value["ovary description"] |= {"right ovary description": self.right_side}
+
+        if self.both_sides is not None:
+            value["ovary description"] |= {
+                "ovary description both sides": self.both_sides
+            }
+
+        if self.length is not None:
+            value["ovary size"] |= {"ovary length": self.length}
+
+        if self.length2 is not None:
+            value["ovary size"] |= {"2nd ovary length": self.length2}
+
+        if self.width is not None:
+            value["ovary size"] |= {"ovary width": self.width}
+
+        if self.width2 is not None:
+            value["ovary size"] |= {"2nd ovary width": self.width2}
+
+        if self.units_inferred is not None:
+            value["ovary size"] |= {"ovary size units inferred": self.units_inferred}
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib import term_util
@@ -33,6 +33,20 @@ class ForearmLength(BaseLength):
         cls.tic_pipe(nlp)
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = {"forearm length": {"forearm length": self.length}}
+
+        if self.units_inferred:
+            value["forearm length"] |= {"forearm length units inferred": True}
+
+        if self.ambiguous:
+            value["forearm length"] |= {"forearm length ambiguous": True}
+
+        if self.estimated:
+            value["forearm length"] |= {"forearm length estimated": True}
+
+        return value
 
 
 @registry.misc("forearm_length_match")

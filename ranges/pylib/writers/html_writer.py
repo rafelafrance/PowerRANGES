@@ -9,9 +9,9 @@ from typing import ClassVar
 
 import jinja2
 from traiter.pylib.darwin_core import DarwinCore
-from traiter.pylib.rules.base import Base
 
 from ranges.pylib.occurrences import Occurrence, Occurrences
+from ranges.pylib.rules.base import Base
 
 COLOR_COUNT = 15
 BACKGROUNDS = itertools.cycle([f"cc{i}" for i in range(COLOR_COUNT)])

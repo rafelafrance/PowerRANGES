@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib import const as t_const
@@ -8,7 +8,8 @@ from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -25,6 +26,9 @@ class Sex(Base):
     # ---------------------
 
     sex: str = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        return {"sex": {"sex": self.sex}}
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add(sex=self.sex)

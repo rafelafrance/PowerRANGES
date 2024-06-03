@@ -17,10 +17,10 @@ Unknown values are filled with "?" or "x".
 Ambiguous measurements are enclosed in brackets.
   E.g.: 11-[22]-33-[44]:99g
 """
-
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import Language, registry
 from traiter.pylib import const as t_const
@@ -30,7 +30,8 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules import terms as t_terms
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass
@@ -83,6 +84,46 @@ class LengthShorthand(Base):
 
     tragus_length: float = None
     tragus_length_estimated: bool = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:  # noqa: C901 PLR0912
+        value = defaultdict(dict)
+
+        if self.total_length is not None:
+            value["total length"] |= {"total length": self.total_length}
+            if self.total_length_estimated:
+                value["total length"] |= {"total length estimated": True}
+
+        if self.tail_length is not None:
+            value["tail length"] |= {"tail length": self.tail_length}
+            if self.tail_length_estimated:
+                value["tail length"] |= {"tail length estimated": True}
+
+        if self.hind_foot_length is not None:
+            value["hind foot length"] |= {"hind foot length": self.hind_foot_length}
+            if self.hind_foot_length_estimated:
+                value["hind foot length"] |= {"hind foot length estimated": True}
+
+        if self.ear_length is not None:
+            value["ear length"] |= {"ear length": self.ear_length}
+            if self.ear_length_estimated:
+                value["ear length"] |= {"ear length estimated": True}
+
+        if self.body_mass is not None:
+            value["body mass"] |= {"body mass": self.body_mass}
+            if self.body_mass_estimated:
+                value["body mass"] |= {"body mass estimated": True}
+
+        if self.forearm_length is not None:
+            value["forearm length"] |= {"forearm length": self.forearm_length}
+            if self.forearm_length_estimated:
+                value["forearm length"] |= {"forearm length estimated": True}
+
+        if self.tragus_length is not None:
+            value["tragus length"] |= {"tragus length": self.tragus_length}
+            if self.tragus_length_estimated:
+                value["tragus length"] |= {"tragus length estimated": True}
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:  # noqa: C901 PLR0912
         value = {}

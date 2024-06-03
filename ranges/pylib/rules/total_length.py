@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib import term_util
@@ -24,6 +24,20 @@ class TotalLength(BaseLength):
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
     # ---------------------
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = {"total length": {"total length": self.length}}
+
+        if self.units_inferred:
+            value["total length"] |= {"total length units inferred": True}
+
+        if self.ambiguous:
+            value["total length"] |= {"total length ambiguous": True}
+
+        if self.estimated:
+            value["total length"] |= {"total length estimated": True}
+
+        return value
 
     @classmethod
     def pipe(cls, nlp):

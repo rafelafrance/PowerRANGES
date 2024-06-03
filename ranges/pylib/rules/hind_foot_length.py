@@ -1,6 +1,7 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib import term_util
@@ -30,6 +31,24 @@ class HindFootLength(BaseLength):
     # ---------------------
 
     includes: str = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = defaultdict(dict)
+
+        key = f"hind foot {self.includes}" if self.includes else "hind foot"
+
+        value["hind foot length"] = {key: self.length}
+
+        if self.units_inferred:
+            value["hind foot length"] |= {f"{key} units inferred": True}
+
+        if self.ambiguous:
+            value["hind foot length"] |= {f"{key} ambiguous": True}
+
+        if self.estimated:
+            value["hind foot length"] |= {f"{key} estimated": True}
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:
         super().to_dwc(dwc)

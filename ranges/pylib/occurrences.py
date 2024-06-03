@@ -3,9 +3,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from tqdm import tqdm
-from traiter.pylib.rules.base import Base
 
 from ranges.pylib import pipeline
+from ranges.pylib.rules.base import Base
 
 
 @dataclass

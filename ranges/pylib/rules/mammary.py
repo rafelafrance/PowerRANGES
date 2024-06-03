@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -9,7 +10,8 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.pipes.reject_match import RejectMatch
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -39,6 +41,17 @@ class Mammary(Base):
 
     count: int = None
     state: str = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = defaultdict(dict)
+
+        if self.count is not None:
+            value["mammary count"] |= {"mammary count": self.count}
+
+        if self.state:
+            value["mammary"] |= {"mammary": self.state}
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:
         if self.count is not None:

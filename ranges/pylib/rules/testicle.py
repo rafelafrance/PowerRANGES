@@ -1,6 +1,7 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import registry
 from spacy.tokens import Token
@@ -11,7 +12,8 @@ from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.pipes.reject_match import RejectMatch
 from traiter.pylib.rules import terms as t_terms
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -64,6 +66,31 @@ class Testicle(Base):
     length2: float = None
     width2: float = None
     units_inferred: bool = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = defaultdict(dict)
+
+        if self.description is not None:
+            value["testicle description"] |= {"testicle description": self.description}
+
+        if self.length is not None:
+            value["testicle size"] |= {"testicle length": self.length}
+
+        if self.length2 is not None:
+            value["testicle size"] |= {"2nd testicle length": self.length2}
+
+        if self.width is not None:
+            value["testicle size"] |= {"testicle width": self.width}
+
+        if self.width2 is not None:
+            value["testicle size"] |= {"2nd testicle width": self.width2}
+
+        if self.units_inferred is not None:
+            value["testicle size"] |= {
+                "testicle size units inferred": self.units_inferred
+            }
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}

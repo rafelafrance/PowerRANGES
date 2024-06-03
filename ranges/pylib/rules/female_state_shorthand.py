@@ -1,10 +1,13 @@
+from collections import defaultdict
 from dataclasses import dataclass
+from typing import Any
 
 from spacy import registry
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -12,6 +15,20 @@ class FemaleStateShorthand(Base):
     vagina_state: str = None
     nipple_state: str = None
     lactation_state: str = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = defaultdict(dict)
+
+        if self.vagina_state:
+            value["vagina"] |= {"vagina": self.vagina_state}
+
+        if self.nipple_state:
+            value["nipple"] |= {"nipple": self.nipple_state}
+
+        if self.lactation_state:
+            value["lactation"] |= {"lactation": self.lactation_state}
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import Language
 from spacy.tokens import Token
@@ -8,7 +8,8 @@ from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ + t_const.SLASH
 SEP += r""" & ! + ~ """.split()
@@ -60,6 +61,9 @@ class BaseLength(Base):
     ambiguous: bool = None
     estimated: bool = None
     _prefix: str = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        raise NotImplementedError
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}

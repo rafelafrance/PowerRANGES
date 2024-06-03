@@ -1,6 +1,7 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import Language, registry
 from spacy.tokens import Token
@@ -10,7 +11,8 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
 from traiter.pylib.rules import terms as t_terms
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -46,6 +48,23 @@ class Gonad(Base):
     length: float = None
     width: float = None
     units_inferred: bool = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = defaultdict(dict)
+
+        if self.description is not None:
+            value["gonad description"] |= {"gonad description": self.description}
+
+        if self.length is not None:
+            value["gonad size"] |= {"gonad length": self.length}
+
+        if self.width is not None:
+            value["gonad size"] |= {"gonad width": self.width}
+
+        if self.units_inferred is not None:
+            value["gonad size"] |= {"gonad size units inferred": self.units_inferred}
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}

@@ -1,6 +1,7 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib import term_util
@@ -25,6 +26,22 @@ class TailLength(BaseLength):
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
     # ---------------------
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = defaultdict(dict)
+
+        value["tail length"] = {"tail length": self.length}
+
+        if self.units_inferred:
+            value["tail length"] |= {"tail length units inferred": True}
+
+        if self.ambiguous:
+            value["tail length"] |= {"tail length ambiguous": True}
+
+        if self.estimated:
+            value["tail length"] |= {"tail length estimated": True}
+
+        return value
 
     @classmethod
     def pipe(cls, nlp):

@@ -58,9 +58,7 @@ def parse_args() -> argparse.Namespace:
         fromfile_prefix_chars="@",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent(
-            """
-            Extract information about vertebrates from GBIF TSV data dumps.
-            """,
+            """Extract information about vertebrates from GBIF TSV data dumps.""",
         ),
     )
 

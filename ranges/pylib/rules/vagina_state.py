@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import ClassVar
+from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -19,6 +20,9 @@ class VaginaState(Base):
     # ---------------------
 
     state: str = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        return {"vagina": {"vagina": self.state}}
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add_dyn(vaginaState=self.state)

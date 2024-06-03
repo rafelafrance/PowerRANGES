@@ -1,3 +1,4 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -7,7 +8,8 @@ from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.pylib.pipes import add, reject_match
-from traiter.pylib.rules.base import Base
+
+from ranges.pylib.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -51,6 +53,32 @@ class PlacentalScarCount(Base):
     side1: int = None
     side2: int = None
     both: int = None
+
+    def labeled(self) -> dict[str, dict[str, Any]]:
+        value = defaultdict(dict)
+
+        if self.present is not None:
+            value["placental scars"] |= {"placental scars present": self.present}
+
+        if self.count is not None:
+            value["placental scars"] |= {"placental scars": self.count}
+
+        if self.left is not None:
+            value["placental scars"] |= {"left placental scars": self.left}
+
+        if self.right is not None:
+            value["placental scars"] |= {"right placental scars": self.right}
+
+        if self.side1 is not None:
+            value["placental scars"] |= {"placental scars side 1": self.side1}
+
+        if self.side2 is not None:
+            value["placental scars"] |= {"placental scars side 2": self.side2}
+
+        if self.side2 is not None:
+            value["placental scars"] |= {"placental scars both sides": self.side2}
+
+        return value
 
     def to_dwc(self, dwc) -> DarwinCore:
         value = {}

@@ -35,7 +35,7 @@ class HindFootLength(BaseLength):
     def labeled(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
-        key = f"hind foot {self.includes}" if self.includes else "hind foot"
+        key = f"hind foot with {self.includes}" if self.includes else "hind foot length"
 
         value["hind foot length"] = {key: self.length}
 

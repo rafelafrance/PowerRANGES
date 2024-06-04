@@ -1,0 +1,92 @@
+category,trait,type
+body mass,body mass,grams
+body mass,body mass ambiguous,bool
+body mass,body mass estimated,bool
+body mass,body mass units inferred,bool
+ear length,ear length,mm
+ear length,ear length ambiguous,bool
+ear length,ear length estimated,bool
+ear length,ear length from crown,mm
+ear length,ear length from crown ambiguous,bool
+ear length,ear length from crown estimated,bool
+ear length,ear length from crown units inferred,bool
+ear length,ear length from notch,mm
+ear length,ear length from notch ambiguous,bool
+ear length,ear length from notch estimated,bool
+ear length,ear length from notch units inferred,bool
+ear length,ear length units inferred,bool
+embryo count,embryo count,int
+embryo count,embryo count side 1,int
+embryo count,embryo count side 2,int
+embryo count,female embryo count,int
+embryo count,left embryo count,int
+embryo count,male embryo count,int
+embryo count,right embryo count,int
+embryo size,embryo length,mm
+embryo size,embryo size ambiguous,bool
+embryo size,embryo size estimated,bool
+embryo size,embryo size units inferred,bool
+embryo size,embryo width,mm
+forearm length,forearm length,mm
+forearm length,forearm length ambiguous,bool
+forearm length,forearm length estimated,bool
+forearm length,forearm length units inferred,bool
+gonad description,gonad description,string
+gonad size,gonad length,mm
+gonad size,gonad size units inferred,bool
+gonad size,gonad width,mm
+hind foot length,hind foot length,mm
+hind foot length,hind foot length ambiguous,bool
+hind foot length,hind foot length estimated,bool
+hind foot length,hind foot length units inferred,bool
+hind foot length,hind foot with claw,mm
+hind foot length,hind foot with claw ambiguous,bool
+hind foot length,hind foot with claw estimated,bool
+hind foot length,hind foot with claw units inferred,bool
+lactation,lactation,string
+life stage,life stage,string
+mammary,mammary,string
+mammary count,mammary count,int
+nipple,nipple,string
+nipple count,nipple count,int
+ovary description,left ovary description,string
+ovary description,ovary description,string
+ovary description,ovary description both sides,string
+ovary description,right ovary description,string
+ovary size,2nd ovary length,mm
+ovary size,2nd ovary width,mm
+ovary size,ovary length,mm
+ovary size,ovary size units inferred,bool
+ovary size,ovary width,mm
+placental scars,left placental scars,int
+placental scars,placental scars,int
+placental scars,placental scars both sides,int
+placental scars,placental scars present,bool
+placental scars,placental scars side 1,int
+placental scars,placental scars side 2,int
+placental scars,right placental scars,int
+pregnancy,pregnancy,string
+sex,sex,string
+tail length,tail length,mm
+tail length,tail length ambiguous,bool
+tail length,tail length estimated,bool
+tail length,tail length units inferred,bool
+testicle description,testicle description,string
+testicle size,2nd testicle length,mm
+testicle size,2nd testicle width,mm
+testicle size,testicle length,mm
+testicle size,testicle size units inferred,bool
+testicle size,testicle width,mm
+tibia length,tibia length,mm
+tibia length,tibia length ambiguous,bool
+tibia length,tibia length estimated,bool
+tibia length,tibia length units inferred,bool
+total length,total length,mm
+total length,total length ambiguous,bool
+total length,total length estimated,bool
+total length,total length units inferred,bool
+tragus length,tragus length,mm
+tragus length,tragus length ambiguous,bool
+tragus length,tragus length estimated,bool
+tragus length,tragus length units inferred,bool
+vagina,vagina,string

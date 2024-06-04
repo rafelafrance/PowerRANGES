@@ -65,26 +65,29 @@ class HtmlWriter:
             with_traits += has_traits
 
             # Calculate per trait counts
-            for trait in occur.all_traits:
-                trait_count[trait._trait] += 1
+            for label, _ in occur.all_traits:
+                trait_count[label] += 1
 
+            # Only print out an occurrence if it has something in the parse fields
             if occur.has_parse:
                 with_data.append(occur)
 
+            # Summarize the traits per species
             if occurrences.summary_field:
                 name = occur.info_fields.get(occurrences.summary_field, "").strip()
                 species_count[name].total += 1
                 species_count[name].with_traits += has_traits
 
+        # Sort the summary fields
         trait_count = dict(sorted(trait_count.items()))
         trait_count["Grand total"] = sum(c for c in trait_count.values())
 
         species_count = dict(sorted(species_count.items()))
-
         species_count["Total"] = SpeciesCount(
             total=len(occurrences.occurrences), with_traits=with_traits
         )
 
+        # Limit the occurrences to the sample size
         if occurrences.sample:
             if len(with_data) > occurrences.sample:
                 with_data = random.sample(with_data, occurrences.sample)
@@ -92,6 +95,7 @@ class HtmlWriter:
                 total=len(with_data), with_traits=""
             )
 
+        # Output formatted rows
         for occur in with_data:
             self.formatted.append(
                 HtmlWriterRow(

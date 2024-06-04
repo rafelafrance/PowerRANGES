@@ -25,10 +25,12 @@ class Occurrence:
 
     @property
     def all_traits(self):
-        traits = []
+        traits = {}
         for trait_list in self.traits.values():
-            traits += [t for t in trait_list if t]
-        return sorted(traits, key=lambda t: t._trait)
+            for trait in trait_list:
+                traits |= trait.labeled()
+        ordered = sorted(traits.items())
+        return ordered
 
 
 class Occurrences:

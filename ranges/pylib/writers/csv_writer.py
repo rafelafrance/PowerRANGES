@@ -3,7 +3,6 @@ from itertools import groupby
 from pathlib import Path
 
 import pandas as pd
-from traiter.pylib.darwin_core import DarwinCore
 
 from ranges.pylib.occurrences import Occurrences
 
@@ -16,7 +15,7 @@ class CsvWriter:
     def count_fields(occurrences: Occurrences) -> dict[str, int]:
         counts: dict[str, int] = defaultdict(int)
         for occur in occurrences.occurrences:
-            for key, group in groupby(occur.all_traits, key=lambda t: t._trait):
+            for key, group in groupby(occur.all_traits, lambda t: t[0]):
                 counts[key] = max(counts[key], len(list(group)))
         return counts
 
@@ -28,14 +27,11 @@ class CsvWriter:
             row = {occurrences.id_field: occur.occurrence_id}
             row |= {k: occur.info_fields[k] for k in occurrences.info_fields}
             row |= {k: occur.parse_fields[k] for k in occurrences.parse_fields}
-            for _, group in groupby(occur.all_traits, key=lambda t: t._trait):
-                for i, trait in enumerate(group, 1):
-                    suffix = f"_#{i}" if counts[trait._trait] > 1 else ""
+            for key, group in groupby(occur.all_traits, key=lambda t: t[0]):
+                for i, fields in enumerate(group, 1):
+                    suffix = f" #{i}" if counts[key] > 1 else ""
 
-                    dwc = DarwinCore()
-                    dwc = trait.to_dwc(dwc).flatten()
-
-                    for header, value in dwc.items():
+                    for header, value in fields[1].items():
                         row[header + suffix] = value
 
             data.append(row)

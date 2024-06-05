@@ -22,6 +22,6 @@
   --info-field=stateProvince \
   --info-field=decimalLatitude \
   --info-field=decimalLongitude \
-  --pass-thru=sex \
+  --overwrite-field=sex \
   --summary-field=scientificName \
   --sample=500

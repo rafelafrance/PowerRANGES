@@ -8,6 +8,11 @@ from tqdm import tqdm
 
 from ranges.pylib import pipeline
 from ranges.pylib.rules.base import Base
+from ranges.pylib.rules.sex import Sex
+
+OVERWRITE = {
+    "sex": Sex,
+}
 
 
 @dataclass
@@ -21,21 +26,17 @@ class Occurrence:
     occurrence_id: str
     info_fields: dict[str, str] = field(default_factory=dict)
     parse_fields: dict[str, str] = field(default_factory=dict)
-    pass_thru: dict[str, list[Base]] = field(default_factory=dict)
+    overwrite_field: dict[str, list[Base]] = field(default_factory=dict)
     traits: dict[str, list[Base]] = field(default_factory=dict)
     _all_traits: list[str, dict[str, Any]] = None
 
     @property
     def has_traits(self) -> bool:
-        has = any(len(v) for v in self.traits.values())
-        has |= any(v for val in self.pass_thru.values() if (v := val.strip()))
-        return has
+        return any(len(v) for v in self.traits.values())
 
     @property
     def has_parse(self) -> bool:
-        has = any(v for val in self.parse_fields.values() if (v := val.strip()))
-        has |= any(v for val in self.pass_thru.values() if (v := val.strip()))
-        return has
+        return any(v for val in self.parse_fields.values() if (v := val.strip()))
 
     @property
     def all_traits(self):
@@ -57,7 +58,7 @@ class Occurrences:
         id_field: str,
         info_fields: list[str],
         parse_fields: list[str],
-        pass_thru: list[str],
+        overwrite_field: list[str],
         summary_field: str,
         sample: int,
     ):
@@ -67,7 +68,7 @@ class Occurrences:
         self.info_fields = info_fields
         self.parse_fields = parse_fields
         self.summary_field = summary_field
-        self.pass_thru = pass_thru
+        self.overwrite_field = overwrite_field
         self.sample = sample
         self.occurrences = self.read_occurrences()
         self._summary_by_field = None
@@ -82,7 +83,7 @@ class Occurrences:
                     occurrence_id=row[self.id_field],
                     info_fields={k: row[k] for k in self.info_fields},
                     parse_fields={k: row[k] for k in self.parse_fields},
-                    pass_thru={k: row[k] for k in self.pass_thru},
+                    overwrite_field={k: row[k] for k in self.overwrite_field},
                 )
                 for row in reader
             ]
@@ -90,11 +91,27 @@ class Occurrences:
 
     def parse(self):
         for occur in tqdm(self.occurrences, desc="Parse"):
+            overwritten = set()
+            for overwrite_field, text in occur.overwrite_field.items():
+                if text:
+                    overwritten.add(overwrite_field)
+                    data = {
+                        "start": 0,
+                        "end": len(text),
+                        "_trait": overwrite_field,
+                        "_text": text,
+                        overwrite_field: text,
+                    }
+                    trait = OVERWRITE[overwrite_field](**data)
+                    occur.traits[overwrite_field] = [trait]
+
             for parse_field, text in occur.parse_fields.items():
                 if text:
                     doc = self.nlp(text)
                     occur.traits[parse_field] = [
-                        e._.trait for e in doc.ents if e._.trait
+                        e._.trait
+                        for e in doc.ents
+                        if e._.trait and e._.trait._trait not in overwritten
                     ]
 
     def summary_by_field(self) -> dict[str, SummaryCounts]:
@@ -112,7 +129,7 @@ class Occurrences:
             counts = dict(sorted(counts.items()))
             counts["Total"] = SummaryCounts(
                 total=len(self.occurrences),
-                with_traits=sum(1 for c in counts.values() if c.with_traits),
+                with_traits=sum(c.with_traits for c in counts.values()),
             )
             self._summary_by_field = counts
 

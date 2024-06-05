@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ./ranges/parse_gbif.py \
-  --tsv-dir=data/junk \
+  --tsv-dir=data/occurrence_todo1 \
   --html-dir=data/occurrence_2024-06-05a \
   --csv-dir=data/occurrence_2024-06-05a \
   --id-field=occurrenceID \
@@ -22,5 +22,6 @@
   --info-field=stateProvince \
   --info-field=decimalLatitude \
   --info-field=decimalLongitude \
-  --pass-thru=sex \
+  --overwrite-field=sex \
   --summary-field=scientificName \
+  --sample=500

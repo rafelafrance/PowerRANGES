@@ -32,7 +32,7 @@ def main():
             id_field=args.id_field,
             info_fields=args.info_field,
             parse_fields=args.parse_field,
-            pass_thru=args.pass_thru,
+            overwrite_field=args.overwrite_field,
             summary_field=args.summary_field,
             sample=args.sample,
         )
@@ -154,7 +154,7 @@ def parse_args() -> argparse.Namespace:
     )
 
     arg_parser.add_argument(
-        "--pass-thru",
+        "--overwrite-field",
         metavar="COLUMN",
         action="append",
         help="""Use this field as is if it has data otherwise use the parsed field.""",

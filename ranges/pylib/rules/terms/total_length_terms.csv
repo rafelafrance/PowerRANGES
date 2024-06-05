@@ -4,6 +4,7 @@ ambiguous_key,l.,,total
 ambiguous_key,len,,total
 ambiguous_key,len.,,total
 ambiguous_key,length,,total
+bad_prefix,crest
 bad_prefix,elev
 bad_prefix,elev.
 bad_prefix,elevation

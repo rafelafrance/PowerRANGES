@@ -2,7 +2,6 @@ import dataclasses
 import html
 import itertools
 import random
-from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import ClassVar
@@ -25,75 +24,31 @@ class HtmlWriterRow:
 
 
 class CssClasses:
-    def __init__(self, spotlight: str = ""):
+    def __init__(self):
         self.classes = {}
-        self.spotlight = spotlight
 
     def __getitem__(self, key):
-        if self.spotlight and key.find(self.spotlight) > -1:
-            return "ccx"
         if key not in self.classes:
             self.classes[key] = next(BACKGROUNDS)
         return self.classes[key]
-
-
-@dataclasses.dataclass
-class SpeciesCount:
-    total: int = 0
-    with_traits: int | str = 0
 
 
 class HtmlWriter:
     template_dir: ClassVar[Path] = Path.cwd() / "ranges/pylib/writers/templates"
     template: ClassVar[str] = "html_writer.html"
 
-    def __init__(self, html_file, spotlight=""):
+    def __init__(self, html_file):
         self.html_file = html_file
-        self.css_classes = CssClasses(spotlight)
+        self.css_classes = CssClasses()
         self.formatted = []
 
     def write(self, occurrences: Occurrences):
-        species_count = defaultdict(lambda: SpeciesCount())
-        trait_count = defaultdict(int)
-
-        with_data = []
-
-        with_traits = 0
-
-        for occur in occurrences.occurrences:
-            has_traits = 1 if occur.has_traits else 0
-            with_traits += has_traits
-
-            # Calculate per trait counts
-            for label, _ in occur.all_traits:
-                trait_count[label] += 1
-
-            # Only print out an occurrence if it has something in the parse fields
-            if occur.has_parse:
-                with_data.append(occur)
-
-            # Summarize the traits per species
-            if occurrences.summary_field:
-                name = occur.info_fields.get(occurrences.summary_field, "").strip()
-                species_count[name].total += 1
-                species_count[name].with_traits += has_traits
-
-        # Sort the summary fields
-        trait_count = dict(sorted(trait_count.items()))
-        trait_count["Grand total"] = sum(c for c in trait_count.values())
-
-        species_count = dict(sorted(species_count.items()))
-        species_count["Total"] = SpeciesCount(
-            total=len(occurrences.occurrences), with_traits=with_traits
-        )
+        # Limit output to rows with data in any of the parse fields
+        with_data = [o for o in occurrences.occurrences if o.has_parse]
 
         # Limit the occurrences to the sample size
-        if occurrences.sample:
-            if len(with_data) > occurrences.sample:
-                with_data = random.sample(with_data, occurrences.sample)
-            species_count["Output limit"] = SpeciesCount(
-                total=len(with_data), with_traits=""
-            )
+        if occurrences.sample and len(with_data) > occurrences.sample:
+            with_data = random.sample(with_data, occurrences.sample)
 
         # Output formatted rows
         for occur in with_data:
@@ -105,11 +60,28 @@ class HtmlWriter:
                 ),
             )
 
-        self.write_template(
+        self.write_template(occurrences=occurrences)
+
+    def write_template(self, occurrences):
+        species_count = occurrences.summary_by_field()
+        trait_count = occurrences.summary_by_trait()
+
+        env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(self.template_dir),
+            autoescape=True,
+        )
+
+        template = env.get_template(self.template).render(
+            now=datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M"),
+            file_name=self.html_file.stem,
+            rows=self.formatted,
             species_count=species_count,
             summary_field=occurrences.summary_field,
             trait_count=trait_count,
         )
+
+        with self.html_file.open("w") as html_file:
+            html_file.write(template)
 
     def format_text(self, occurrence: Occurrence) -> dict[str, str]:
         formatted_text = {}
@@ -153,24 +125,3 @@ class HtmlWriter:
 
         text = "".join(frags)
         return text
-
-    def write_template(self, species_count=None, summary_field=None, trait_count=None):
-        species_count = species_count if species_count else {}
-        trait_count = trait_count if trait_count else {}
-
-        env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(self.template_dir),
-            autoescape=True,
-        )
-
-        template = env.get_template(self.template).render(
-            now=datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M"),
-            file_name=self.html_file.stem,
-            rows=self.formatted,
-            species_count=species_count,
-            summary_field=summary_field,
-            trait_count=trait_count,
-        )
-
-        with self.html_file.open("w") as html_file:
-            html_file.write(template)

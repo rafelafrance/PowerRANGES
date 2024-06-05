@@ -23,6 +23,7 @@ class CsvWriter:
         counts = self.count_fields(occurrences)
 
         data = []
+        trait_cols = set()
         for occur in occurrences.occurrences:
             row = {occurrences.id_field: occur.occurrence_id}
             row |= {k: occur.info_fields[k] for k in occurrences.info_fields}
@@ -32,9 +33,20 @@ class CsvWriter:
                     suffix = f" #{i}" if counts[key] > 1 else ""
 
                     for header, value in fields[1].items():
-                        row[header + suffix] = value
+                        name = header + suffix
+                        row[name] = value
+                        trait_cols.add((key, i, name))
 
             data.append(row)
 
+        trait_cols = sorted(trait_cols)
+        columns = [
+            occurrences.id_field,
+            *occurrences.info_fields,
+            *occurrences.parse_fields,
+            *[t[2] for t in sorted(trait_cols)],
+        ]
+
         df = pd.DataFrame(data)
+        df = df.loc[:, columns]
         df.to_csv(self.csv_file, index=False)

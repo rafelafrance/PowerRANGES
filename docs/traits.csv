@@ -1,4 +1,4 @@
-category,trait,type
+trait,data field,type
 body mass,body mass,grams
 body mass,body mass ambiguous,bool
 body mass,body mass estimated,bool

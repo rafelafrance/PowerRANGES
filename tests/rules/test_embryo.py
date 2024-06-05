@@ -537,3 +537,9 @@ class TestEmbryo(unittest.TestCase):
             parse("6 embryos: 2/3 term"),
             [Embryo(count=6, start=0, end=9)],
         )
+
+    def test_embryo_53(self):
+        self.assertEqual(
+            parse("5 EMBRYOS: 2 IN LEFT HORN 43, 32, 3 IN RIGHT HORN 40,41,41"),
+            [Embryo(count=5, left=2, right=3, start=0, end=9)],
+        )

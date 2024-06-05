@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ./ranges/parse_gbif.py \
-  --tsv-dir=data/occurrence_todo1 \
-  --html-dir=data/occurrence_2024-06-03_html \
-  --csv-dir=data/occurrence_2024-06-03_csv \
+  --tsv-dir=data/junk \
+  --html-dir=data/occurrence_2024-06-05a \
+  --csv-dir=data/occurrence_2024-06-05a \
   --id-field=occurrenceID \
   --parse-field=dynamicProperties \
   --parse-field=occurrenceRemarks \
@@ -22,5 +22,5 @@
   --info-field=stateProvince \
   --info-field=decimalLatitude \
   --info-field=decimalLongitude \
+  --pass-thru=sex \
   --summary-field=scientificName \
-  --sample=500

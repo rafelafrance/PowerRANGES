@@ -26,7 +26,7 @@ class Occurrence:
     occurrence_id: str
     info_fields: dict[str, str] = field(default_factory=dict)
     parse_fields: dict[str, str] = field(default_factory=dict)
-    overwrite_field: dict[str, list[Base]] = field(default_factory=dict)
+    overwrite_fields: dict[str, list[Base]] = field(default_factory=dict)
     traits: dict[str, list[Base]] = field(default_factory=dict)
     _all_traits: list[str, dict[str, Any]] = None
 
@@ -39,7 +39,7 @@ class Occurrence:
         return any(v for val in self.parse_fields.values() if (v := val.strip()))
 
     @property
-    def all_traits(self):
+    def all_traits(self) -> list[str, dict[str, Any]]:
         if self._all_traits is None:
             traits = {}
             for trait_list in self.traits.values():
@@ -58,7 +58,7 @@ class Occurrences:
         id_field: str,
         info_fields: list[str],
         parse_fields: list[str],
-        overwrite_field: list[str],
+        overwrite_fields: list[str],
         summary_field: str,
         sample: int,
     ):
@@ -68,7 +68,7 @@ class Occurrences:
         self.info_fields = info_fields
         self.parse_fields = parse_fields
         self.summary_field = summary_field
-        self.overwrite_field = overwrite_field
+        self.overwrite_fields = overwrite_fields
         self.sample = sample
         self.occurrences = self.read_occurrences()
         self._summary_by_field = None
@@ -83,7 +83,7 @@ class Occurrences:
                     occurrence_id=row[self.id_field],
                     info_fields={k: row[k] for k in self.info_fields},
                     parse_fields={k: row[k] for k in self.parse_fields},
-                    overwrite_field={k: row[k] for k in self.overwrite_field},
+                    overwrite_fields={k: row[k] for k in self.overwrite_fields},
                 )
                 for row in reader
             ]
@@ -92,7 +92,7 @@ class Occurrences:
     def parse(self):
         for occur in tqdm(self.occurrences, desc="Parse"):
             overwritten = set()
-            for overwrite_field, text in occur.overwrite_field.items():
+            for overwrite_field, text in occur.overwrite_fields.items():
                 if text:
                     overwritten.add(overwrite_field)
                     data = {

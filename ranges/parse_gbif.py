@@ -32,7 +32,7 @@ def main():
             id_field=args.id_field,
             info_fields=args.info_field,
             parse_fields=args.parse_field,
-            overwrite_field=args.overwrite_field,
+            overwrite_fields=args.overwrite_field,
             summary_field=args.summary_field,
             sample=args.sample,
         )

@@ -21,7 +21,7 @@ class HtmlWriterRow:
     occurrence_id: str
     info_fields: dict[str, str]
     formatted_text: dict[str, str] = dataclasses.field(default_factory=dict)
-    overwrite_field: dict[str, str] = dataclasses.field(default_factory=dict)
+    overwrite_fields: dict[str, str] = dataclasses.field(default_factory=dict)
 
 
 class CssClasses:
@@ -58,7 +58,7 @@ class HtmlWriter:
                     occurrence_id=occur.occurrence_id,
                     info_fields=occur.info_fields,
                     formatted_text=self.format_text(occur),
-                    overwrite_field=self.format_overwrite_field(occur),
+                    overwrite_fields=self.format_overwrite_field(occur),
                 ),
             )
 
@@ -87,7 +87,7 @@ class HtmlWriter:
 
     def format_overwrite_field(self, occur):
         formatted_text = {}
-        for name, raw_text in occur.overwrite_field.items():
+        for name, raw_text in occur.overwrite_fields.items():
             cls = self.css_classes[name]
             text = f'<span class="{cls}" title=f"This {name} value gets passed thru">'
             text += html.escape(raw_text)

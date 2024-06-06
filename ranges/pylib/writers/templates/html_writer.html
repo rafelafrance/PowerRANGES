@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8"/>
-    <title>Traiter</title>
+    <title>RANGES</title>
     <style>
 {% include 'html_writer.css' -%}
     </style>
@@ -89,7 +89,7 @@
         <td class="text">{{ value | safe }}</td>
     </tr>
     {% endfor %}
-    {% for field, value in row.overwrite_field.items() %}
+    {% for field, value in row.overwrite_fields.items() %}
     <tr class="term closed" data-text-id="{{ row.occurrence_id }}">
         <td></td>
         <td></td>

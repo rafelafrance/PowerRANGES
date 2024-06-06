@@ -45,7 +45,7 @@ class EarLength(BaseLength):
             value["ear length"] |= {f"{key} units inferred": True}
 
         if self.ambiguous:
-            value |= {f"{key} ambiguous": True}
+            value["ear length"] |= {f"{key} ambiguous": True}
 
         if self.estimated:
             value["ear length"] |= {f"{key} estimated": True}

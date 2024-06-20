@@ -29,7 +29,7 @@ DECODER = {
     "bad_prefix": {"ENT_TYPE": "bad_prefix", "OP": "+"},
     "bad_suffix": {"ENT_TYPE": "bad_suffix", "OP": "+"},
     "ft": {"ENT_TYPE": "imperial_length", "OP": "+"},
-    "in": {"ENT_TYPE": "imperial_length", "OP": "+"},
+    "in": {"ENT_TYPE": {"IN": ["imperial_length", "imperial_inches"]}, "OP": "+"},
     "key": {"ENT_TYPE": {"IN": ["len_key", "key_with_units"]}, "OP": "+"},
     "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
     "sp": {"SPACY": True},
@@ -49,7 +49,7 @@ class BaseLength(Base):
     keys: ClassVar[list[str]] = """ key_with_units key_leader len_key """.split()
     units: ClassVar[
         list[str]
-    ] = """ key_with_units metric_length imperial_length """.split()
+    ] = """ key_with_units metric_length imperial_length imperial_inches """.split()
 
     factor_mm: ClassVar[dict[str, str]] = {}
 
@@ -231,6 +231,10 @@ class BaseLength(Base):
             '       key   : 99 "+ ',
             '       ambig : 99 "+ ',
             ' key   ambig : 99 "+ ',
+            " ambig key   : 99 in ",
+            "       key   : 99 in ",
+            "       ambig : 99 in ",
+            " key   ambig : 99 in ",
         ]
         if allow_no_key:
             patterns += []
@@ -358,7 +362,9 @@ class BaseLength(Base):
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         number = next(e for e in ent.ents if e.label_ == "number")
-        length = cls.in_millimeters(number, "inches")
+        units = next((e for e in ent.ents if e.label_ in cls.units), None)
+        units = cls.replace.get(units.text, "inches") if units else "inches"
+        length = cls.in_millimeters(number, units)
 
         return cls.from_ent(ent, length=length, ambiguous=ambiguous, _prefix=prefix)
 

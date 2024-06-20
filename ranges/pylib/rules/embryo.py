@@ -57,6 +57,7 @@ class Embryo(BaseLength):
     factor_mm: ClassVar[dict[str, str]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
+    replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
     # Length fields are in the parent class

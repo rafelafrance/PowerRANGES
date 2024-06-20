@@ -50,6 +50,7 @@ class TestHindFootLength(unittest.TestCase):
 
     def test_hind_foot_length_05(self):
         """It parses inch units."""
+        self.maxDiff = None
         self.assertEqual(
             parse("; hind foot with claw=2 in;"),
             [

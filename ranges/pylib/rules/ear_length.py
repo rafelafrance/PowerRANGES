@@ -30,6 +30,7 @@ class EarLength(BaseLength):
     measured_keys: ClassVar[dict[str, str]] = term_util.look_up_table(
         csvs, "measured_from"
     )
+    replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
     measured_from: str = None

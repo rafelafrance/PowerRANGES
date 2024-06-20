@@ -23,6 +23,7 @@ class TotalLength(BaseLength):
     factor_mm: ClassVar[dict[str, str]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
+    replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
     def labeled(self) -> dict[str, dict[str, Any]]:
@@ -46,6 +47,7 @@ class TotalLength(BaseLength):
         cls.compound_length_pipe(nlp, allow_no_key=True)
         cls.range_length_pipe(nlp, allow_no_key=True)
         cls.tic_pipe(nlp, allow_no_key=True)
+        # debug.tokens(nlp)
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 

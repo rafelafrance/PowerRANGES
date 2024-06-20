@@ -4,6 +4,7 @@ Parse embryo traits: length and count.
 These traits are intermixed in text, and Currently, traiter isn't equipped to deal
 with this easily.
 """
+
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -74,40 +75,40 @@ class Embryo(BaseLength):
         value = defaultdict(dict)
 
         if self.length is not None:
-            value["embryo size"] |= {"embryo length": self.length}
+            value["embryo_size"] |= {"embryo_length": self.length}
 
         if self.width is not None:
-            value["embryo size"] |= {"embryo width": self.width}
+            value["embryo_size"] |= {"embryo_width": self.width}
 
         if self.units_inferred is not None:
-            value["embryo size"] |= {"embryo size units inferred": self.units_inferred}
+            value["embryo_size"] |= {"embryo_size_units_inferred": self.units_inferred}
 
         if self.ambiguous is not None:
-            value["embryo size"] |= {"embryo size ambiguous": self.ambiguous}
+            value["embryo_size"] |= {"embryo_size_ambiguous": self.ambiguous}
 
         if self.estimated is not None:
-            value["embryo size"] |= {"embryo size estimated": self.estimated}
+            value["embryo_size"] |= {"embryo_size_estimated": self.estimated}
 
         if self.count is not None:
-            value["embryo count"] |= {"embryo count": self.count}
+            value["embryo_count"] |= {"embryo_count": self.count}
 
         if self.left is not None:
-            value["embryo count"] |= {"left embryo count": self.left}
+            value["embryo_count"] |= {"left_embryo_count": self.left}
 
         if self.right is not None:
-            value["embryo count"] |= {"right embryo count": self.right}
+            value["embryo_count"] |= {"right_embryo_count": self.right}
 
         if self.female is not None:
-            value["embryo count"] |= {"female embryo count": self.female}
+            value["embryo_count"] |= {"female_embryo_count": self.female}
 
         if self.male is not None:
-            value["embryo count"] |= {"male embryo count": self.male}
+            value["embryo_count"] |= {"male_embryo_count": self.male}
 
         if self.side1 is not None:
-            value["embryo count"] |= {"embryo count side 1": self.side1}
+            value["embryo_count"] |= {"embryo_count_side 1": self.side1}
 
         if self.side2 is not None:
-            value["embryo count"] |= {"embryo count side 2": self.side2}
+            value["embryo_count"] |= {"embryo_count_side 2": self.side2}
 
         return value
 

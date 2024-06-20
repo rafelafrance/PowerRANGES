@@ -46,7 +46,7 @@ class Nipple(Base):
         value = defaultdict(dict)
 
         if self.count is not None:
-            value["nipple count"] |= {"nipple count": self.count}
+            value["nipple_count"] |= {"nipple_count": self.count}
 
         if self.state:
             value["nipple"] |= {"nipple": self.state}

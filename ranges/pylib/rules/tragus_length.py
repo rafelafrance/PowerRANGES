@@ -27,16 +27,16 @@ class TragusLength(BaseLength):
     # ---------------------
 
     def labeled(self) -> dict[str, dict[str, Any]]:
-        value = {"tragus length": {"tragus length": self.length}}
+        value = {"tragus_length": {"tragus_length": self.length}}
 
         if self.units_inferred:
-            value["tragus length"] |= {"tragus length units inferred": True}
+            value["tragus_length"] |= {"tragus_length_units_inferred": True}
 
         if self.ambiguous:
-            value["tragus length"] |= {"tragus length ambiguous": True}
+            value["tragus_length"] |= {"tragus_length_ambiguous": True}
 
         if self.estimated:
-            value["tragus length"] |= {"tragus length estimated": True}
+            value["tragus_length"] |= {"tragus_length_estimated": True}
 
         return value
 

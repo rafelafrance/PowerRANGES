@@ -30,16 +30,16 @@ class TailLength(BaseLength):
     def labeled(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
-        value["tail length"] = {"tail length": self.length}
+        value["tail_length"] = {"tail_length": self.length}
 
         if self.units_inferred:
-            value["tail length"] |= {"tail length units inferred": True}
+            value["tail_length"] |= {"tail_length_units_inferred": True}
 
         if self.ambiguous:
-            value["tail length"] |= {"tail length ambiguous": True}
+            value["tail_length"] |= {"tail_length_ambiguous": True}
 
         if self.estimated:
-            value["tail length"] |= {"tail length estimated": True}
+            value["tail_length"] |= {"tail_length_estimated": True}
 
         return value
 

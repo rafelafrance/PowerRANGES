@@ -35,16 +35,16 @@ class ForearmLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     def labeled(self) -> dict[str, dict[str, Any]]:
-        value = {"forearm length": {"forearm length": self.length}}
+        value = {"forearm_length": {"forearm_length": self.length}}
 
         if self.units_inferred:
-            value["forearm length"] |= {"forearm length units inferred": True}
+            value["forearm_length"] |= {"forearm_length_units_inferred": True}
 
         if self.ambiguous:
-            value["forearm length"] |= {"forearm length ambiguous": True}
+            value["forearm_length"] |= {"forearm_length_ambiguous": True}
 
         if self.estimated:
-            value["forearm length"] |= {"forearm length estimated": True}
+            value["forearm_length"] |= {"forearm_length_estimated": True}
 
         return value
 

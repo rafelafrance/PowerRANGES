@@ -58,25 +58,25 @@ class PlacentalScarCount(Base):
         value = defaultdict(dict)
 
         if self.present is not None:
-            value["placental scars"] |= {"placental scars present": self.present}
+            value["placental_scars"] |= {"placental_scars_present": self.present}
 
         if self.count is not None:
-            value["placental scars"] |= {"placental scars": self.count}
+            value["placental_scars"] |= {"placental_scars": self.count}
 
         if self.left is not None:
-            value["placental scars"] |= {"left placental scars": self.left}
+            value["placental_scars"] |= {"left_placental_scars": self.left}
 
         if self.right is not None:
-            value["placental scars"] |= {"right placental scars": self.right}
+            value["placental_scars"] |= {"right_placental_scars": self.right}
 
         if self.side1 is not None:
-            value["placental scars"] |= {"placental scars side 1": self.side1}
+            value["placental_scars"] |= {"placental_scars_side_1": self.side1}
 
         if self.side2 is not None:
-            value["placental scars"] |= {"placental scars side 2": self.side2}
+            value["placental_scars"] |= {"placental_scars_side_2": self.side2}
 
         if self.side2 is not None:
-            value["placental scars"] |= {"placental scars both sides": self.side2}
+            value["placental_scars"] |= {"placental_scars_both_sides": self.side2}
 
         return value
 

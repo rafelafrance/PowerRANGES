@@ -4,6 +4,7 @@ Parse ovary traits: length and size.
 These traits are intermixed in text, and Currently, traiter isn't equipped to deal
 with this easily.
 """
+
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -103,33 +104,33 @@ class Ovary(Base):
         value = defaultdict(dict)
 
         if self.description is not None:
-            value["ovary description"] |= {"ovary description": self.description}
+            value["ovary_description"] |= {"ovary_description": self.description}
 
         if self.left_side is not None:
-            value["ovary description"] |= {"left ovary description": self.left_side}
+            value["ovary_description"] |= {"left_ovary_description": self.left_side}
 
         if self.right_side is not None:
-            value["ovary description"] |= {"right ovary description": self.right_side}
+            value["ovary_description"] |= {"right_ovary_description": self.right_side}
 
         if self.both_sides is not None:
-            value["ovary description"] |= {
-                "ovary description both sides": self.both_sides
+            value["ovary_description"] |= {
+                "ovary_description_both_sides": self.both_sides
             }
 
         if self.length is not None:
-            value["ovary size"] |= {"ovary length": self.length}
+            value["ovary_size"] |= {"ovary_length": self.length}
 
         if self.length2 is not None:
-            value["ovary size"] |= {"2nd ovary length": self.length2}
+            value["ovary_size"] |= {"2nd_ovary_length": self.length2}
 
         if self.width is not None:
-            value["ovary size"] |= {"ovary width": self.width}
+            value["ovary_size"] |= {"ovary_width": self.width}
 
         if self.width2 is not None:
-            value["ovary size"] |= {"2nd ovary width": self.width2}
+            value["ovary_size"] |= {"2nd_ovary_width": self.width2}
 
         if self.units_inferred is not None:
-            value["ovary size"] |= {"ovary size units inferred": self.units_inferred}
+            value["ovary_size"] |= {"ovary_size_units_inferred": self.units_inferred}
 
         return value
 

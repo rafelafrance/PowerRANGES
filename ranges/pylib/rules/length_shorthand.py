@@ -17,6 +17,7 @@ Unknown values are filled with "?" or "x".
 Ambiguous measurements are enclosed in brackets.
   E.g.: 11-[22]-33-[44]:99g
 """
+
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -89,39 +90,39 @@ class LengthShorthand(Base):
         value = defaultdict(dict)
 
         if self.total_length is not None:
-            value["total length"] |= {"total length": self.total_length}
+            value["total_length"] |= {"total_length": self.total_length}
             if self.total_length_estimated:
-                value["total length"] |= {"total length estimated": True}
+                value["total_length"] |= {"total_length_estimated": True}
 
         if self.tail_length is not None:
-            value["tail length"] |= {"tail length": self.tail_length}
+            value["tail_length"] |= {"tail_length": self.tail_length}
             if self.tail_length_estimated:
-                value["tail length"] |= {"tail length estimated": True}
+                value["tail_length"] |= {"tail_length_estimated": True}
 
         if self.hind_foot_length is not None:
-            value["hind foot length"] |= {"hind foot length": self.hind_foot_length}
+            value["hind_foot_length"] |= {"hind_foot_length": self.hind_foot_length}
             if self.hind_foot_length_estimated:
-                value["hind foot length"] |= {"hind foot length estimated": True}
+                value["hind_foot_length"] |= {"hind_foot_length_estimated": True}
 
         if self.ear_length is not None:
-            value["ear length"] |= {"ear length": self.ear_length}
+            value["ear_length"] |= {"ear_length": self.ear_length}
             if self.ear_length_estimated:
-                value["ear length"] |= {"ear length estimated": True}
+                value["ear_length"] |= {"ear_length_estimated": True}
 
         if self.body_mass is not None:
-            value["body mass"] |= {"body mass": self.body_mass}
+            value["body_mass"] |= {"body_mass": self.body_mass}
             if self.body_mass_estimated:
-                value["body mass"] |= {"body mass estimated": True}
+                value["body_mass"] |= {"body_mass_estimated": True}
 
         if self.forearm_length is not None:
-            value["forearm length"] |= {"forearm length": self.forearm_length}
+            value["forearm_length"] |= {"forearm_length": self.forearm_length}
             if self.forearm_length_estimated:
-                value["forearm length"] |= {"forearm length estimated": True}
+                value["forearm_length"] |= {"forearm_length_estimated": True}
 
         if self.tragus_length is not None:
-            value["tragus length"] |= {"tragus length": self.tragus_length}
+            value["tragus_length"] |= {"tragus_length": self.tragus_length}
             if self.tragus_length_estimated:
-                value["tragus length"] |= {"tragus length estimated": True}
+                value["tragus_length"] |= {"tragus_length_estimated": True}
 
         return value
 

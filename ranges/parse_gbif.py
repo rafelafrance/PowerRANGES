@@ -72,7 +72,7 @@ def write_grand_totals(csv_dir, summary_field, total_by_field, total_by_trait):
     total = 0
     with path.open("w") as out:
         writer = csv.writer(out)
-        writer.writerow(["tait", "count"])
+        writer.writerow(["trait", "count"])
         for key, count in counts.items():
             writer.writerow([key, count])
             total += count

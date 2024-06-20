@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 from itertools import groupby
 from pathlib import Path
@@ -30,10 +31,11 @@ class CsvWriter:
             row |= {k: occur.parse_fields[k] for k in occurrences.parse_fields}
             for key, group in groupby(occur.all_traits, key=lambda t: t[0]):
                 for i, fields in enumerate(group, 1):
-                    suffix = f" #{i}" if counts[key] > 1 else ""
+                    suffix = f"_{i}" if counts[key] > 1 else ""
 
                     for header, value in fields[1].items():
                         name = header + suffix
+                        name = re.sub(r"\W", "_", name)
                         row[name] = value
                         trait_cols.add((key, i, name))
 

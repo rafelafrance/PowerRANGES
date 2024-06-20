@@ -46,7 +46,7 @@ class Mammary(Base):
         value = defaultdict(dict)
 
         if self.count is not None:
-            value["mammary count"] |= {"mammary count": self.count}
+            value["mammary_count"] |= {"mammary_count": self.count}
 
         if self.state:
             value["mammary"] |= {"mammary": self.state}

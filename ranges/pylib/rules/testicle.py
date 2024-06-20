@@ -71,23 +71,23 @@ class Testicle(Base):
         value = defaultdict(dict)
 
         if self.description is not None:
-            value["testicle description"] |= {"testicle description": self.description}
+            value["testicle_description"] |= {"testicle_description": self.description}
 
         if self.length is not None:
-            value["testicle size"] |= {"testicle length": self.length}
+            value["testicle_size"] |= {"testicle_length": self.length}
 
         if self.length2 is not None:
-            value["testicle size"] |= {"2nd testicle length": self.length2}
+            value["testicle_size"] |= {"2nd_testicle_length": self.length2}
 
         if self.width is not None:
-            value["testicle size"] |= {"testicle width": self.width}
+            value["testicle_size"] |= {"testicle_width": self.width}
 
         if self.width2 is not None:
-            value["testicle size"] |= {"2nd testicle width": self.width2}
+            value["testicle_size"] |= {"2nd_testicle_width": self.width2}
 
         if self.units_inferred is not None:
-            value["testicle size"] |= {
-                "testicle size units inferred": self.units_inferred
+            value["testicle_size"] |= {
+                "testicle_size_units_inferred": self.units_inferred
             }
 
         return value

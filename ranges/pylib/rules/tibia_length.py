@@ -27,16 +27,16 @@ class TibiaLength(BaseLength):
     # ---------------------
 
     def labeled(self) -> dict[str, dict[str, Any]]:
-        value = {"tibia length": {"tibia length": self.length}}
+        value = {"tibia_length": {"tibia_length": self.length}}
 
         if self.units_inferred:
-            value["tibia length"] |= {"tibia length units inferred": True}
+            value["tibia_length"] |= {"tibia_length_units_inferred": True}
 
         if self.ambiguous:
-            value["tibia length"] |= {"tibia length ambiguous": True}
+            value["tibia_length"] |= {"tibia_length_ambiguous": True}
 
         if self.estimated:
-            value["tibia length"] |= {"tibia length estimated": True}
+            value["tibia_length"] |= {"tibia_length_estimated": True}
 
         return value
 

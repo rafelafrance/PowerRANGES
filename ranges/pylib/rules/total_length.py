@@ -26,16 +26,16 @@ class TotalLength(BaseLength):
     # ---------------------
 
     def labeled(self) -> dict[str, dict[str, Any]]:
-        value = {"total length": {"total length": self.length}}
+        value = {"total_length": {"total_length": self.length}}
 
         if self.units_inferred:
-            value["total length"] |= {"total length units inferred": True}
+            value["total_length"] |= {"total_length_units_inferred": True}
 
         if self.ambiguous:
-            value["total length"] |= {"total length ambiguous": True}
+            value["total_length"] |= {"total_length_ambiguous": True}
 
         if self.estimated:
-            value["total length"] |= {"total length estimated": True}
+            value["total_length"] |= {"total_length_estimated": True}
 
         return value
 

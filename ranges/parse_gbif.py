@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
-
 import argparse
-import csv
+import logging
+import multiprocessing
+import os
+import tempfile
 import textwrap
-from collections import defaultdict
+from contextlib import contextmanager
+from glob import glob
 from pathlib import Path
 
-from pylib.occurrences import Occurrences, SummaryCounts
+import pandas as pd
 from pylib.writers import csv_writer, html_writer
+from tqdm import tqdm
 from util.pylib import log
 
 
@@ -15,91 +19,86 @@ def main():
     log.started()
     args = parse_args()
 
-    if args.html_dir:
-        args.html_dir.mkdir(parents=True, exist_ok=True)
-
-    if args.csv_dir:
+    if args.csv_dir and not args.csv_dir.exists():
         args.csv_dir.mkdir(parents=True, exist_ok=True)
 
-    total_by_field = defaultdict(lambda: SummaryCounts())
-    total_by_trait = defaultdict(int)
+    with get_csv_dir(args.csv_dir) as csv_dir:
+        if args.debug:
+            single_process(args, csv_dir)
+        else:
+            multiple_processes(args, csv_dir)
 
-    tsv_files = sorted(args.tsv_dir.glob("*"))
-    for input_tsv in tsv_files:
-        print(input_tsv.name)
-        occurrences = Occurrences(
-            path=input_tsv,
-            id_field=args.id_field,
-            info_fields=args.info_field,
-            parse_fields=args.parse_field,
-            overwrite_fields=args.overwrite_field,
-            summary_field=args.summary_field,
-            sample=args.sample,
-        )
-        occurrences.parse()
+        merged = sorted([pd.read_csv(f) for f in csv_dir.glob("*.csv")])
+        merged = pd.concat(merged, axis="rows")
 
-        if args.html_dir:
-            write_html(args.html_dir, input_tsv, occurrences)
+        if args.csv_file:
+            merged.to_csv(args.csv_file, index=False)
 
-        if args.csv_dir:
-            write_csv(args.csv_dir, input_tsv, occurrences)
-            accumulate_totals(occurrences, total_by_field, total_by_trait)
-
-    if args.csv_dir:
-        write_grand_totals(
-            args.csv_dir, args.summary_field, total_by_field, total_by_trait
-        )
+        if args.html_file:
+            html_writer.write_html(merged)
 
     log.finished()
 
 
-def write_grand_totals(csv_dir, summary_field, total_by_field, total_by_trait):
-    if summary_field:
-        total, with_traits = 0, 0
-        path = csv_dir / f"grand_totals_{summary_field}.csv"
-        counts = dict(sorted(total_by_field.items()))
-        with path.open("w") as out:
-            writer = csv.writer(out)
-            writer.writerow([summary_field, "total", "with traits"])
-            for key, count in counts.items():
-                writer.writerow([key, count.total, count.with_traits])
-                total += count.total
-                with_traits += count.with_traits
-            writer.writerow(["Total", total, with_traits])
+def single_process(args, csv_dir):
+    if args.skip_parse:
+        return
 
-    path = csv_dir / "grand_totals_traits.csv"
-    counts = dict(sorted(total_by_trait.items()))
-    total = 0
-    with path.open("w") as out:
-        writer = csv.writer(out)
-        writer.writerow(["trait", "count"])
-        for key, count in counts.items():
-            writer.writerow([key, count])
-            total += count
-        writer.writerow(["Total", total])
+    for tsv in tqdm(args.tsv_file):
+        csv_writer.process_occurrences(
+            tsv,
+            csv_dir,
+            args.id_field,
+            args.info_field,
+            args.parse_field,
+            args.overwrite_field,
+        )
 
 
-def accumulate_totals(occurrences, total_by_field, total_by_trait):
-    for key, value in occurrences.summary_by_field().items():
-        if key != "Total":
-            total_by_field[key].total += value.total
-            total_by_field[key].with_traits += value.with_traits
+def multiple_processes(args, csv_dir):
+    if args.skip_parse:
+        return
 
-    for key, value in occurrences.summary_by_trait().items():
-        if key != "Total":
-            total_by_trait[key] += value
+    with tqdm(total=len(args.tsv_file)) as bar:
+        with multiprocessing.Pool(processes=args.cpus) as pool:
+            results = [
+                pool.apply_async(
+                    csv_writer.process_occurrences,
+                    args=(
+                        tsv,
+                        csv_dir,
+                        args.id_field,
+                        args.info_field,
+                        args.parse_field,
+                        args.overwrite_field,
+                    ),
+                    callback=lambda _: bar.update(1),
+                )
+                for tsv in args.tsv_file
+            ]
+            fails = ", ".join(r.get() for r in results)
+
+    if fails:
+        msg = f"The following extractions did not work: {fails}"
+    else:
+        msg = "All files parsed successfully."
+
+    logging.info(msg)
 
 
-def write_html(html_dir: Path, input_tsv: Path, occurrences: Occurrences) -> None:
-    html_file = html_dir / f"{input_tsv.stem}.html"
-    writer = html_writer.HtmlWriter(html_file)
-    writer.write(occurrences)
+@contextmanager
+def get_csv_dir(csv_dir=None):
+    dir_ = csv_dir if csv_dir else tempfile.mkdtemp()
+    try:
+        yield dir_
+    finally:
+        pass
 
 
-def write_csv(csv_dir: Path, input_tsv: Path, occurrences: Occurrences) -> None:
-    csv_file = csv_dir / f"{input_tsv.stem}.csv"
-    writer = csv_writer.CsvWriter(csv_file)
-    writer.write(occurrences)
+# def write_html(html_dir: Path, occurrences: list[Occurrence]) -> None:
+#     html_file = html_dir / f"{tsv_file.stem}.html"
+#     writer = html_writer.HtmlWriter(html_file)
+#     writer.write(occurrences)
 
 
 def parse_args() -> argparse.Namespace:
@@ -112,25 +111,34 @@ def parse_args() -> argparse.Namespace:
     )
 
     arg_parser.add_argument(
-        "--tsv-dir",
-        metavar="DIR",
+        "--tsv-file",
         type=Path,
+        action="append",
         required=True,
-        help="""Get input TSV files from this directory.""",
+        metavar="PATH",
+        help="""Get input this TSV. Wild cards must be quoted""",
     )
 
     arg_parser.add_argument(
-        "--csv-dir",
-        metavar="DIR",
+        "--json-dir",
+        metavar="PATH",
         type=Path,
-        help="""Put output CSV files into this directory.""",
+        help="""Put JSON parses into this directory. If this is not used a temporary
+            directory gets created.""",
     )
 
     arg_parser.add_argument(
-        "--html-dir",
-        metavar="DIR",
+        "--csv-file",
+        metavar="PATH",
         type=Path,
-        help="""Put output CSV files into this directory.""",
+        help="""Output occurrences into this CSV file.""",
+    )
+
+    arg_parser.add_argument(
+        "--html-file",
+        metavar="PATH",
+        type=Path,
+        help="""Output sampled occurrences into this HTML file.""",
     )
 
     arg_parser.add_argument(
@@ -157,7 +165,7 @@ def parse_args() -> argparse.Namespace:
         "--overwrite-field",
         metavar="COLUMN",
         action="append",
-        help="""Use this field as is if it has data otherwise use the parsed field.""",
+        help="""Use this field as is if it has data otherwise use a parsed field.""",
     )
 
     arg_parser.add_argument(
@@ -169,14 +177,56 @@ def parse_args() -> argparse.Namespace:
     arg_parser.add_argument(
         "--sample",
         type=int,
+        default=1000,
         metavar="INT",
-        help="""How many records to output for the HTML report.""",
+        help="""How many records to output for the HTML reports. Only used if
+            --html-file is selected. (default: %(default)s)""",
+    )
+
+    arg_parser.add_argument(
+        "--sample-method",
+        choices=["records", "traits"],
+        default="records",
+        help="""How to sample the data for HTML output. This only used if --html-file
+            is selected. records=Sample records with any data in the parse fields.
+            traits=Sample records with parsed traits. (default: %(default)s)""",
+    )
+
+    keep = 4
+    cpus = min(10, os.cpu_count() - keep if os.cpu_count() > keep else 1)
+    arg_parser.add_argument(
+        "--cpus",
+        type=int,
+        default=cpus,
+        help=f"""Number of CPU processors to use.
+            Default will use {cpus} out of {os.cpu_count()} CPUs.
+            """,
+    )
+
+    arg_parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="""Runs extractions in a single process for debugging purposes.
+            Note that multiple processes sometimes hang while printing to stderr or
+            stdout.""",
+    )
+
+    arg_parser.add_argument(
+        "--skip-parse",
+        action="store_true",
+        help="""This is here so that you may use prebuilt CSV files to output
+            a final CSV or HTML report. Parsing can take a while.""",
     )
 
     args = arg_parser.parse_args()
 
     if args.summary_field and args.summary_field not in args.info_field:
         args.info_field.append(args.summary_field)
+
+    tsv_file = []
+    for tsv in args.tsv_file:
+        tsv_file += glob(str(tsv))  # noqa: PTH207
+    args.tsv_file = [Path(f) for f in sorted(tsv_file)]
 
     return args
 

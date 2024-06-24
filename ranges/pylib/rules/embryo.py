@@ -72,14 +72,14 @@ class Embryo(BaseLength):
     side1: int = None
     side2: int = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:  # noqa: C901
+    def to_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901
         value = defaultdict(dict)
 
         if self.length is not None:
-            value["embryo_size"] |= {"embryo_length": self.length}
+            value["embryo_size"] |= {"embryo_size_length_mm": self.length}
 
         if self.width is not None:
-            value["embryo_size"] |= {"embryo_width": self.width}
+            value["embryo_size"] |= {"embryo_size_width_mm": self.width}
 
         if self.units_inferred is not None:
             value["embryo_size"] |= {"embryo_size_units_inferred": self.units_inferred}
@@ -94,22 +94,22 @@ class Embryo(BaseLength):
             value["embryo_count"] |= {"embryo_count": self.count}
 
         if self.left is not None:
-            value["embryo_count"] |= {"left_embryo_count": self.left}
+            value["embryo_count"] |= {"embryo_count_left": self.left}
 
         if self.right is not None:
-            value["embryo_count"] |= {"right_embryo_count": self.right}
+            value["embryo_count"] |= {"embryo_count_right": self.right}
 
         if self.female is not None:
-            value["embryo_count"] |= {"female_embryo_count": self.female}
+            value["embryo_count"] |= {"embryo_count_females": self.female}
 
         if self.male is not None:
-            value["embryo_count"] |= {"male_embryo_count": self.male}
+            value["embryo_count"] |= {"embryo_count_males": self.male}
 
         if self.side1 is not None:
-            value["embryo_count"] |= {"embryo_count_side 1": self.side1}
+            value["embryo_count"] |= {"embryo_count_side_1": self.side1}
 
         if self.side2 is not None:
-            value["embryo_count"] |= {"embryo_count_side 2": self.side2}
+            value["embryo_count"] |= {"embryo_count_side_2": self.side2}
 
         return value
 

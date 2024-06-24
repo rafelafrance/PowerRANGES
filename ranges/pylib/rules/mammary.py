@@ -42,14 +42,14 @@ class Mammary(Base):
     count: int = None
     state: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.count is not None:
             value["mammary_count"] |= {"mammary_count": self.count}
 
         if self.state:
-            value["mammary"] |= {"mammary": self.state}
+            value["mammary_state"] |= {"mammary_state": self.state}
 
         return value
 

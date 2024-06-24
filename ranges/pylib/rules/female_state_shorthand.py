@@ -16,17 +16,17 @@ class FemaleStateShorthand(Base):
     nipple_state: str = None
     lactation_state: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.vagina_state:
-            value["vagina"] |= {"vagina": self.vagina_state}
+            value["vagina_state"] |= {"vagina_state": self.vagina_state}
 
         if self.nipple_state:
-            value["nipple"] |= {"nipple": self.nipple_state}
+            value["nipple_state"] |= {"nipple_state": self.nipple_state}
 
         if self.lactation_state:
-            value["lactation"] |= {"lactation": self.lactation_state}
+            value["lactation_state"] |= {"lactation_state": self.lactation_state}
 
         return value
 

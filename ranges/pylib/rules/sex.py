@@ -27,7 +27,7 @@ class Sex(Base):
 
     sex: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         return {"sex": {"sex": self.sex}}
 
     def to_dwc(self, dwc) -> DarwinCore:

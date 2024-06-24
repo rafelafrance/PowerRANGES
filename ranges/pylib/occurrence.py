@@ -35,13 +35,13 @@ class Occurrence:
         traits = []
         for source_field, trait_list in self.traits.items():
             for trait in trait_list:
-                as_dict = trait.labeled()
-                as_dict |= {
-                    "_start": trait.start,
-                    "_end": trait.end,
-                    "_trait": trait._trait,
-                    "_field": source_field,
-                }
+                as_dict = trait.to_dict()
+                for values in as_dict.values():
+                    values |= {
+                        "_start": trait.start,
+                        "_end": trait.end,
+                        "_field": source_field,
+                    }
                 traits.append(as_dict)
         value |= {"traits": traits}
         return value

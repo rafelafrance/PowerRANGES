@@ -45,7 +45,7 @@ class TestNipple(unittest.TestCase):
     def test_nipple_count_07(self):
         self.assertEqual(
             parse("3 pec, 3 ing mammae"),
-            [Nipple(count=6, start=0, end=19)],
+            [Mammary(count=6, start=0, end=19)],
         )
 
     def test_nipple_count_08(self):

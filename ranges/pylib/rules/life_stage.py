@@ -33,7 +33,7 @@ class LifeStage(Base):
 
     life_stage: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         return {"life_stage": {"life_stage": self.life_stage}}
 
     def to_dwc(self, dwc) -> DarwinCore:

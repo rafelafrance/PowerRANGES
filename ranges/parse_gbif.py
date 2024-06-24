@@ -103,12 +103,6 @@ def get_json_dir(json_dir=None):
         pass
 
 
-# def write_html(html_dir: Path, occurrences: list[Occurrence]) -> None:
-#     html_file = html_dir / f"{tsv_file.stem}.html"
-#     writer = html_writer.HtmlWriter(html_file)
-#     writer.write(occurrences)
-
-
 def parse_args() -> argparse.Namespace:
     arg_parser = argparse.ArgumentParser(
         fromfile_prefix_chars="@",

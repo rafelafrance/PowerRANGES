@@ -4,8 +4,6 @@ from typing import Any
 
 import pandas as pd
 
-SKIP = """ start end _trait _text """.split()
-
 
 def write_csv(
     csv_file: Path,
@@ -17,28 +15,30 @@ def write_csv(
     info_fields = info_fields if info_fields else []
     parse_fields = parse_fields if parse_fields else []
 
-    counts = count_fields(occurrences)
-
     data = []
     trait_cols = set()
 
+    max_counts = count_fields(occurrences)
+
     for occur in occurrences:
-        row = {id_field: occur["id_field"], "source": occur["source"]}
+        row = {id_field: occur[id_field], "source": occur["source"]}
         row |= {k: occur["info_fields"][k] for k in info_fields}
         row |= {k: occur["parse_fields"][k] for k in parse_fields}
 
-        for trait_list in occur["traits"].values():
-            for i, trait in enumerate(trait_list):
-                suffix = f"_{i}" if counts[trait["_trait"]] > 1 else ""
+        counts = defaultdict(int)
+        for trait in occur["traits"]:
+            for trait_name, values in trait.items():
+                counts[trait_name] += 1
+                suffix = f"_{counts[trait_name]}" if max_counts[trait_name] > 1 else ""
 
-                for header, value in trait.items():
-                    if header in SKIP:
+                for header, value in values.items():
+                    if header.startswith("_"):
                         continue
                     name = header + suffix
                     row[name] = value
-                    trait_cols.add((trait["_trait"], i, name))
+                    trait_cols.add((trait_name, counts[trait_name], name))
 
-            data.append(row)
+        data.append(row)
 
     # Sort columns
     trait_cols = sorted(trait_cols)
@@ -62,9 +62,9 @@ def count_fields(occurrences: list[dict[str, Any]]) -> dict[str, int]:
         # Check how many times a trait is recorded in an occurrence
         counts = defaultdict(int)
         if occur["traits"]:
-            for traits in occur["traits"].values():
+            for traits in occur["traits"]:
                 for trait in traits:
-                    counts[trait["_trait"]] += 1
+                    counts[trait] += 1
 
         # Check if the occurrence is the new max
         for key, count in counts.items():

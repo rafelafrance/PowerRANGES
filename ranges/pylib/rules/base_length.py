@@ -62,7 +62,7 @@ class BaseLength(Base):
     estimated: bool = None
     _prefix: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         raise NotImplementedError
 
     def to_dwc(self, dwc) -> DarwinCore:

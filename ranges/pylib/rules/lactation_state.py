@@ -22,8 +22,8 @@ class LactationState(Base):
 
     state: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
-        return {"lactation": {"lactation": self.state}}
+    def to_dict(self) -> dict[str, dict[str, Any]]:
+        return {"lactation_state": {"lactation_state": self.state}}
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add_dyn(lactationState=self.state)

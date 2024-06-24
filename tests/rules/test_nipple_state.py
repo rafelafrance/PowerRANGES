@@ -98,7 +98,7 @@ class TestNippleState(unittest.TestCase):
         self.assertEqual(
             parse("mammary glands much swollen"),
             [
-                Nipple(
+                Mammary(
                     state="swollen",
                     start=0,
                     end=27,
@@ -110,7 +110,7 @@ class TestNippleState(unittest.TestCase):
         self.assertEqual(
             parse("; mammary tissue present;"),
             [
-                Nipple(
+                Mammary(
                     state="present",
                     start=2,
                     end=24,

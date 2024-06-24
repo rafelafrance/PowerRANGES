@@ -54,20 +54,20 @@ class PlacentalScarCount(Base):
     side2: int = None
     both: int = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.present is not None:
             value["placental_scars"] |= {"placental_scars_present": self.present}
 
         if self.count is not None:
-            value["placental_scars"] |= {"placental_scars": self.count}
+            value["placental_scars"] |= {"placental_scar_count": self.count}
 
         if self.left is not None:
-            value["placental_scars"] |= {"left_placental_scars": self.left}
+            value["placental_scars"] |= {"placental_scars_left_side": self.left}
 
         if self.right is not None:
-            value["placental_scars"] |= {"right_placental_scars": self.right}
+            value["placental_scars"] |= {"placental_scars_right_side": self.right}
 
         if self.side1 is not None:
             value["placental_scars"] |= {"placental_scars_side_1": self.side1}

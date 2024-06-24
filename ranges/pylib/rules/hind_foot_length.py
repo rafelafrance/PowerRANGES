@@ -33,21 +33,22 @@ class HindFootLength(BaseLength):
 
     includes: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
-        key = f"hind_foot_with_{self.includes}" if self.includes else "hind_foot_length"
+        value["hind_foot_length"] = {"hind_foot_length_mm": self.length}
 
-        value["hind_foot_length"] = {key: self.length}
+        if self.includes:
+            value["hind_foot_length"] |= {"hind_foot_length_includes": self.includes}
 
         if self.units_inferred:
-            value["hind_foot_length"] |= {f"{key}_units_inferred": True}
+            value["hind_foot_length"] |= {"hind_foot_length_units_inferred": True}
 
         if self.ambiguous:
-            value["hind_foot_length"] |= {f"{key}_ambiguous": True}
+            value["hind_foot_length"] |= {"hind_foot_length_ambiguous": True}
 
         if self.estimated:
-            value["hind_foot_length"] |= {f"{key}_estimated": True}
+            value["hind_foot_length"] |= {"hind_foot_length_estimated": True}
 
         return value
 

@@ -27,8 +27,8 @@ class TragusLength(BaseLength):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
-        value = {"tragus_length": {"tragus_length": self.length}}
+    def to_dict(self) -> dict[str, dict[str, Any]]:
+        value = {"tragus_length": {"tragus_length_mm": self.length}}
 
         if self.units_inferred:
             value["tragus_length"] |= {"tragus_length_units_inferred": True}

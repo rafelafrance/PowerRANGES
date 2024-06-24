@@ -67,23 +67,23 @@ class Testicle(Base):
     width2: float = None
     units_inferred: bool = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.description is not None:
             value["testicle_description"] |= {"testicle_description": self.description}
 
         if self.length is not None:
-            value["testicle_size"] |= {"testicle_length": self.length}
+            value["testicle_size"] |= {"testicle_length_mm": self.length}
 
         if self.length2 is not None:
-            value["testicle_size"] |= {"2nd_testicle_length": self.length2}
+            value["testicle_size"] |= {"testicle_length_2nd_mm": self.length2}
 
         if self.width is not None:
-            value["testicle_size"] |= {"testicle_width": self.width}
+            value["testicle_size"] |= {"testicle_width_mm": self.width}
 
         if self.width2 is not None:
-            value["testicle_size"] |= {"2nd_testicle_width": self.width2}
+            value["testicle_size"] |= {"testicle_width_2nd_mm": self.width2}
 
         if self.units_inferred is not None:
             value["testicle_size"] |= {

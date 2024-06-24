@@ -100,17 +100,21 @@ class Ovary(Base):
 
     units_inferred: bool = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.description is not None:
             value["ovary_description"] |= {"ovary_description": self.description}
 
         if self.left_side is not None:
-            value["ovary_description"] |= {"left_ovary_description": self.left_side}
+            value["ovary_description"] |= {
+                "ovary_description_left_side": self.left_side
+            }
 
         if self.right_side is not None:
-            value["ovary_description"] |= {"right_ovary_description": self.right_side}
+            value["ovary_description"] |= {
+                "ovary_description_right_side": self.right_side
+            }
 
         if self.both_sides is not None:
             value["ovary_description"] |= {
@@ -118,16 +122,16 @@ class Ovary(Base):
             }
 
         if self.length is not None:
-            value["ovary_size"] |= {"ovary_length": self.length}
+            value["ovary_size"] |= {"ovary_length_mm": self.length}
 
         if self.length2 is not None:
-            value["ovary_size"] |= {"2nd_ovary_length": self.length2}
+            value["ovary_size"] |= {"ovary_length_2nd_mm": self.length2}
 
         if self.width is not None:
-            value["ovary_size"] |= {"ovary_width": self.width}
+            value["ovary_size"] |= {"ovary_width_mm": self.width}
 
         if self.width2 is not None:
-            value["ovary_size"] |= {"2nd_ovary_width": self.width2}
+            value["ovary_size"] |= {"ovary_width_2nd_mm": self.width2}
 
         if self.units_inferred is not None:
             value["ovary_size"] |= {"ovary_size_units_inferred": self.units_inferred}

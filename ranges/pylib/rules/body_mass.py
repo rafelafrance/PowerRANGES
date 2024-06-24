@@ -34,8 +34,8 @@ class BodyMass(Base):
     ambiguous: bool = None
     estimated: bool = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
-        value = {"body_mass": {"body_mass": self.mass}}
+    def to_dict(self) -> dict[str, dict[str, Any]]:
+        value = {"body_mass": {"body_mass_grams": self.mass}}
 
         if self.units_inferred:
             value["body_mass"] |= {"body_mass_units_inferred": True}

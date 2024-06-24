@@ -22,8 +22,8 @@ class PregnancyState(Base):
 
     state: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
-        return {"pregnancy": {"pregnancy": self.state}}
+    def to_dict(self) -> dict[str, dict[str, Any]]:
+        return {"pregnancy_state": {"pregnancy_state": self.state}}
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add_dyn(pregnancyState=self.state)

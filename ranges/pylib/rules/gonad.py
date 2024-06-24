@@ -49,17 +49,17 @@ class Gonad(Base):
     width: float = None
     units_inferred: bool = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.description is not None:
             value["gonad_description"] |= {"gonad_description": self.description}
 
         if self.length is not None:
-            value["gonad_size"] |= {"gonad_length": self.length}
+            value["gonad_size"] |= {"gonad_length_mm": self.length}
 
         if self.width is not None:
-            value["gonad_size"] |= {"gonad_width": self.width}
+            value["gonad_size"] |= {"gonad_width_mm": self.width}
 
         if self.units_inferred is not None:
             value["gonad_size"] |= {"gonad_size_units_inferred": self.units_inferred}

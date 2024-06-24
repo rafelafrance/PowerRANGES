@@ -35,8 +35,8 @@ class ForearmLength(BaseLength):
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
-        value = {"forearm_length": {"forearm_length": self.length}}
+    def to_dict(self) -> dict[str, dict[str, Any]]:
+        value = {"forearm_length": {"forearm_length_mm": self.length}}
 
         if self.units_inferred:
             value["forearm_length"] |= {"forearm_length_units_inferred": True}

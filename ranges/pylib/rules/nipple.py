@@ -42,14 +42,14 @@ class Nipple(Base):
     count: int = None
     state: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.count is not None:
             value["nipple_count"] |= {"nipple_count": self.count}
 
         if self.state:
-            value["nipple"] |= {"nipple": self.state}
+            value["nipple_state"] |= {"nipple_state": self.state}
 
         return value
 

@@ -86,41 +86,41 @@ class LengthShorthand(Base):
     tragus_length: float = None
     tragus_length_estimated: bool = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:  # noqa: C901 PLR0912
+    def to_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901 PLR0912
         value = defaultdict(dict)
 
         if self.total_length is not None:
-            value["total_length"] |= {"total_length": self.total_length}
+            value["total_length"] |= {"total_length_mm": self.total_length}
             if self.total_length_estimated:
                 value["total_length"] |= {"total_length_estimated": True}
 
         if self.tail_length is not None:
-            value["tail_length"] |= {"tail_length": self.tail_length}
+            value["tail_length"] |= {"tail_length_mm": self.tail_length}
             if self.tail_length_estimated:
                 value["tail_length"] |= {"tail_length_estimated": True}
 
         if self.hind_foot_length is not None:
-            value["hind_foot_length"] |= {"hind_foot_length": self.hind_foot_length}
+            value["hind_foot_length"] |= {"hind_foot_length_mm": self.hind_foot_length}
             if self.hind_foot_length_estimated:
                 value["hind_foot_length"] |= {"hind_foot_length_estimated": True}
 
         if self.ear_length is not None:
-            value["ear_length"] |= {"ear_length": self.ear_length}
+            value["ear_length"] |= {"ear_length_mm": self.ear_length}
             if self.ear_length_estimated:
                 value["ear_length"] |= {"ear_length_estimated": True}
 
         if self.body_mass is not None:
-            value["body_mass"] |= {"body_mass": self.body_mass}
+            value["body_mass"] |= {"body_mass_grams": self.body_mass}
             if self.body_mass_estimated:
                 value["body_mass"] |= {"body_mass_estimated": True}
 
         if self.forearm_length is not None:
-            value["forearm_length"] |= {"forearm_length": self.forearm_length}
+            value["forearm_length"] |= {"forearm_length_mm": self.forearm_length}
             if self.forearm_length_estimated:
                 value["forearm_length"] |= {"forearm_length_estimated": True}
 
         if self.tragus_length is not None:
-            value["tragus_length"] |= {"tragus_length": self.tragus_length}
+            value["tragus_length"] |= {"tragus_length_mm": self.tragus_length}
             if self.tragus_length_estimated:
                 value["tragus_length"] |= {"tragus_length_estimated": True}
 

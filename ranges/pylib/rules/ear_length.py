@@ -35,21 +35,22 @@ class EarLength(BaseLength):
 
     measured_from: str = None
 
-    def labeled(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:
         value = {"ear_length": {}}
 
-        key = f"ear_from_{self.measured_from}" if self.measured_from else "ear_length"
+        if self.measured_from:
+            value["ear_length"] |= {"ear_length_measured_from": self.measured_from}
 
-        value["ear_length"] |= {key: self.length}
+        value["ear_length"] |= {"ear_length_mm": self.length}
 
         if self.units_inferred:
-            value["ear_length"] |= {f"{key}_units_inferred": True}
+            value["ear_length"] |= {"ear_length_units_inferred": True}
 
         if self.ambiguous:
-            value["ear_length"] |= {f"{key}_ambiguous": True}
+            value["ear_length"] |= {"ear_length_ambiguous": True}
 
         if self.estimated:
-            value["ear_length"] |= {f"{key}_estimated": True}
+            value["ear_length"] |= {"ear_length_estimated": True}
 
         return value
 

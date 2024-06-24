@@ -39,6 +39,10 @@ class CssClasses:
         return self.classes[key]
 
 
+def write_html():
+    pass
+
+
 # class HtmlWriter:
 #
 #     def __init__(self, html_file):

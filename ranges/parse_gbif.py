@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import json
 import logging
 import multiprocessing
 import os
@@ -9,8 +10,7 @@ from contextlib import contextmanager
 from glob import glob
 from pathlib import Path
 
-import pandas as pd
-from pylib.writers import csv_writer, html_writer
+from pylib.writers import csv_writer, html_writer, json_writer
 from tqdm import tqdm
 from util.pylib import log
 
@@ -19,35 +19,43 @@ def main():
     log.started()
     args = parse_args()
 
-    if args.csv_dir and not args.csv_dir.exists():
-        args.csv_dir.mkdir(parents=True, exist_ok=True)
+    if args.json_dir and not args.json_dir.exists():
+        args.json_dir.mkdir(parents=True, exist_ok=True)
 
-    with get_csv_dir(args.csv_dir) as csv_dir:
+    with get_json_dir(args.json_dir) as json_dir:
         if args.debug:
-            single_process(args, csv_dir)
+            single_process(args, json_dir)
         else:
-            multiple_processes(args, csv_dir)
+            multiple_processes(args, json_dir)
 
-        merged = sorted([pd.read_csv(f) for f in csv_dir.glob("*.csv")])
-        merged = pd.concat(merged, axis="rows")
+        occurrences = []
+        for path in sorted(args.json_dir.glob("*.jsonl")):
+            with path.open() as jin:
+                occurrences += [json.loads(ln) for ln in jin]
 
         if args.csv_file:
-            merged.to_csv(args.csv_file, index=False)
+            csv_writer.write_csv(
+                args.csv_file,
+                occurrences,
+                args.id_field,
+                args.info_field,
+                args.parse_field,
+            )
 
         if args.html_file:
-            html_writer.write_html(merged)
+            html_writer.write_html()
 
     log.finished()
 
 
-def single_process(args, csv_dir):
+def single_process(args, json_dir):
     if args.skip_parse:
         return
 
     for tsv in tqdm(args.tsv_file):
-        csv_writer.process_occurrences(
+        json_writer.process_occurrences(
             tsv,
-            csv_dir,
+            json_dir,
             args.id_field,
             args.info_field,
             args.parse_field,
@@ -55,7 +63,7 @@ def single_process(args, csv_dir):
         )
 
 
-def multiple_processes(args, csv_dir):
+def multiple_processes(args, json_dir):
     if args.skip_parse:
         return
 
@@ -63,10 +71,10 @@ def multiple_processes(args, csv_dir):
         with multiprocessing.Pool(processes=args.cpus) as pool:
             results = [
                 pool.apply_async(
-                    csv_writer.process_occurrences,
+                    json_writer.process_occurrences,
                     args=(
                         tsv,
-                        csv_dir,
+                        json_dir,
                         args.id_field,
                         args.info_field,
                         args.parse_field,
@@ -76,7 +84,7 @@ def multiple_processes(args, csv_dir):
                 )
                 for tsv in args.tsv_file
             ]
-            fails = ", ".join(r.get() for r in results)
+            fails = ", ".join([val for r in results if (val := r.get())])
 
     if fails:
         msg = f"The following extractions did not work: {fails}"
@@ -87,8 +95,8 @@ def multiple_processes(args, csv_dir):
 
 
 @contextmanager
-def get_csv_dir(csv_dir=None):
-    dir_ = csv_dir if csv_dir else tempfile.mkdtemp()
+def get_json_dir(json_dir=None):
+    dir_ = json_dir if json_dir else tempfile.mkdtemp()
     try:
         yield dir_
     finally:

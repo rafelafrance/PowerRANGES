@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ./ranges/parse_gbif.py \
-  --tsv-file=data/occurrence/ASUoccurrence.txt \
+  --tsv-file=data/occurrence/*occurrence.txt \
   --json-dir=data/occurrence_json \
-  --html-file=data/occurrence_2024-06-23.html \
-  --csv-file=data/occurrence_2024-06-23.csv \
+  --csv-file=data/occurrence_2024-06-24.csv \
+  --html-file=data/occurrence_2024-06-24.html \
   --id-field=occurrenceID \
   --parse-field=dynamicProperties \
   --parse-field=occurrenceRemarks \
@@ -25,5 +25,4 @@
   --info-field=decimalLongitude \
   --overwrite-field=sex \
   --cpus=16 \
-  --debug \
   --summary-field=scientificName

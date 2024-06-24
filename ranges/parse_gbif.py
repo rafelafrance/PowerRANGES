@@ -23,10 +23,11 @@ def main():
         args.json_dir.mkdir(parents=True, exist_ok=True)
 
     with get_json_dir(args.json_dir) as json_dir:
-        if args.debug:
-            single_process(args, json_dir)
-        else:
-            multiple_processes(args, json_dir)
+        if not args.skip_parse:
+            if args.debug:
+                single_process(args, json_dir)
+            else:
+                multiple_processes(args, json_dir)
 
         occurrences = []
         for path in sorted(args.json_dir.glob("*.jsonl")):
@@ -43,15 +44,19 @@ def main():
             )
 
         if args.html_file:
-            html_writer.write_html()
+            html_writer.write_html(
+                args.html_file,
+                occurrences,
+                args.id_field,
+                args.sample,
+                args.sample_method,
+                args.summary_field,
+            )
 
     log.finished()
 
 
 def single_process(args, json_dir):
-    if args.skip_parse:
-        return
-
     for tsv in tqdm(args.tsv_file):
         json_writer.process_occurrences(
             tsv,
@@ -64,9 +69,6 @@ def single_process(args, json_dir):
 
 
 def multiple_processes(args, json_dir):
-    if args.skip_parse:
-        return
-
     with tqdm(total=len(args.tsv_file)) as bar:
         with multiprocessing.Pool(processes=args.cpus) as pool:
             results = [
@@ -187,11 +189,13 @@ def parse_args() -> argparse.Namespace:
 
     arg_parser.add_argument(
         "--sample-method",
-        choices=["records", "traits"],
-        default="records",
+        choices=["fields", "traits"],
+        default="traits",
         help="""How to sample the data for HTML output. This only used if --html-file
-            is selected. records=Sample records with any data in the parse fields.
-            traits=Sample records with parsed traits. (default: %(default)s)""",
+            is selected. "fields"=Sample records with any data in the parse fields.
+            "traits"=Sample records with parsed traits. "fields" is better at finding
+            false negatives, and "traits" is better at false positives.
+            (default: %(default)s)""",
     )
 
     keep = 4

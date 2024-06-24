@@ -11,12 +11,6 @@ OVERWRITE = {
 
 
 @dataclass
-class SummaryCounts:
-    total: int = 0
-    with_traits: int | str = 0
-
-
-@dataclass
 class Occurrence:
     source: str
     id_field: tuple[str, str]
@@ -32,17 +26,19 @@ class Occurrence:
         }
         value |= {"info_fields": self.info_fields}
         value |= {"parse_fields": self.parse_fields}
+        value |= {"overwrite_fields": self.overwrite_fields}
         traits = []
         for source_field, trait_list in self.traits.items():
             for trait in trait_list:
                 as_dict = trait.to_dict()
-                for values in as_dict.values():
-                    values |= {
+                for key, fields in as_dict.items():
+                    fields |= {
+                        "_trait": key,
                         "_start": trait.start,
                         "_end": trait.end,
                         "_field": source_field,
                     }
-                traits.append(as_dict)
+                    traits.append(fields)
         value |= {"traits": traits}
         return value
 

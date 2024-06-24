@@ -27,16 +27,16 @@ def write_csv(
 
         counts = defaultdict(int)
         for trait in occur["traits"]:
-            for trait_name, values in trait.items():
-                counts[trait_name] += 1
-                suffix = f"_{counts[trait_name]}" if max_counts[trait_name] > 1 else ""
+            counts[trait["_trait"]] += 1
+            trait_name = trait["_trait"]
+            suffix = f"_{counts[trait_name]}" if max_counts[trait_name] > 1 else ""
 
-                for header, value in values.items():
-                    if header.startswith("_"):
-                        continue
-                    name = header + suffix
-                    row[name] = value
-                    trait_cols.add((trait_name, counts[trait_name], name))
+            for header, value in trait.items():
+                if header.startswith("_"):
+                    continue
+                name = header + suffix
+                row[name] = value
+                trait_cols.add((trait_name, counts[trait_name], name))
 
         data.append(row)
 
@@ -61,12 +61,10 @@ def count_fields(occurrences: list[dict[str, Any]]) -> dict[str, int]:
     for occur in occurrences:
         # Check how many times a trait is recorded in an occurrence
         counts = defaultdict(int)
-        if occur["traits"]:
-            for traits in occur["traits"]:
-                for trait in traits:
-                    counts[trait] += 1
+        for trait in occur["traits"]:
+            counts[trait["_trait"]] += 1
 
-        # Check if the occurrence is the new max
+        # Check if the occurrence is the new max for any trait
         for key, count in counts.items():
             maxes[key] = max(maxes[key], count)
 

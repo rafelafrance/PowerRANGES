@@ -36,12 +36,10 @@ def main():
             with path.open() as jin:
                 occurrences += [json.loads(ln) for ln in jin]
 
-        sampled = []
-        if args.sample_size:
-            logging.info("Sampling occurrences.")
-            sampled = sample_occurrences(
-                occurrences, args.sample_size, args.sample_method
-            )
+    sampled = []
+    if args.sample_size:
+        logging.info("Sampling occurrences.")
+        sampled = sample_occurrences(occurrences, args.sample_size, args.sample_method)
 
     if args.csv_file:
         logging.info("Writing CSV data.")

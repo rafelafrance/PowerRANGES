@@ -43,35 +43,35 @@ def main():
                 occurrences, args.sample_size, args.sample_method
             )
 
-        if args.csv_file:
-            logging.info("Writing CSV data.")
+    if args.csv_file:
+        logging.info("Writing CSV data.")
+        csv_writer.write_csv(
+            args.csv_file,
+            occurrences,
+            args.id_field,
+            args.info_field,
+            args.parse_field,
+        )
+        if sampled:
+            sampled_path = args.csv_file.with_stem(
+                f"{args.csv_file.stem}_{args.sample_size}_with_{args.sample_method}"
+            )
             csv_writer.write_csv(
-                args.csv_file,
-                occurrences,
+                sampled_path,
+                sampled,
                 args.id_field,
                 args.info_field,
                 args.parse_field,
             )
-            if sampled:
-                sampled_path = args.csv_file.with_stem(
-                    f"{args.csv_file.stem}_{args.sample_size}_with_{args.sample_method}"
-                )
-                csv_writer.write_csv(
-                    sampled_path,
-                    sampled,
-                    args.id_field,
-                    args.info_field,
-                    args.parse_field,
-                )
 
-        if args.html_file and sampled:
-            logging.info("Writing HTML data.")
-            html_writer.write_html(
-                args.html_file,
-                sampled,
-                args.id_field,
-                args.summary_field,
-            )
+    if args.html_file and sampled:
+        logging.info("Writing HTML data.")
+        html_writer.write_html(
+            args.html_file,
+            sampled,
+            args.id_field,
+            args.summary_field,
+        )
 
     log.finished()
 

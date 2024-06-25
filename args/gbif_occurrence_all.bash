@@ -25,4 +25,5 @@
   --info-field=decimalLongitude \
   --overwrite-field=sex \
   --cpus=16 \
+  --skip-parse \
   --summary-field=scientificName

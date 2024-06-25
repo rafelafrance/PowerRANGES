@@ -1,7 +1,6 @@
 import dataclasses
 import html
 import itertools
-import random
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
@@ -45,29 +44,10 @@ def write_html(
     html_file: Path,
     occurrences: list[dict[str, Any]],
     id_field: str,
-    sample: int,
-    sample_method: str,
     summary_field: str = "",
 ) -> None:
     css_classes = CssClasses()
 
-    # Only get occurrences with data
-    if sample_method == "fields":
-        sampled = [o for o in occurrences if any(v for v in o["parse_fields"].values())]
-    else:  # elif sample_method == "traits":
-        sampled = [
-            o
-            for o in occurrences
-            if o["traits"]
-            and any(t["_field"] not in o["overwrite_fields"] for t in o["traits"])
-        ]
-
-    # Choose a random sample
-    if len(sampled) > sample:
-        random.seed(93113)
-        sampled = random.sample(sampled, sample)
-
-    # Output formatted rows
     formatted = [
         HtmlWriterRow(
             occurrence_id=occur[id_field],
@@ -76,7 +56,7 @@ def write_html(
             formatted_text=format_text(occur, css_classes),
             overwrite_fields=format_overwrite_field(occur, css_classes),
         )
-        for occur in sampled
+        for occur in occurrences
     ]
 
     write_template(occurrences, html_file, formatted, summary_field)

@@ -10,6 +10,7 @@ from contextlib import contextmanager
 from glob import glob
 from pathlib import Path
 
+from pylib.occurrence import sample_occurrences
 from pylib.writers import csv_writer, html_writer, json_writer
 from tqdm import tqdm
 from util.pylib import log
@@ -29,12 +30,21 @@ def main():
             else:
                 multiple_processes(args, json_dir)
 
+        logging.info("Reading JSONL data.")
         occurrences = []
         for path in sorted(args.json_dir.glob("*.jsonl")):
             with path.open() as jin:
                 occurrences += [json.loads(ln) for ln in jin]
 
+        sampled = []
+        if args.sample_size:
+            logging.info("Sampling occurrences.")
+            sampled = sample_occurrences(
+                occurrences, args.sample_size, args.sample_method
+            )
+
         if args.csv_file:
+            logging.info("Writing CSV data.")
             csv_writer.write_csv(
                 args.csv_file,
                 occurrences,
@@ -42,14 +52,24 @@ def main():
                 args.info_field,
                 args.parse_field,
             )
+            if sampled:
+                sampled_path = args.csv_file.with_stem(
+                    f"{args.csv_file.stem}_{args.sample_size}_with_{args.sample_method}"
+                )
+                csv_writer.write_csv(
+                    sampled_path,
+                    sampled,
+                    args.id_field,
+                    args.info_field,
+                    args.parse_field,
+                )
 
-        if args.html_file:
+        if args.html_file and sampled:
+            logging.info("Writing HTML data.")
             html_writer.write_html(
                 args.html_file,
-                occurrences,
+                sampled,
                 args.id_field,
-                args.sample,
-                args.sample_method,
                 args.summary_field,
             )
 
@@ -179,7 +199,7 @@ def parse_args() -> argparse.Namespace:
     )
 
     arg_parser.add_argument(
-        "--sample",
+        "--sample-size",
         type=int,
         default=1000,
         metavar="INT",
@@ -191,11 +211,10 @@ def parse_args() -> argparse.Namespace:
         "--sample-method",
         choices=["fields", "traits"],
         default="traits",
-        help="""How to sample the data for HTML output. This only used if --html-file
-            is selected. "fields"=Sample records with any data in the parse fields.
-            "traits"=Sample records with parsed traits. "fields" is better at finding
-            false negatives, and "traits" is better at false positives.
-            (default: %(default)s)""",
+        help="""How to sample the data for HTML output. "fields"=Sample records with
+            any data in the parse fields. "traits"=Sample records with parsed traits
+            "fields" is better at finding false negatives, and "traits" is better at
+            false positives. (default: %(default)s)""",
     )
 
     keep = 4

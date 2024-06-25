@@ -1,4 +1,5 @@
 import csv
+import random
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -92,3 +93,21 @@ def parse_occurrences(occurrences: list[Occurrence], nlp):
                     for e in doc.ents
                     if e._.trait and e._.trait._trait not in overwritten
                 ]
+
+
+def sample_occurrences(occurrences, sample_size, sample_method, seed=93113):
+    # Only get occurrences with data
+    if sample_method == "fields":
+        sampled = [o for o in occurrences if any(v for v in o["parse_fields"].values())]
+    else:  # elif sample_method == "traits":
+        sampled = [
+            o
+            for o in occurrences
+            if o["traits"]
+            and any(t["_field"] not in o["overwrite_fields"] for t in o["traits"])
+        ]
+    # Choose a random sample
+    if len(sampled) > sample_size:
+        random.seed(seed)
+        sampled = random.sample(sampled, sample_size)
+    return sampled

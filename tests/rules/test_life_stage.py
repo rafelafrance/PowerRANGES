@@ -61,31 +61,31 @@ class TestLifeStage(unittest.TestCase):
     def test_life_stage_09(self):
         self.assertEqual(
             parse("mentions juveniles in the field"),
-            [LifeStage(life_stage="juveniles", start=9, end=18)],
+            [LifeStage(life_stage="juvenile", start=9, end=18)],
         )
 
     def test_life_stage_10(self):
         self.assertEqual(
             parse("one or more adults"),
-            [LifeStage(life_stage="adults", start=12, end=18)],
+            [LifeStage(life_stage="adult", start=12, end=18)],
         )
 
     def test_life_stage_11(self):
         self.assertEqual(
             parse("adults"),
-            [LifeStage(life_stage="adults", start=0, end=6)],
+            [LifeStage(life_stage="adult", start=0, end=6)],
         )
 
     def test_life_stage_12(self):
         self.assertEqual(
             parse("Adulte"),
-            [LifeStage(life_stage="adulte", start=0, end=6)],
+            [LifeStage(life_stage="adult", start=0, end=6)],
         )
 
     def test_life_stage_13(self):
         self.assertEqual(
             parse("AGE IMM"),
-            [LifeStage(life_stage="imm", start=0, end=7)],
+            [LifeStage(life_stage="immature", start=0, end=7)],
         )
 
     def test_life_stage_14(self):
@@ -100,7 +100,7 @@ class TestLifeStage(unittest.TestCase):
     def test_life_stage_16(self):
         self.assertEqual(
             parse("in which larvae are found"),
-            [LifeStage(life_stage="larvae", start=9, end=15)],
+            [LifeStage(life_stage="larval", start=9, end=15)],
         )
 
     def test_life_stage_17(self):
@@ -122,13 +122,13 @@ class TestLifeStage(unittest.TestCase):
     def test_life_stage_20(self):
         self.assertEqual(
             parse("adult young"),
-            [LifeStage(life_stage="adult young", start=0, end=11)],
+            [LifeStage(life_stage="young adult", start=0, end=11)],
         )
 
     def test_life_stage_21(self):
         self.assertEqual(
             parse("sub-adult"),
-            [LifeStage(life_stage="sub-adult", start=0, end=9)],
+            [LifeStage(life_stage="subadult", start=0, end=9)],
         )
 
     def test_life_stage_22(self):
@@ -143,7 +143,7 @@ class TestLifeStage(unittest.TestCase):
     def test_life_stage_23(self):
         self.assertEqual(
             parse("young-of-the-year"),
-            [LifeStage(life_stage="young-of-the-year", start=0, end=17)],
+            [LifeStage(life_stage="young of the year", start=0, end=17)],
         )
 
     def test_life_stage_24(self):

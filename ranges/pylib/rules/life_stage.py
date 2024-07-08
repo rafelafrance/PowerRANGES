@@ -125,6 +125,7 @@ class LifeStage(Base):
         life_stage = cls.dash_re.sub(r"\1", life_stage)
         life_stage = re.sub(r"\s\.$", ".", life_stage)
         life_stage = re.sub(r"(\d)\s(th|st|nd|rd)", r"\1\2", life_stage, flags=re.I)
+        life_stage = cls.replace.get(life_stage, life_stage)
         return cls.from_ent(ent, life_stage=life_stage)
 
     @classmethod

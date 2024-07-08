@@ -246,7 +246,7 @@ class TestTotalLength(unittest.TestCase):
         self.assertEqual(
             parse("Imm., L. snout to tip of tail 1510,"),
             [
-                LifeStage(start=0, end=4, _text="Imm.", life_stage="imm."),
+                LifeStage(start=0, end=4, _text="Imm.", life_stage="immature"),
                 TotalLength(
                     length=1510,
                     units_inferred=True,

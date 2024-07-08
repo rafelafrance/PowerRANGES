@@ -1,121 +1,121 @@
-label,pattern
+label,pattern,replace
 bad,in pouch
 bad,pouch
 bad,determ
 bad,determine
 bad,determined
-intrinsic,ad
-intrinsic,ad.
-intrinsic,ads
-intrinsic,ads.
-intrinsic,adult
-intrinsic,adult young
-intrinsic,adulte
-intrinsic,adultes
-intrinsic,adults
-intrinsic,adultyoung
-intrinsic,chick
-intrinsic,chicks
-intrinsic,fledgeling
-intrinsic,fledgelings
-intrinsic,flegling
-intrinsic,fleglings
-intrinsic,fry
-intrinsic,hatched
-intrinsic,hatchling
-intrinsic,hatchlings
-intrinsic,imago
-intrinsic,imagos
-intrinsic,imm
-intrinsic,imm.
-intrinsic,immature
-intrinsic,immatures
-intrinsic,imms
-intrinsic,imms.
-intrinsic,jeune
-intrinsic,jeunes
-intrinsic,juv
-intrinsic,juv.
-intrinsic,juvenile
-intrinsic,juveniles
-intrinsic,juvs
-intrinsic,juvs.
-intrinsic,juvénile
-intrinsic,juvéniles
-intrinsic,larva
-intrinsic,larvae
-intrinsic,larval
-intrinsic,larvals
-intrinsic,larve
-intrinsic,larves
-intrinsic,leptocephale
-intrinsic,leptocephales
-intrinsic,leptocephalus
-intrinsic,mature
-intrinsic,matures
-intrinsic,metamorph
-intrinsic,metamorphs
-intrinsic,neonate
-intrinsic,neonates
-intrinsic,nestling
-intrinsic,nestlings
-intrinsic,nulliparous
-intrinsic,over winter
-intrinsic,over-winter
-intrinsic,overwinter
-intrinsic,premetamorph
-intrinsic,premetamorphs
-intrinsic,sub-adult
-intrinsic,sub-adults
-intrinsic,subad
-intrinsic,subad.
-intrinsic,subads
-intrinsic,subads.
-intrinsic,subadult
-intrinsic,subadulte
-intrinsic,subadultes
-intrinsic,subadults
-intrinsic,tadpole
-intrinsic,tadpoles
-intrinsic,têtard
-intrinsic,yearling
-intrinsic,yearlings
-intrinsic,yg
-intrinsic,yg.
-intrinsic,ygs
-intrinsic,ygs.
-intrinsic,yolk sac
-intrinsic,yolksac
-intrinsic,young
-intrinsic,young adult
-intrinsic,young of the year
-intrinsic,young of the-year
-intrinsic,young of theyear
-intrinsic,young of-the year
-intrinsic,young of-the-year
-intrinsic,young of-theyear
-intrinsic,young ofthe year
-intrinsic,young ofthe-year
-intrinsic,young oftheyear
-intrinsic,young-of the year
-intrinsic,young-of the-year
-intrinsic,young-of theyear
-intrinsic,young-of-the year
-intrinsic,young-of-the-year
-intrinsic,young-of-theyear
-intrinsic,young-ofthe year
-intrinsic,young-ofthe-year
-intrinsic,young-oftheyear
-intrinsic,youngadult
-intrinsic,youngof the year
-intrinsic,youngof the-year
-intrinsic,youngof theyear
-intrinsic,youngof-the year
-intrinsic,youngof-the-year
-intrinsic,youngof-theyear
-intrinsic,youngofthe year
-intrinsic,youngofthe-year
-intrinsic,youngoftheyear
+intrinsic,ad,adult
+intrinsic,ad.,adult
+intrinsic,ads,adult
+intrinsic,ads.,adult
+intrinsic,adult,adult
+intrinsic,adult young,young adult
+intrinsic,adulte,adult
+intrinsic,adultes,adult
+intrinsic,adults,adult
+intrinsic,adultyoung,young adult
+intrinsic,chick,chick
+intrinsic,chicks,chick
+intrinsic,fledgeling,fledgeling
+intrinsic,fledgelings,fledgeling
+intrinsic,flegling,fledgeling
+intrinsic,fleglings,fledgeling
+intrinsic,fry,fry
+intrinsic,hatched,hatchling
+intrinsic,hatchling,hatchling
+intrinsic,hatchlings,hatchling
+intrinsic,imago,imago
+intrinsic,imagos,imago
+intrinsic,imm,immature
+intrinsic,imm.,immature
+intrinsic,immature,immature
+intrinsic,immatures,immature
+intrinsic,imms,immature
+intrinsic,imms.,immature
+intrinsic,jeune,juvenile
+intrinsic,jeunes,juvenile
+intrinsic,juv,juvenile
+intrinsic,juv.,juvenile
+intrinsic,juvenile,juvenile
+intrinsic,juveniles,juvenile
+intrinsic,juvs,juvenile
+intrinsic,juvs.,juvenile
+intrinsic,juvénile,juvenile
+intrinsic,juvéniles,juvenile
+intrinsic,larva,larval
+intrinsic,larvae,larval
+intrinsic,larval,larval
+intrinsic,larvals,larval
+intrinsic,larve,larval
+intrinsic,larves,larval
+intrinsic,leptocephale,leptocephalus
+intrinsic,leptocephales,leptocephalus
+intrinsic,leptocephalus,leptocephalus
+intrinsic,mature,mature
+intrinsic,matures,mature
+intrinsic,metamorph,metamorph
+intrinsic,metamorphs,metamorph
+intrinsic,neonate,neonate
+intrinsic,neonates,neonate
+intrinsic,nestling,nestling
+intrinsic,nestlings,nestling
+intrinsic,nulliparous,nulliparous
+intrinsic,over winter,over-winter
+intrinsic,over-winter,over-winter
+intrinsic,overwinter,over-winter
+intrinsic,premetamorph,premetamorph
+intrinsic,premetamorphs,premetamorph
+intrinsic,sub-adult,subadult
+intrinsic,sub-adults,subadult
+intrinsic,subad,subadult
+intrinsic,subad.,subadult
+intrinsic,subads,subadult
+intrinsic,subads.,subadult
+intrinsic,subadult,subadult
+intrinsic,subadulte,subadult
+intrinsic,subadultes,subadult
+intrinsic,subadults,subadult
+intrinsic,tadpole,tadpole
+intrinsic,tadpoles,tadpole
+intrinsic,têtard,tadpole
+intrinsic,yearling,yearling
+intrinsic,yearlings,yearling
+intrinsic,yg,young
+intrinsic,yg.,young
+intrinsic,ygs,young
+intrinsic,ygs.,young
+intrinsic,yolk sac,yolk sac
+intrinsic,yolksac,yolk sac
+intrinsic,young,young
+intrinsic,young adult,young adult
+intrinsic,young of the year,young of the year
+intrinsic,young of the-year,young of the year
+intrinsic,young of theyear,young of the year
+intrinsic,young of-the year,young of the year
+intrinsic,young of-the-year,young of the year
+intrinsic,young of-theyear,young of the year
+intrinsic,young ofthe year,young of the year
+intrinsic,young ofthe-year,young of the year
+intrinsic,young oftheyear,young of the year
+intrinsic,young-of the year,young of the year
+intrinsic,young-of the-year,young of the year
+intrinsic,young-of theyear,young of the year
+intrinsic,young-of-the year,young of the year
+intrinsic,young-of-the-year,young of the year
+intrinsic,young-of-theyear,young of the year
+intrinsic,young-ofthe year,young of the year
+intrinsic,young-ofthe-year,young of the year
+intrinsic,young-oftheyear,young of the year
+intrinsic,youngadult,young adult
+intrinsic,youngof the year,young of the year
+intrinsic,youngof the-year,young of the year
+intrinsic,youngof theyear,young of the year
+intrinsic,youngof-the year,young of the year
+intrinsic,youngof-the-year,young of the year
+intrinsic,youngof-theyear,young of the year
+intrinsic,youngofthe year,young of the year
+intrinsic,youngofthe-year,young of the year
+intrinsic,youngoftheyear,young of the year
 key,age
 key,age class
 key,ageclass

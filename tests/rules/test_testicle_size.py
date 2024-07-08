@@ -28,7 +28,7 @@ class TestTesticleSize(unittest.TestCase):
             parse("reproductive data=NS; T=9x4 ; endoparasite "),
             [
                 Testicle(
-                    description="ns",
+                    description="non-scrotal",
                     length=9,
                     width=4,
                     units_inferred=True,

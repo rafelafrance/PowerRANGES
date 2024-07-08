@@ -58,6 +58,7 @@ class Testicle(Base):
         "testes": {"ENT_TYPE": {"IN": ["testes", "abbrev"]}, "OP": "+"},
         "x": {"LOWER": {"IN": t_const.CROSS + t_const.DASH}},
     }
+    replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
     description: str = None
@@ -302,7 +303,7 @@ class Testicle(Base):
     def testicle_state_match(cls, ent):
         data = {}
         descr = [
-            e.text.lower()
+            cls.replace.get(e.text.lower(), e.text.lower())
             for e in ent.ents
             if e.label_ in ("description", "descr_alone")
         ]
@@ -314,7 +315,7 @@ class Testicle(Base):
         data = {}
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         descr = [
-            e.text.lower()
+            cls.replace.get(e.text.lower(), e.text.lower())
             for e in ent.ents
             if e.label_ in ("description", "descr_alone")
         ]
@@ -342,7 +343,7 @@ class Testicle(Base):
         data = {}
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         descr = [
-            e.text.lower()
+            cls.replace.get(e.text.lower(), e.text.lower())
             for e in ent.ents
             if e.label_ in ("description", "descr_alone")
         ]

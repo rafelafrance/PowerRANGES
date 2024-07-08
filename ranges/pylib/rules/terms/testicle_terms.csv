@@ -1,258 +1,257 @@
-label,pattern
-abbrev,t
-abbrev,ta
-abbrev,tes
-abdominal,abd
-abdominal,abdom
-abdominal,abdomin
-abdominal,abdominal
+label,pattern,replace
+abbrev,t,testes
+abbrev,ta,testes
+abbrev,tes,testes
+abdominal,abd,abdominal
+abdominal,abdom,abdominal
+abdominal,abdomin,abdominal
+abdominal,abdominal,abdominal
 and,&
 and,and
 both,both
 both,both side
 both,both sides
 both,each side
-descended,decend
-descended,decended
-descended,deend
-descended,deended
-descended,des
-descended,desc
-descended,descend
-descended,descended
-descended,desend
-descended,desended
-descended,undes
-descended,undesc
-descended,undecend
-descended,undecended
-descended,undeend
-descended,undeended
-descended,undescend
-descended,undescended
-descended,undesend
-descended,undesended
-fully,complete
-fully,completely
+descended,decend,descended
+descended,decended,descended
+descended,deend,descended
+descended,deended,descended
+descended,des,descended
+descended,desc,descended
+descended,descend,descended
+descended,descended,descended
+descended,desend,descended
+descended,desended,descended
+descended,undes,undescended
+descended,undesc,undescended
+descended,undecend,undescended
+descended,undecended,undescended
+descended,undeend,undescended
+descended,undeended,undescended
+descended,undescend,undescended
+descended,undescended,undescended
+descended,undesend,undescended
+descended,undesended,undescended
+descended,tnd,testes undescended
+descended,tns,testes undescended
+descended,td,testes descended
+fully,complete,completely
+fully,completely,completely
 fully,fully
-fully,incomplete
-fully,incompletely
-left,emb-l
-left,l
-left,l side
-left,l x
-left,l.
-left,l. side
-left,l. x
-left,left
-left,left side
-left,lf
-left,lf side
-left,lf.
-left,lf. side
-left,lft
-left,lft side
-left,lft.
-left,lft. side
-left,lt
-left,lt.
-left,lx
-left,on left
+fully,incomplete,incompletely
+fully,incompletely,incompletely
+left,l,left
+left,l side,left
+left,l x,left
+left,l.,left
+left,l. side,left
+left,l. x,left
+left,left,left
+left,left side,left
+left,lf,left
+left,lf side,left
+left,lf.,left
+left,lf. side,left
+left,lft,left
+left,lft side,left
+left,lft.,left
+left,lft. side,left
+left,lt,left
+left,lt.,left
+left,lx,left
+left,on left,left
 non,no
 non,non
 non,not
 non,semi
 non,sub
-right,emb-r
-right,on right
-right,r
-right,r side
-right,r x
-right,r.
-right,r. side
-right,r. x
-right,right
-right,right side
-right,rt
-right,rt side
-right,rt.
-right,rt. side
-right,rx
-right,rx.
+right,on right,right
+right,r,right
+right,r side,right
+right,r x,right
+right,r.,right
+right,r. side,right
+right,r. x,right
+right,right,right
+right,right side,right
+right,rt,right
+right,rt side,right
+right,rt.,right
+right,rt. side,right
+right,rx,right
+right,rx.,right
 partially,barely
-partially,part
-partially,partially
-partially,pt
-partially,slight
-partially,slightly
-scrotal,scr
-scrotal,scrot
-scrotal,scrotal
-scrotal,scrotum
-scrotal,nonscrotal
-scrotal,ns
-scrotal,nscr
-scrotal,tnd
-scrotal,tns
-scrotal,ts
-scrotal,td
-size,enlarge
-size,enlarge size
-size,enlarge sized
-size,enlarge+
-size,enlarged
-size,enlarged size
-size,enlarged sized
-size,enlarged+
-size,enlargedsize
-size,enlargedsized
-size,enlargesize
-size,enlargesized
-size,extended
-size,extended size
-size,extended sized
-size,extended+
-size,extendedsize
-size,extendedsized
-size,large
-size,large size
-size,large sized
-size,large+
-size,largesize
-size,largesized
-size,lg
-size,lg size
-size,lg sized
-size,lg+
-size,lgsize
-size,lgsized
-size,med
-size,med size
-size,med sized
-size,med+
-size,medium
-size,medium size
-size,medium sized
-size,medium+
-size,mediumsize
-size,mediumsized
-size,medsize
-size,medsized
-size,minute
-size,minute size
-size,minute sized
-size,minute+
-size,minutesize
-size,minutesized
-size,mod
-size,mod size
-size,mod sized
-size,mod+
-size,moderate
-size,moderate size
-size,moderate sized
-size,moderate+
-size,moderatesize
-size,moderatesized
-size,modsize
-size,modsized
-size,shrunk
-size,shrunk size
-size,shrunk sized
-size,shrunk+
-size,shrunken
-size,shrunken size
-size,shrunken sized
-size,shrunken+
-size,shrunkensize
-size,shrunkensized
-size,shrunksize
-size,shrunksized
-size,sm
-size,sm size
-size,sm sized
-size,sm+
-size,sm-med
-size,sm-med size
-size,sm-med sized
-size,sm-med+
-size,sm-medsize
-size,sm-medsized
-size,small
-size,small size
-size,small sized
-size,small+
-size,smallsize
-size,smallsized
-size,smsize
-size,smsized
-size,swollen
-size,swollen size
-size,swollen sized
-size,swollen+
-size,tiny
-size,tiny size
-size,tiny sized
-size,tiny+
-size,tinysize
-size,tinysized
-size,unobservable
-size,unobservable size
-size,unobservable+
-size,very moderate size
-size,very moderate sized
-size,very moderate+
-size,very moderatesize
-size,very moderatesized
-size,very modsize
-size,very modsized
-size,very shrunk
-size,very shrunk size
-size,very shrunk sized
-size,very shrunk+
-size,very shrunken
-size,very shrunken size
-size,very shrunken sized
-size,very shrunken+
-size,very shrunkensize
-size,very shrunkensized
-size,very shrunksize
-size,very shrunksized
-size,very sm
-size,very sm size
-size,very sm sized
-size,very sm+
-size,very sm-med
-size,very sm-med size
-size,very sm-med sized
-size,very sm-med+
-size,very sm-medsize
-size,very sm-medsized
-size,very small
-size,very small size
-size,very small sized
-size,very small+
-size,very smallsize
-size,very smallsized
-size,very smsize
-size,very smsized
-size,very swollen
-size,very swollen size
-size,very swollen sized
-size,very swollen+
-size,very swollensize
-size,very swollensized
-size,very tiny
-size,very tiny size
-size,very tiny sized
-size,very tiny+
-size,very tinysize
-size,very tinysized
-size,very unobservable
-size,very unobservable size
-size,very unobservable+
-testes,test
-testes,testes
-testes,testicle
-testes,testicles
-testes,testis
+partially,part,partially
+partially,partially,partially
+partially,pt,partially
+partially,slight,slightly
+partially,slightly,slightly
+scrotal,scr,scrotal
+scrotal,scrot,scrotal
+scrotal,scrotal,scrotal
+scrotal,scrotum,scrotal
+scrotal,nonscrotal,non-scrotal
+scrotal,non-scrotal,non-scrotal
+scrotal,ns,non-scrotal
+scrotal,nscr,non-scrotal
+scrotal,ts,scrotal
+size,enlarge,enlarged
+size,enlarge size,enlarged
+size,enlarge sized,enlarged
+size,enlarge+,enlarged
+size,enlarged,enlarged
+size,enlarged size,enlarged
+size,enlarged sized,enlarged
+size,enlarged+,enlarged
+size,enlargedsize,enlarged
+size,enlargedsized,enlarged
+size,enlargesize,enlarged
+size,enlargesized,enlarged
+size,extended,extended
+size,extended size,extended
+size,extended sized,extended
+size,extended+,extended
+size,extendedsize,extended
+size,extendedsized,extended
+size,large,large
+size,large size,large
+size,large sized,large
+size,large+,large
+size,largesize,large
+size,largesized,large
+size,lg,large
+size,lg size,large
+size,lg sized,large
+size,lg+,large
+size,lgsize,large
+size,lgsized,large
+size,med,medium
+size,med size,medium
+size,med sized,medium
+size,med+,medium
+size,medium,medium
+size,medium size,medium
+size,medium sized,medium
+size,medium+,medium
+size,mediumsize,medium
+size,mediumsized,medium
+size,medsize,medium
+size,medsized,medium
+size,minute,minute
+size,minute size,minute
+size,minute sized,minute
+size,minute+,minute
+size,minutesize,minute
+size,minutesized,minute
+size,mod,moderate
+size,mod size,moderate
+size,mod sized,moderate
+size,mod+,moderate
+size,moderate,moderate
+size,moderate size,moderate
+size,moderate sized,moderate
+size,moderate+,moderate
+size,moderatesize,moderate
+size,moderatesized,moderate
+size,modsize,moderate
+size,modsized,moderate
+size,shrunk,shrunken
+size,shrunk size,shrunken
+size,shrunk sized,shrunken
+size,shrunk+,shrunken
+size,shrunken,shrunken
+size,shrunken size,shrunken
+size,shrunken sized,shrunken
+size,shrunken+,shrunken
+size,shrunkensize,shrunken
+size,shrunkensized,shrunken
+size,shrunksize,shrunken
+size,shrunksized,shrunken
+size,sm,small
+size,sm size,small
+size,sm sized,small
+size,sm+,small
+size,sm-med,small-medium
+size,sm-med size,small-medium
+size,sm-med sized,small-medium
+size,sm-med+,small-medium
+size,sm-medsize,small-medium
+size,sm-medsized,small-medium
+size,small,small
+size,small size,small
+size,small sized,small
+size,small+,small
+size,smallsize,small
+size,smallsized,small
+size,smsize,small
+size,smsized,small
+size,swollen,swollen
+size,swollen size,swollen
+size,swollen sized,swollen
+size,swollen+,swollen
+size,tiny,tiny
+size,tiny size,tiny
+size,tiny sized,tiny
+size,tiny+,tiny
+size,tinysize,tiny
+size,tinysized,tiny
+size,unobservable,unobservable
+size,unobservable size,unobservable
+size,unobservable+,unobservable
+size,very moderate size,moderate
+size,very moderate sizedmoderate,moderate
+size,very moderate+moderate,moderate
+size,very moderatesizemoderate,moderate
+size,very moderatesizedmoderate,moderate
+size,very modsizemoderate,moderate
+size,very modsizedmoderate,moderate
+size,very shrunk,shrunken
+size,very shrunk size,shrunken
+size,very shrunk sized,shrunken
+size,very shrunk+,shrunken
+size,very shrunken,shrunken
+size,very shrunken size,shrunken
+size,very shrunken sized,shrunken
+size,very shrunken+,shrunken
+size,very shrunkensize,shrunken
+size,very shrunkensized,shrunken
+size,very shrunksize,shrunken
+size,very shrunksized,shrunken
+size,very sm,small
+size,very sm size,small
+size,very sm sized,small
+size,very sm+,small
+size,very sm-med,small-medium
+size,very sm-med size,small-medium
+size,very sm-med sized,small-medium
+size,very sm-med+,small-medium
+size,very sm-medsize,small-medium
+size,very sm-medsized,small-medium
+size,very small,small
+size,very small size,small
+size,very small sized,small
+size,very small+,small
+size,very smallsize,small
+size,very smallsized,small
+size,very smsize,small
+size,very smsized,small
+size,very swollen,swollen
+size,very swollen size,swollen
+size,very swollen sized,swollen
+size,very swollen+,swollen
+size,very swollensize,swollen
+size,very swollensized,swollen
+size,very tiny,tiny
+size,very tiny size,tiny
+size,very tiny sized,tiny
+size,very tiny+,tiny
+size,very tinysize,tiny
+size,very tinysized,tiny
+size,very unobservable,unobservable
+size,very unobservable size,unobservable
+size,very unobservable+,unobservable
+testes,test,testes
+testes,testes,testes
+testes,testicle,testes
+testes,testicles,testes
+testes,testis,testes

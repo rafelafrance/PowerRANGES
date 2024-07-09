@@ -1,15 +1,15 @@
 label,pattern,replace
-bad,in pouch
-bad,pouch
 bad,determ
 bad,determine
 bad,determined
+bad,in pouch
+bad,pouch
 intrinsic,ad,adult
 intrinsic,ad.,adult
 intrinsic,ads,adult
 intrinsic,ads.,adult
-intrinsic,adult,adult
 intrinsic,adult young,young adult
+intrinsic,adult,adult
 intrinsic,adulte,adult
 intrinsic,adultes,adult
 intrinsic,adults,adult
@@ -86,36 +86,39 @@ intrinsic,ygs,young
 intrinsic,ygs.,young
 intrinsic,yolk sac,yolk sac
 intrinsic,yolksac,yolk sac
-intrinsic,young,young
 intrinsic,young adult,young adult
 intrinsic,young of the year,young of the year
 intrinsic,young of the-year,young of the year
 intrinsic,young of theyear,young of the year
+intrinsic,young of year,young of the year
 intrinsic,young of-the year,young of the year
 intrinsic,young of-the-year,young of the year
 intrinsic,young of-theyear,young of the year
+intrinsic,young of-year,young of the year
 intrinsic,young ofthe year,young of the year
 intrinsic,young ofthe-year,young of the year
 intrinsic,young oftheyear,young of the year
+intrinsic,young ofyear,young of the year
+intrinsic,young year,young of the year
+intrinsic,young,young
 intrinsic,young-of the year,young of the year
 intrinsic,young-of the-year,young of the year
 intrinsic,young-of theyear,young of the year
+intrinsic,young-of year,young of the year
 intrinsic,young-of-the year,young of the year
 intrinsic,young-of-the-year,young of the year
 intrinsic,young-of-theyear,young of the year
+intrinsic,young-of-year,young of the year
 intrinsic,young-ofthe year,young of the year
 intrinsic,young-ofthe-year,young of the year
 intrinsic,young-oftheyear,young of the year
+intrinsic,young-ofyear,young of the year
+intrinsic,young-year,young of the year
 intrinsic,youngadult,young adult
-intrinsic,youngof the year,young of the year
-intrinsic,youngof the-year,young of the year
-intrinsic,youngof theyear,young of the year
-intrinsic,youngof-the year,young of the year
-intrinsic,youngof-the-year,young of the year
-intrinsic,youngof-theyear,young of the year
-intrinsic,youngofthe year,young of the year
-intrinsic,youngofthe-year,young of the year
-intrinsic,youngoftheyear,young of the year
+intrinsic,youngof year,young of the year
+intrinsic,youngof-year,young of the year
+intrinsic,youngofyear,young of the year
+intrinsic,youngyear,young of the year
 key,age
 key,age class
 key,ageclass

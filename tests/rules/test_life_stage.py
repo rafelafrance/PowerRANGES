@@ -181,3 +181,9 @@ class TestLifeStage(unittest.TestCase):
             parse("; 2nd Asiatnc Eped./"),
             [],
         )
+
+    def test_life_stage_30(self):
+        self.assertEqual(
+            parse("age class=young of year;"),
+            [LifeStage(life_stage="young of the year", start=2, end=23)],
+        )

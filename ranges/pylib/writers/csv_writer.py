@@ -11,8 +11,6 @@ def write_csv(
     id_field: str,
     info_fields=None,
     parse_fields=None,
-    *,
-    transpose=False,
 ) -> None:
     info_fields = info_fields if info_fields else []
     parse_fields = parse_fields if parse_fields else []
@@ -55,10 +53,6 @@ def write_csv(
     df = df.loc[:, columns]
 
     df = df.set_index(id_field)
-
-    if transpose:
-        df = df.transpose()
-
     df.to_csv(csv_file)
 
 

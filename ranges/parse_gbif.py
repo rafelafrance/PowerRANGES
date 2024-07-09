@@ -62,7 +62,6 @@ def main():
                 args.id_field,
                 args.info_field,
                 args.parse_field,
-                transpose=True,
             )
 
     if args.html_file and sampled:

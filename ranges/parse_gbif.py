@@ -66,6 +66,7 @@ def main():
 
     if args.html_file and sampled:
         logging.info("Writing HTML file.")
+        sampled = sampled[:1000]
         html_writer.write_html(
             args.html_file,
             sampled,

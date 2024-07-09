@@ -26,4 +26,5 @@
   --overwrite-field=sex \
   --cpus=16 \
   --sample-size=10000 \
+  --skip-parse \
   --summary-field=scientificName

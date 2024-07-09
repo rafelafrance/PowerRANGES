@@ -25,4 +25,7 @@
   --info-field=decimalLongitude \
   --overwrite-field=sex \
   --cpus=16 \
+  --sample-size=10000 \
+  --skip-parse \
+  --sample-only \
   --summary-field=scientificName

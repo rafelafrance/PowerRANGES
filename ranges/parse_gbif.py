@@ -42,15 +42,17 @@ def main():
         sampled = sample_occurrences(occurrences, args.sample_size, args.sample_method)
 
     if args.csv_file:
-        logging.info("Writing CSV data.")
-        csv_writer.write_csv(
-            args.csv_file,
-            occurrences,
-            args.id_field,
-            args.info_field,
-            args.parse_field,
-        )
+        if not args.sample_only:
+            logging.info("Writing big CSV file.")
+            csv_writer.write_csv(
+                args.csv_file,
+                occurrences,
+                args.id_field,
+                args.info_field,
+                args.parse_field,
+            )
         if sampled:
+            logging.info("Writing sampled CSV file.")
             sampled_path = args.csv_file.with_stem(
                 f"{args.csv_file.stem}_{args.sample_size}_with_{args.sample_method}"
             )
@@ -64,7 +66,7 @@ def main():
             )
 
     if args.html_file and sampled:
-        logging.info("Writing HTML data.")
+        logging.info("Writing HTML file.")
         html_writer.write_html(
             args.html_file,
             sampled,
@@ -240,6 +242,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="""This is here so that you may use prebuilt CSV files to output
             a final CSV or HTML report. Parsing can take a while.""",
+    )
+
+    arg_parser.add_argument(
+        "--sample-only",
+        action="store_true",
+        help="""Don't output the big CSV file with every record.""",
     )
 
     args = arg_parser.parse_args()

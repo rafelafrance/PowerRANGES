@@ -91,6 +91,12 @@ class Testicle(Base):
                 "testicle_size_units_inferred": self.units_inferred
             }
 
+        if "testicle_description" in value:
+            value["testicle_description"]["_parser"] = self.__class__.__name__
+
+        if "testicle_size" in value:
+            value["testicle_size"]["_parser"] = self.__class__.__name__
+
         return value
 
     def to_dwc(self, dwc) -> DarwinCore:

@@ -47,9 +47,11 @@ class Mammary(Base):
 
         if self.count is not None:
             value["mammary_count"] |= {"mammary_count": self.count}
+            value["mammary_count"]["_parser"] = self.__class__.__name__
 
         if self.state:
             value["mammary_state"] |= {"mammary_state": self.state}
+            value["mammary_state"]["_parser"] = self.__class__.__name__
 
         return value
 

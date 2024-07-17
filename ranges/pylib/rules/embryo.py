@@ -72,7 +72,7 @@ class Embryo(BaseLength):
     side1: int = None
     side2: int = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901
+    def to_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
         value = defaultdict(dict)
 
         if self.length is not None:
@@ -110,6 +110,12 @@ class Embryo(BaseLength):
 
         if self.side2 is not None:
             value["embryo_count"] |= {"embryo_count_side_2": self.side2}
+
+        if "embryo_size" in value:
+            value["embryo_size"]["_parser"] = self.__class__.__name__
+
+        if "embryo_count" in value:
+            value["embryo_count"]["_parser"] = self.__class__.__name__
 
         return value
 

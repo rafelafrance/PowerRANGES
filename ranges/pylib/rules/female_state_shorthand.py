@@ -21,12 +21,15 @@ class FemaleStateShorthand(Base):
 
         if self.vagina_state:
             value["vagina_state"] |= {"vagina_state": self.vagina_state}
+            value["vagina_state"]["_parser"] = self.__class__.__name__
 
         if self.nipple_state:
             value["nipple_state"] |= {"nipple_state": self.nipple_state}
+            value["nipple_state"]["_parser"] = self.__class__.__name__
 
         if self.lactation_state:
             value["lactation_state"] |= {"lactation_state": self.lactation_state}
+            value["lactation_state"]["_parser"] = self.__class__.__name__
 
         return value
 

@@ -53,10 +53,10 @@ class LengthShorthand(Base):
     inner_re: ClassVar[str] = r"((\d{1,4}(\.\d{,3})?)|[?x]{1,2})"
 
     # This separates fields within the shorthand notation
-    sep: ClassVar[str] = t_const.DASH + t_const.COLON + t_const.SLASH
+    sep: ClassVar[str] = t_const.DASH + t_const.SLASH
 
     # This separates the last field from the rest
-    last: ClassVar[str] = sep + t_const.EQ
+    last: ClassVar[str] = sep + t_const.EQ + t_const.COLON
     skip: ClassVar[str] = last + t_const.COLON + t_const.QUOTE
 
     # Expected order of cells
@@ -91,36 +91,43 @@ class LengthShorthand(Base):
 
         if self.total_length is not None:
             value["total_length"] |= {"total_length_mm": self.total_length}
+            value["total_length"]["_parser"] = self.__class__.__name__
             if self.total_length_estimated:
                 value["total_length"] |= {"total_length_estimated": True}
 
         if self.tail_length is not None:
             value["tail_length"] |= {"tail_length_mm": self.tail_length}
+            value["tail_length"]["_parser"] = self.__class__.__name__
             if self.tail_length_estimated:
                 value["tail_length"] |= {"tail_length_estimated": True}
 
         if self.hind_foot_length is not None:
             value["hind_foot_length"] |= {"hind_foot_length_mm": self.hind_foot_length}
+            value["hind_foot_length"]["_parser"] = self.__class__.__name__
             if self.hind_foot_length_estimated:
                 value["hind_foot_length"] |= {"hind_foot_length_estimated": True}
 
         if self.ear_length is not None:
             value["ear_length"] |= {"ear_length_mm": self.ear_length}
+            value["ear_length"]["_parser"] = self.__class__.__name__
             if self.ear_length_estimated:
                 value["ear_length"] |= {"ear_length_estimated": True}
 
         if self.body_mass is not None:
             value["body_mass"] |= {"body_mass_grams": self.body_mass}
+            value["body_mass"]["_parser"] = self.__class__.__name__
             if self.body_mass_estimated:
                 value["body_mass"] |= {"body_mass_estimated": True}
 
         if self.forearm_length is not None:
             value["forearm_length"] |= {"forearm_length_mm": self.forearm_length}
+            value["forearm_length"]["_parser"] = self.__class__.__name__
             if self.forearm_length_estimated:
                 value["forearm_length"] |= {"forearm_length_estimated": True}
 
         if self.tragus_length is not None:
             value["tragus_length"] |= {"tragus_length_mm": self.tragus_length}
+            value["tragus_length"]["_parser"] = self.__class__.__name__
             if self.tragus_length_estimated:
                 value["tragus_length"] |= {"tragus_length_estimated": True}
 

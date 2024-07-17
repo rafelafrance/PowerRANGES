@@ -3,13 +3,16 @@
 ./ranges/parse_gbif.py \
   --tsv-file=data/occurrence/*occurrence.txt \
   --json-dir=data/occurrence_json \
-  --csv-file=data/occurrence_2024-07-08.csv \
-  --html-file=data/occurrence_2024-07-08.html \
+  --output-dir=data/occurrence_2024-07-16 \
+  --csv-all \
+  --csv-sampled \
+  --csv-institution \
   --id-field=occurrenceID \
   --parse-field=dynamicProperties \
   --parse-field=occurrenceRemarks \
   --parse-field=fieldNotes \
   --info-field=institutionCode \
+  --info-field=collectionCode \
   --info-field=catalogNumber \
   --info-field=scientificName \
   --info-field=order \
@@ -25,6 +28,5 @@
   --info-field=decimalLongitude \
   --overwrite-field=sex \
   --cpus=16 \
-  --sample-size=10000 \
   --skip-parse \
   --summary-field=scientificName

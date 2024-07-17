@@ -37,6 +37,7 @@ class HindFootLength(BaseLength):
         value = defaultdict(dict)
 
         value["hind_foot_length"] = {"hind_foot_length_mm": self.length}
+        value["hind_foot_length"]["_parser"] = self.__class__.__name__
 
         if self.includes:
             value["hind_foot_length"] |= {"hind_foot_length_includes": self.includes}

@@ -78,6 +78,9 @@ class PlacentalScarCount(Base):
         if self.side2 is not None:
             value["placental_scars"] |= {"placental_scars_both_sides": self.side2}
 
+        if "placental_scars" in value:
+            value["placental_scars"]["_parser"] = self.__class__.__name__
+
         return value
 
     def to_dwc(self, dwc) -> DarwinCore:

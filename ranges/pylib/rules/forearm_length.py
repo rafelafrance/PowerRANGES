@@ -37,6 +37,7 @@ class ForearmLength(BaseLength):
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
         value = {"forearm_length": {"forearm_length_mm": self.length}}
+        value["forearm_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
             value["forearm_length"] |= {"forearm_length_units_inferred": True}

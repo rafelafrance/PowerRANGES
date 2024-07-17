@@ -54,6 +54,7 @@ class Gonad(Base):
 
         if self.description is not None:
             value["gonad_description"] |= {"gonad_description": self.description}
+            value["gonad_description"]["_parser"] = self.__class__.__name__
 
         if self.length is not None:
             value["gonad_size"] |= {"gonad_length_mm": self.length}
@@ -63,6 +64,9 @@ class Gonad(Base):
 
         if self.units_inferred is not None:
             value["gonad_size"] |= {"gonad_size_units_inferred": self.units_inferred}
+
+        if "gonad_size" in value:
+            value["gonad_size"]["_parser"] = self.__class__.__name__
 
         return value
 

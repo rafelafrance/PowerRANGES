@@ -28,6 +28,7 @@ class TotalLength(BaseLength):
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
         value = {"total_length": {"total_length_mm": self.length}}
+        value["total_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
             value["total_length"] |= {"total_length_units_inferred": True}

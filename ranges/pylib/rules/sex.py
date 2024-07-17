@@ -28,7 +28,12 @@ class Sex(Base):
     sex: str = None
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
-        return {"sex": {"sex": self.sex}}
+        return {
+            "sex": {
+                "sex": self.sex,
+                "_parser": self.__class__.__name__,
+            }
+        }
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add(sex=self.sex)

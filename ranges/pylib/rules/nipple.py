@@ -47,9 +47,11 @@ class Nipple(Base):
 
         if self.count is not None:
             value["nipple_count"] |= {"nipple_count": self.count}
+            value["nipple_count"]["_parser"] = self.__class__.__name__
 
         if self.state:
             value["nipple_state"] |= {"nipple_state": self.state}
+            value["nipple_state"]["_parser"] = self.__class__.__name__
 
         return value
 

@@ -100,7 +100,7 @@ class Ovary(Base):
 
     units_inferred: bool = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def to_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901
         value = defaultdict(dict)
 
         if self.description is not None:
@@ -135,6 +135,12 @@ class Ovary(Base):
 
         if self.units_inferred is not None:
             value["ovary_size"] |= {"ovary_size_units_inferred": self.units_inferred}
+
+        if "ovary_description" in value:
+            value["ovary_description"]["_parser"] = self.__class__.__name__
+
+        if "ovary_size" in value:
+            value["ovary_size"]["_parser"] = self.__class__.__name__
 
         return value
 

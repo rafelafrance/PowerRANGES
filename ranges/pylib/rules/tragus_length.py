@@ -29,6 +29,7 @@ class TragusLength(BaseLength):
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
         value = {"tragus_length": {"tragus_length_mm": self.length}}
+        value["tragus_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
             value["tragus_length"] |= {"tragus_length_units_inferred": True}

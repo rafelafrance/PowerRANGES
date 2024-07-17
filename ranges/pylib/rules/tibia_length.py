@@ -29,6 +29,7 @@ class TibiaLength(BaseLength):
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
         value = {"tibia_length": {"tibia_length_mm": self.length}}
+        value["tibia_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
             value["tibia_length"] |= {"tibia_length_units_inferred": True}

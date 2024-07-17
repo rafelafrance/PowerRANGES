@@ -36,7 +36,7 @@ class EarLength(BaseLength):
     measured_from: str = None
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
-        value = {"ear_length": {}}
+        value = {"ear_length": {"_parser": self.__class__.__name__}}
 
         if self.measured_from:
             value["ear_length"] |= {"ear_length_measured_from": self.measured_from}

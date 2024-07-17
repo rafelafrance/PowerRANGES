@@ -16,12 +16,15 @@ from tqdm import tqdm
 from util.pylib import log
 
 
-def main():
+def main():  # noqa: C901
     log.started()
     args = parse_args()
 
-    if args.json_dir and not args.json_dir.exists():
+    if args.json_dir:
         args.json_dir.mkdir(parents=True, exist_ok=True)
+
+    if args.output_dir:
+        args.output_dir.mkdir(parents=True, exist_ok=True)
 
     with get_json_dir(args.json_dir) as json_dir:
         if not args.skip_parse:
@@ -31,48 +34,79 @@ def main():
                 multiple_processes(args, json_dir)
 
         logging.info("Reading JSONL data.")
-        occurrences = []
+        by_institution = {}
         for path in sorted(args.json_dir.glob("*.jsonl")):
             with path.open() as jin:
-                occurrences += [json.loads(ln) for ln in jin]
+                data = [json.loads(ln) for ln in jin]
+            by_institution[path.stem] = data
 
-    sampled = []
-    if args.sample_size:
-        logging.info("Sampling occurrences.")
-        sampled = sample_occurrences(occurrences, args.sample_size, args.sample_method)
+    all_occurrences = []
+    if args.csv_all or args.csv_sampled or args.html_all:
+        for data in by_institution.values():
+            all_occurrences += data
 
-    if args.csv_file:
-        if not args.sample_only:
-            logging.info("Writing big CSV file.")
+    if args.csv_all and args.output_dir:
+        logging.info("Writing big CSV file.")
+        csv_writer.write_csv(
+            args.output_dir / "all_occurrences.csv",
+            all_occurrences,
+            args.id_field,
+            args.info_field,
+            args.parse_field,
+        )
+
+    if args.csv_sampled and args.output_dir:
+        logging.info("Writing sampled CSV file.")
+        sampled = sample_occurrences(
+            all_occurrences, args.csv_sample, args.sample_method
+        )
+        csv_writer.write_csv(
+            args.output_dir / f"all_occurrences_sampled_{len(sampled)}.csv",
+            sampled,
+            args.id_field,
+            args.info_field,
+            args.parse_field,
+        )
+
+    if args.csv_institution and args.output_dir:
+        logging.info("Writing institution CSV files.")
+        for name, occurrence in by_institution.items():
+            msg = "Institution CSV for " + name
+            logging.info(msg)
             csv_writer.write_csv(
-                args.csv_file,
-                occurrences,
+                args.output_dir / f"{name}.csv",
+                occurrence,
                 args.id_field,
                 args.info_field,
                 args.parse_field,
             )
-        if sampled:
-            logging.info("Writing sampled CSV file.")
-            sampled_path = args.csv_file.with_stem(
-                f"{args.csv_file.stem}_{args.sample_size}_with_{args.sample_method}"
-            )
-            csv_writer.write_csv(
-                sampled_path,
-                sampled,
-                args.id_field,
-                args.info_field,
-                args.parse_field,
-            )
 
-    if args.html_file and sampled:
+    if args.html_all and args.output_dir:
         logging.info("Writing HTML file.")
-        sampled = sampled[:1000]
+        sampled = sample_occurrences(
+            all_occurrences, args.csv_sample, args.sample_method
+        )
         html_writer.write_html(
-            args.html_file,
+            args.output_dir / f"all_occurrences_sampled_{len(sampled)}.html",
             sampled,
             args.id_field,
             args.summary_field,
         )
+
+    if args.html_institution and args.output_dir:
+        logging.info("Writing institution HTML files.")
+        for name, occurrences in by_institution.items():
+            msg = "Institution HTML for " + name
+            logging.info(msg)
+            sampled = sample_occurrences(
+                occurrences, args.csv_sample, args.sample_method
+            )
+            html_writer.write_html(
+                args.output_dir / f"sampled_{len(sampled)}_{name}.html",
+                sampled,
+                args.id_field,
+                args.summary_field,
+            )
 
     log.finished()
 
@@ -153,17 +187,40 @@ def parse_args() -> argparse.Namespace:
     )
 
     arg_parser.add_argument(
-        "--csv-file",
+        "--output-dir",
         metavar="PATH",
         type=Path,
-        help="""Output occurrences into this CSV file.""",
+        help="""Output files to this directory.""",
     )
 
     arg_parser.add_argument(
-        "--html-file",
-        metavar="PATH",
-        type=Path,
-        help="""Output sampled occurrences into this HTML file.""",
+        "--csv-all",
+        action="store_true",
+        help="""Output all occurrences to a single CSV file.""",
+    )
+
+    arg_parser.add_argument(
+        "--csv-sampled",
+        action="store_true",
+        help="""Output sampled occurrences to a CSV file.""",
+    )
+
+    arg_parser.add_argument(
+        "--csv-institution",
+        action="store_true",
+        help="""Output institution occurrences to individual CSV files.""",
+    )
+
+    arg_parser.add_argument(
+        "--html-all",
+        action="store_true",
+        help="""Output all occurrences (sampled) to a single HTML file.""",
+    )
+
+    arg_parser.add_argument(
+        "--html-institution",
+        action="store_true",
+        help="""Output institution occurrences (sampled) to individual HTML files.""",
     )
 
     arg_parser.add_argument(
@@ -200,12 +257,21 @@ def parse_args() -> argparse.Namespace:
     )
 
     arg_parser.add_argument(
-        "--sample-size",
+        "--csv-sample",
+        type=int,
+        default=10000,
+        metavar="INT",
+        help="""How many records to output for the sampled CSV report.
+            (default: %(default)s)""",
+    )
+
+    arg_parser.add_argument(
+        "--html-sample",
         type=int,
         default=1000,
         metavar="INT",
-        help="""How many records to output for the HTML reports. Only used if
-            --html-file is selected. (default: %(default)s)""",
+        help="""How many records to output for the HTML reports.
+            (default: %(default)s)""",
     )
 
     arg_parser.add_argument(
@@ -240,14 +306,8 @@ def parse_args() -> argparse.Namespace:
     arg_parser.add_argument(
         "--skip-parse",
         action="store_true",
-        help="""This is here so that you may use prebuilt CSV files to output
-            a final CSV or HTML report. Parsing can take a while.""",
-    )
-
-    arg_parser.add_argument(
-        "--sample-only",
-        action="store_true",
-        help="""Don't output the big CSV file with every record.""",
+        help="""This is here so that you may use prebuilt JSON files to output
+            a CSV or HTML reports. Parsing can take a while.""",
     )
 
     args = arg_parser.parse_args()

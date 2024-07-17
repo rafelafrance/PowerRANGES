@@ -34,7 +34,12 @@ class LifeStage(Base):
     life_stage: str = None
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
-        return {"life_stage": {"life_stage": self.life_stage}}
+        return {
+            "life_stage": {
+                "life_stage": self.life_stage,
+                "_parser": self.__class__.__name__,
+            }
+        }
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add(lifeStage=self.life_stage)

@@ -35,7 +35,12 @@ class BodyMass(Base):
     estimated: bool = None
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
-        value = {"body_mass": {"body_mass_grams": self.mass}}
+        value = {
+            "body_mass": {
+                "body_mass_grams": self.mass,
+                "_parser": self.__class__.__name__,
+            }
+        }
 
         if self.units_inferred:
             value["body_mass"] |= {"body_mass_units_inferred": True}

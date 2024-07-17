@@ -32,6 +32,7 @@ class TailLength(BaseLength):
         value = defaultdict(dict)
 
         value["tail_length"] = {"tail_length_mm": self.length}
+        value["tail_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
             value["tail_length"] |= {"tail_length_units_inferred": True}

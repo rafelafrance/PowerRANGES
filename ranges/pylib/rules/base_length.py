@@ -259,6 +259,8 @@ class BaseLength(Base):
                 decoder=DECODER,
                 patterns=[
                     " bad ",
+                    " bad_prefix key ",
+                    " bad_prefix ambig ",
                     " bad_prefix any{,3} ambig any 99 mm* ",
                     " bad_prefix any{,5}           99 mm* ",
                     " 99 bad_suffix",

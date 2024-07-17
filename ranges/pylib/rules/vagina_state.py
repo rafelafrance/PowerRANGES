@@ -22,7 +22,12 @@ class VaginaState(Base):
     state: str = None
 
     def to_dict(self) -> dict[str, dict[str, Any]]:
-        return {"vagina_state": {"vagina_state": self.state}}
+        return {
+            "vagina_state": {
+                "vagina_state": self.state,
+                "_parser": self.__class__.__name__,
+            }
+        }
 
     def to_dwc(self, dwc) -> DarwinCore:
         return dwc.add_dyn(vaginaState=self.state)

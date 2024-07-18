@@ -2,8 +2,10 @@
 
 ./ranges/parse_gbif.py \
   --tsv-file=data/occurrence/*occurrence.txt \
-  --json-dir=data/junk \
-  --output-dir=data/occurrence_2024-07-18b \
+  --json-dir=data/occurrence_json \
+  --output-dir=data/occurrence_2024-07-18c \
+  --csv-all \
+  --csv-sampled \
   --csv-institution \
   --id-field=occurrenceID \
   --parse-field=dynamicProperties \
@@ -26,5 +28,4 @@
   --info-field=decimalLongitude \
   --overwrite-field=sex \
   --cpus=16 \
-  --skip-parse \
   --summary-field=scientificName

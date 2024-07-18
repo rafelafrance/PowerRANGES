@@ -53,9 +53,11 @@ def write_csv(
         for trait in occur["traits"]:
             grouped[trait["_trait"]].append(trait)
 
+        max_traits = max(len(t) for t in grouped.values())
+
         filtered = defaultdict(list)
         for name, traits in grouped.items():
-            filtered[name] = filter_traits(name, traits)
+            filtered[name] = filter_traits(name, traits, max_traits)
 
         lst = []
         for name, traits in filtered.items():
@@ -93,14 +95,16 @@ def write_csv(
     df.to_csv(csv_file)
 
 
-def filter_traits(name: str, traits: list[dict]) -> list[dict]:
+def filter_traits(name: str, traits: list[dict], max_traits: int) -> list[dict]:
     players = [get_score(name, t) for t in traits]
     winners = [True for _ in range(len(players))]
 
     for pair in combinations(range(len(traits)), 2):
         i, j = pair
         if players[i].score == players[j].score:
-            if (
+            if max_traits == DUPE_CHECK:
+                choose_looser(i, j, players, winners)
+            elif (
                 players[i].trait["_field"] == players[j].trait["_field"]
                 and players[i].trait["_parser"] != players[j].trait["_parser"]
             ):

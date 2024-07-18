@@ -27,7 +27,7 @@ class TibiaLength(BaseLength):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = {"tibia_length": {"tibia_length_mm": self.length}}
         value["tibia_length"]["_parser"] = self.__class__.__name__
 

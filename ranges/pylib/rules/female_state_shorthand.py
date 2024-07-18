@@ -16,7 +16,7 @@ class FemaleStateShorthand(Base):
     nipple_state: str = None
     lactation_state: str = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.vagina_state:

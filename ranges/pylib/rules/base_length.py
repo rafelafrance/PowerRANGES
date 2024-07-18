@@ -62,7 +62,7 @@ class BaseLength(Base):
     estimated: bool = None
     _prefix: str = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         raise NotImplementedError
 
     def to_dwc(self, dwc) -> DarwinCore:
@@ -150,13 +150,13 @@ class BaseLength(Base):
     def length_patterns(cls, *, allow_no_key=False, label=None):
         label = label if label else f"{cls.name}_length"
         patterns = [
-            ' key            "? : "? [ 99 ] mm* ] ',
-            '     ambig :    "? : "? [ 99 ] mm+ ] ',
-            '     ambig : sp "? : "? [ 99 ] mm* ] ',
-            '     ambig =    "? : "? [ 99 ] mm* ] ',
-            ' key ambig      "? : "? [ 99 ] mm* ] ',
-            "                        [ 99 ] mm* ] [ key ] ",
-            " key : word        :      99   mm* ",
+            ' key             "? : "? [ 99 ] mm* ] ',
+            '      ambig :    "? : "? [ 99 ] mm+ ] ',
+            '      ambig : sp "? : "? [ 99 ] mm+ ] ',
+            '      ambig =    "? : "? [ 99 ] mm* ] ',
+            ' key  ambig      "? : "? [ 99 ] mm* ] ',
+            "                         [ 99 ] mm* ] [ key ] ",
+            " key : word :              99   mm+ ",
         ]
         if allow_no_key:
             patterns += [

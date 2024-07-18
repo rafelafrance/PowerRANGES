@@ -86,7 +86,7 @@ class LengthShorthand(Base):
     tragus_length: float = None
     tragus_length_estimated: bool = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901 PLR0912
+    def as_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901 PLR0912
         value = defaultdict(dict)
 
         if self.total_length is not None:

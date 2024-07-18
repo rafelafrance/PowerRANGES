@@ -54,7 +54,7 @@ class PlacentalScarCount(Base):
     side2: int = None
     both: int = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.present is not None:

@@ -21,7 +21,7 @@ class VaginaState(Base):
 
     state: str = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         return {
             "vagina_state": {
                 "vagina_state": self.state,

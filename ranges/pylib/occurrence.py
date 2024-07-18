@@ -20,7 +20,7 @@ class Occurrence:
     overwrite_fields: dict[str, list[Base]] = field(default_factory=dict)
     traits: dict[str, list[Base]] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def as_dict(self) -> dict:
         value = {
             self.id_field[0]: self.id_field[1],
             "source": self.source,
@@ -31,7 +31,7 @@ class Occurrence:
         traits = []
         for source_field, trait_list in self.traits.items():
             for trait in trait_list:
-                as_dict = trait.to_dict()
+                as_dict = trait.as_dict()
                 for key, fields in as_dict.items():
                     fields |= {
                         "_trait": key,

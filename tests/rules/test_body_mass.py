@@ -162,3 +162,12 @@ class TestBodyMass(unittest.TestCase):
     def test_body_mass_19(self):
         """It skips weights that are not a body mass."""
         self.assertEqual(parse("bacu wt=10 g"), [])
+
+    def test_body_mass_20(self):
+        self.assertEqual(
+            parse("Verbatim weight=10;weight=10 g"),
+            [
+                BodyMass(start=9, end=18, mass=10.0, units_inferred=True),
+                BodyMass(start=19, end=30, mass=10.0),
+            ],
+        )

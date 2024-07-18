@@ -33,7 +33,7 @@ class HindFootLength(BaseLength):
 
     includes: str = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         value["hind_foot_length"] = {"hind_foot_length_mm": self.length}

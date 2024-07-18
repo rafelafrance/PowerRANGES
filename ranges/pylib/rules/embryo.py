@@ -72,7 +72,7 @@ class Embryo(BaseLength):
     side1: int = None
     side2: int = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
+    def as_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
         value = defaultdict(dict)
 
         if self.length is not None:

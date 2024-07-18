@@ -8,6 +8,8 @@ from traiter.pylib.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import BaseLength
 
+# from traiter.pylib.pipes import add
+
 
 @dataclass(eq=False)
 class TotalLength(BaseLength):
@@ -26,7 +28,7 @@ class TotalLength(BaseLength):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = {"total_length": {"total_length_mm": self.length}}
         value["total_length"]["_parser"] = self.__class__.__name__
 
@@ -48,8 +50,8 @@ class TotalLength(BaseLength):
         cls.compound_length_pipe(nlp, allow_no_key=True)
         cls.range_length_pipe(nlp, allow_no_key=True)
         cls.tic_pipe(nlp, allow_no_key=True)
-        # debug.tokens(nlp)
         cls.length_pipe(nlp)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.cleanup_pipe(nlp)
 
 

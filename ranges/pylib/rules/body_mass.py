@@ -34,7 +34,7 @@ class BodyMass(Base):
     ambiguous: bool = None
     estimated: bool = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = {
             "body_mass": {
                 "body_mass_grams": self.mass,

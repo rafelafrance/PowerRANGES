@@ -42,7 +42,7 @@ class Mammary(Base):
     count: int = None
     state: str = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.count is not None:

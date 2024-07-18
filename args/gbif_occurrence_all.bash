@@ -2,10 +2,8 @@
 
 ./ranges/parse_gbif.py \
   --tsv-file=data/occurrence/*occurrence.txt \
-  --json-dir=data/occurrence_json \
-  --output-dir=data/occurrence_2024-07-17a \
-  --csv-all \
-  --csv-sampled \
+  --json-dir=data/junk \
+  --output-dir=data/occurrence_2024-07-18b \
   --csv-institution \
   --id-field=occurrenceID \
   --parse-field=dynamicProperties \

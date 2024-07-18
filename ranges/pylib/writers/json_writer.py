@@ -34,7 +34,7 @@ def process_occurrences(
         json_file = json_dir / f"{tsv_file.stem}.jsonl"
         with json_file.open("w") as out:
             for occur in occurrences:
-                as_dict = occur.to_dict()
+                as_dict = occur.as_dict()
                 json.dump(as_dict, out)
                 out.write("\n")
 

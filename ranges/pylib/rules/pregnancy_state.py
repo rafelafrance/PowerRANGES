@@ -22,7 +22,7 @@ class PregnancyState(Base):
 
     state: str = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         return {
             "pregnancy_state": {
                 "pregnancy_state": self.state,

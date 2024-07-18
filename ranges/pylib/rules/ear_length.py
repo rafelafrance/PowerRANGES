@@ -10,6 +10,8 @@ from traiter.pylib.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import BaseLength
 
+# from traiter.pylib.pipes import add
+
 
 @dataclass(eq=False)
 class EarLength(BaseLength):
@@ -35,7 +37,7 @@ class EarLength(BaseLength):
 
     measured_from: str = None
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = {"ear_length": {"_parser": self.__class__.__name__}}
 
         if self.measured_from:
@@ -68,7 +70,9 @@ class EarLength(BaseLength):
         cls.bad_length_pipe(nlp)
         cls.range_length_pipe(nlp)
         cls.tic_pipe(nlp)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.length_pipe(nlp)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.cleanup_pipe(nlp)
 
     @classmethod
@@ -86,7 +90,7 @@ class EarLength(BaseLength):
     @classmethod
     def ear_length_match(cls, ent):
         trait = cls.length_match(ent)
-        cls.check_ambiguous_key(trait)
+        # cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 

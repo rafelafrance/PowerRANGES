@@ -81,3 +81,10 @@ class TestEarLength(unittest.TestCase):
     def test_ear_length_09(self):
         """It does not pick up a name."""
         self.assertEqual(parse("Gray, J. E. (1866)."), [])
+
+    def test_ear_length_10(self):
+        """It gets an abbreviation."""
+        self.assertEqual(
+            parse(";E=6;"),
+            [EarLength(length=6, start=1, end=4, ambiguous=True, units_inferred=True)],
+        )

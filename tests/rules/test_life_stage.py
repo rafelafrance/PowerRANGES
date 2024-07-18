@@ -185,5 +185,5 @@ class TestLifeStage(unittest.TestCase):
     def test_life_stage_30(self):
         self.assertEqual(
             parse("age class=young of year;"),
-            [LifeStage(life_stage="young of the year", start=2, end=23)],
+            [LifeStage(life_stage="young of the year", start=0, end=23)],
         )

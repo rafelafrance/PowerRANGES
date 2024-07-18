@@ -15,5 +15,5 @@ class Base(TraiterBase):
     def to_dwc(self, dwc) -> DarwinCore:
         raise NotImplementedError
 
-    def to_dict(self) -> dict[str, dict[str, Any]]:
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         raise NotImplementedError

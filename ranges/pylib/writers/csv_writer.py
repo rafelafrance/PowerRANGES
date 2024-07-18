@@ -1,4 +1,6 @@
 from collections import defaultdict
+from dataclasses import dataclass
+from itertools import combinations
 from pathlib import Path
 from typing import Any
 
@@ -6,8 +8,30 @@ import pandas as pd
 
 # from pprint import pp
 
+COMPARE = {
+    "body_mass": ["body_mass_grams"],
+    "ear_length": ["ear_length_mm"],
+    "embryo_size": ["embryo_size_length_mm", "embryo_size_width_mm"],
+    "forearm_length": ["forearm_length_mm"],
+    "gonad_size": ["gonad_length_mm", "gonad_width_mm"],
+    "hind_foot_length": ["hind_foot_length_mm"],
+    "tail_length": ["tail_length_mm"],
+    "tibia_length": ["tibia_length_mm"],
+    "total_length": ["total_length_mm"],
+    "tragus_length": ["tragus_length_mm"],
+}
 
-def write_csv(  # noqa: C901
+DUPE_CHECK = 2
+ORDER = "trait_reported_order"
+
+
+@dataclass
+class Contestant:
+    score: dict
+    trait: dict
+
+
+def write_csv(
     csv_file: Path,
     occurrences: list[dict[str, Any]],
     id_field: str,
@@ -31,24 +55,24 @@ def write_csv(  # noqa: C901
 
         filtered = defaultdict(list)
         for name, traits in grouped.items():
-            for i, trait in enumerate(traits):
-                if i > 0 and any(same_data_fields(trait, t) for t in filtered[name]):
-                    continue
-                if i > 0 and any(same_data_parsers(trait, t) for t in filtered[name]):
-                    continue
-                filtered[name].append(trait)
+            filtered[name] = filter_traits(name, traits)
 
         lst = []
         for name, traits in filtered.items():
             for i, trait in enumerate(traits, 1):
                 if i > len(lst):
-                    lst.append({"trait_reported_order": i} | row)
+                    lst.append({ORDER: i} | row)
                 new = {k: v for k, v in trait.items() if not k.startswith("_")}
                 lst[i - 1] |= new
                 trait_cols |= {(name, k) for k in new}
 
         if not lst:
-            lst.append({"trait_reported_order": 1} | row)
+            lst.append({ORDER: 1} | row)
+        elif len(lst) == DUPE_CHECK:
+            one = {k: v for k, v in lst[0].items() if k != ORDER}
+            two = {k: v for k, v in lst[1].items() if k != ORDER}
+            if one == two:
+                lst.pop()
 
         data += lst
 
@@ -56,7 +80,7 @@ def write_csv(  # noqa: C901
     trait_cols = sorted(trait_cols)
     columns = [
         id_field,
-        "trait_reported_order",
+        ORDER,
         "source",
         *info_fields,
         *parse_fields,
@@ -69,19 +93,40 @@ def write_csv(  # noqa: C901
     df.to_csv(csv_file)
 
 
-def same_data_fields(trait1, trait2):
-    if trait1["_field"] == trait2["_field"]:
-        return False
-    vals1 = {k: v for k, v in trait1.items() if not k.startswith("_")}
-    vals2 = {k: v for k, v in trait2.items() if not k.startswith("_")}
-    return vals1 == vals2
+def filter_traits(name: str, traits: list[dict]) -> list[dict]:
+    players = [get_score(name, t) for t in traits]
+    winners = [True for _ in range(len(players))]
+
+    for pair in combinations(range(len(traits)), 2):
+        i, j = pair
+        if players[i].score == players[j].score:
+            if (
+                players[i].trait["_field"] == players[j].trait["_field"]
+                and players[i].trait["_parser"] != players[j].trait["_parser"]
+            ):
+                choose_looser(i, j, players, winners)
+            elif players[i].trait["_field"] != players[j].trait["_field"]:
+                choose_looser(i, j, players, winners)
+
+    return [p.trait for i, p in enumerate(players) if winners[i]]
 
 
-def same_data_parsers(trait1, trait2):
-    if trait1["_field"] != trait2["_field"]:
-        return False
-    if trait1["_parser"] == trait2["_parser"]:
-        return False
-    vals1 = {k: v for k, v in trait1.items() if not k.startswith("_")}
-    vals2 = {k: v for k, v in trait2.items() if not k.startswith("_")}
-    return vals1 == vals2
+def choose_looser(i, j, players, winners):
+    len1 = len([k for k in players[i].trait if not k.startswith("_")])
+    len2 = len([k for k in players[j].trait if not k.startswith("_")])
+    if len2 > len1:
+        winners[i] = False
+    else:
+        winners[j] = False
+
+
+def get_score(name: str, trait: dict) -> Contestant:
+    if keys := COMPARE.get(name):
+        return Contestant(
+            score={k: v for k in keys if (v := trait.get(k) is not None)},
+            trait=trait,
+        )
+    return Contestant(
+        score={k: v for k, v in trait.items() if not k.startswith("_")},
+        trait=trait,
+    )

@@ -31,7 +31,7 @@ class Contestant:
     trait: dict
 
 
-def write_csv(  # noqa: C901
+def write_csv(
     csv_file: Path,
     occurrences: list[dict[str, Any]],
     id_field: str,
@@ -72,11 +72,6 @@ def write_csv(  # noqa: C901
 
         if not lst:
             lst.append({ORDER: 1} | row)
-        elif len(lst) == DUPE_CHECK:
-            one = {k: v for k, v in lst[0].items() if k != ORDER}
-            two = {k: v for k, v in lst[1].items() if k != ORDER}
-            if one == two:
-                lst.pop()
 
         data += lst
 
@@ -129,7 +124,7 @@ def choose_looser(i, j, players, winners):
 def get_score(name: str, trait: dict) -> Contestant:
     if keys := COMPARE.get(name):
         return Contestant(
-            score={k: v for k in keys if (v := trait.get(k) is not None)},
+            score={k: v for k in keys if (v := trait.get(k)) is not None},
             trait=trait,
         )
     return Contestant(

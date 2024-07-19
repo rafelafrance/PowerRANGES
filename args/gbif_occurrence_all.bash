@@ -3,7 +3,7 @@
 ./ranges/parse_gbif.py \
   --tsv-file=data/occurrence/*occurrence.txt \
   --json-dir=data/occurrence_json \
-  --output-dir=data/occurrence_2024-07-19a \
+  --output-dir=data/occurrence_2024-07-19c \
   --csv-all \
   --csv-sampled \
   --csv-institution \

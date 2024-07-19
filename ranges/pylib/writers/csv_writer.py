@@ -31,7 +31,7 @@ class Contestant:
     trait: dict
 
 
-def write_csv(
+def write_csv(  # noqa: C901
     csv_file: Path,
     occurrences: list[dict[str, Any]],
     id_field: str,
@@ -53,7 +53,9 @@ def write_csv(
         for trait in occur["traits"]:
             grouped[trait["_trait"]].append(trait)
 
-        max_traits = max(len(t) for t in grouped.values())
+        max_traits = 0
+        for traits in grouped.values():
+            max_traits = max(max_traits, len(traits))
 
         filtered = defaultdict(list)
         for name, traits in grouped.items():

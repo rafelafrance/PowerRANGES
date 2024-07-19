@@ -36,6 +36,8 @@ def main():  # noqa: C901
         logging.info("Reading JSONL data.")
         by_institution = {}
         for path in sorted(args.json_dir.glob("*.jsonl")):
+            msg = "Reading JSONL for " + path.stem
+            logging.info(msg)
             with path.open() as jin:
                 data = [json.loads(ln) for ln in jin]
             by_institution[path.stem] = data
@@ -44,29 +46,6 @@ def main():  # noqa: C901
     if args.csv_all or args.csv_sampled or args.html_all:
         for data in by_institution.values():
             all_occurrences += data
-
-    if args.csv_all and args.output_dir:
-        logging.info("Writing big CSV file.")
-        csv_writer.write_csv(
-            args.output_dir / "all_occurrences.csv",
-            all_occurrences,
-            args.id_field,
-            args.info_field,
-            args.parse_field,
-        )
-
-    if args.csv_sampled and args.output_dir:
-        logging.info("Writing sampled CSV file.")
-        sampled = sample_occurrences(
-            all_occurrences, args.csv_sample, args.sample_method
-        )
-        csv_writer.write_csv(
-            args.output_dir / f"all_occurrences_sampled_{len(sampled)}.csv",
-            sampled,
-            args.id_field,
-            args.info_field,
-            args.parse_field,
-        )
 
     if args.csv_institution and args.output_dir:
         logging.info("Writing institution CSV files.")
@@ -81,16 +60,27 @@ def main():  # noqa: C901
                 args.parse_field,
             )
 
-    if args.html_all and args.output_dir:
-        logging.info("Writing HTML file.")
+    if args.csv_sampled and args.output_dir:
+        logging.info("Writing sampled CSV file.")
         sampled = sample_occurrences(
             all_occurrences, args.csv_sample, args.sample_method
         )
-        html_writer.write_html(
-            args.output_dir / f"all_occurrences_sampled_{len(sampled)}.html",
+        csv_writer.write_csv(
+            args.output_dir / f"all_occurrences_sampled_{len(sampled)}.csv",
             sampled,
             args.id_field,
-            args.summary_field,
+            args.info_field,
+            args.parse_field,
+        )
+
+    if args.csv_all and args.output_dir:
+        logging.info("Writing big CSV file.")
+        csv_writer.write_csv(
+            args.output_dir / "all_occurrences.csv",
+            all_occurrences,
+            args.id_field,
+            args.info_field,
+            args.parse_field,
         )
 
     if args.html_institution and args.output_dir:
@@ -107,6 +97,18 @@ def main():  # noqa: C901
                 args.id_field,
                 args.summary_field,
             )
+
+    if args.html_all and args.output_dir:
+        logging.info("Writing HTML file.")
+        sampled = sample_occurrences(
+            all_occurrences, args.csv_sample, args.sample_method
+        )
+        html_writer.write_html(
+            args.output_dir / f"all_occurrences_sampled_{len(sampled)}.html",
+            sampled,
+            args.id_field,
+            args.summary_field,
+        )
 
     log.finished()
 

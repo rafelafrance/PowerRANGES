@@ -4,17 +4,17 @@ ambiguous_key,l.,,total
 ambiguous_key,len,,total
 ambiguous_key,len.,,total
 ambiguous_key,length,,total
-bad_prefix,&
-bad_prefix,condylobasal
-bad_prefix,crest
-bad_prefix,elev
-bad_prefix,elev.
-bad_prefix,elevation
-bad_prefix,girth
-bad_prefix,postglenoid
-bad_prefix,testis
-bad_prefix,tusks
-bad_suffix,r
+bad_prefix,&,,
+bad_prefix,condylobasal,,
+bad_prefix,crest,,
+bad_prefix,elev,,
+bad_prefix,elev.,,
+bad_prefix,elevation,,
+bad_prefix,girth,,
+bad_prefix,postglenoid,,
+bad_prefix,testis,,
+bad_prefix,tusks,,
+bad_suffix,r,,
 key_with_units,fork in millimeters,0.1,fork
 key_with_units,fork in mm,0.1,fork
 key_with_units,fork len in millimeters,0.1,fork

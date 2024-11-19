@@ -6,12 +6,12 @@ abdominal,abd,abdominal
 abdominal,abdom,abdominal
 abdominal,abdomin,abdominal
 abdominal,abdominal,abdominal
-and,&
-and,and
-both,both
-both,both side
-both,both sides
-both,each side
+and,&,
+and,and,
+both,both,
+both,both side,
+both,both sides,
+both,each side,
 descended,decend,descended
 descended,decended,descended
 descended,deend,descended
@@ -37,7 +37,7 @@ descended,tns,testes undescended
 descended,td,testes descended
 fully,complete,completely
 fully,completely,completely
-fully,fully
+fully,fully,
 fully,incomplete,incompletely
 fully,incompletely,incompletely
 left,l,left
@@ -60,11 +60,11 @@ left,lt,left
 left,lt.,left
 left,lx,left
 left,on left,left
-non,no
-non,non
-non,not
-non,semi
-non,sub
+non,no,
+non,non,
+non,not,
+non,semi,
+non,sub,
 right,on right,right
 right,r,right
 right,r side,right
@@ -80,7 +80,7 @@ right,rt.,right
 right,rt. side,right
 right,rx,right
 right,rx.,right
-partially,barely
+partially,barely,
 partially,part,partially
 partially,partially,partially
 partially,pt,partially

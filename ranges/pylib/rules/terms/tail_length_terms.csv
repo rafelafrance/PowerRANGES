@@ -1,23 +1,23 @@
 label,pattern,factor_cm
-ambiguous_key,t
-ambiguous_key,t.
-bad_prefix,body
-bad_prefix,elev
-bad_prefix,elevation
-bad_prefix,gonad
-bad_prefix,id
-bad_prefix,ident
-bad_prefix,identifier
-bad_prefix,nose
-bad_prefix,reproductive
-bad_prefix,scrot
-bad_prefix,scrotal
-bad_prefix,scrotum
-bad_prefix,snout
-bad_prefix,tag
-bad_prefix,test
-bad_prefix,testes
-bad_prefix,testis
+ambiguous_key,t,
+ambiguous_key,t.,
+bad_prefix,body,
+bad_prefix,elev,
+bad_prefix,elevation,
+bad_prefix,gonad,
+bad_prefix,id,
+bad_prefix,ident,
+bad_prefix,identifier,
+bad_prefix,nose,
+bad_prefix,reproductive,
+bad_prefix,scrot,
+bad_prefix,scrotal,
+bad_prefix,scrotum,
+bad_prefix,snout,
+bad_prefix,tag,
+bad_prefix,test,
+bad_prefix,testes,
+bad_prefix,testis,
 key_with_units,tail len in millimeters,0.1
 key_with_units,tail len in mm,0.1
 key_with_units,tail len inmillimeters,0.1
@@ -50,12 +50,12 @@ key_with_units,taillenin millimeters,0.1
 key_with_units,taillenin mm,0.1
 key_with_units,tailleninmillimeters,0.1
 key_with_units,tailleninmm,0.1
-len_key,tail
-len_key,tail len
-len_key,tail length
-len_key,tail vertebrae
-len_key,taillen
-len_key,taillength
-len_key,tailvertebrae
-len_key,tal
-len_key,tv
+len_key,tail,
+len_key,tail len,
+len_key,tail length,
+len_key,tail vertebrae,
+len_key,taillen,
+len_key,taillength,
+len_key,tailvertebrae,
+len_key,tal,
+len_key,tv,

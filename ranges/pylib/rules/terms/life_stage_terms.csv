@@ -1,9 +1,9 @@
 label,pattern,replace
-bad,determ
-bad,determine
-bad,determined
-bad,in pouch
-bad,pouch
+bad,determ,
+bad,determine,
+bad,determined,
+bad,in pouch,
+bad,pouch,
 intrinsic,ad,adult
 intrinsic,ad.,adult
 intrinsic,ads,adult
@@ -119,18 +119,18 @@ intrinsic,youngof year,young of the year
 intrinsic,youngof-year,young of the year
 intrinsic,youngofyear,young of the year
 intrinsic,youngyear,young of the year
-key,age
-key,age class
-key,ageclass
-key,life stage
-key,life stage remark
-key,life stage remarks
-key,life stageremark
-key,life stageremarks
-key,lifestage
-key,lifestage remark
-key,lifestage remarks
-key,lifestageremark
-key,lifestageremarks
-key_prefix,age in
-key_prefix,agein
+key,age,
+key,age class,
+key,ageclass,
+key,life stage,
+key,life stage remark,
+key,life stage remarks,
+key,life stageremark,
+key,life stageremarks,
+key,lifestage,
+key,lifestage remark,
+key,lifestage remarks,
+key,lifestageremark,
+key,lifestageremarks,
+key_prefix,age in,
+key_prefix,agein,

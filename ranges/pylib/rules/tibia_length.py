@@ -4,7 +4,7 @@ from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib import term_util
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import BaseLength
 
@@ -43,7 +43,7 @@ class TibiaLength(BaseLength):
         return value
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         cls.term_pipe(nlp)
         cls.range_length_pipe(nlp)
         cls.tic_pipe(nlp)

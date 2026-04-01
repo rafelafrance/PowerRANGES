@@ -1,11 +1,11 @@
 from spacy.language import Language
 from spacy.tokens import Doc
-from traiter.pylib.pipes import add
+from traiter.pipes import add
 
 from ranges.pylib import trait_util as tu
 
 
-def pipe(nlp: Language):
+def pipe(nlp: Language) -> None:
     config = {
         "delete": """ number date elevation lat_long uuid """.split(),
     }
@@ -19,7 +19,7 @@ class Delete:
         nlp: Language,
         name: str,
         delete: list[str],
-    ):
+    ) -> None:
         super().__init__()
         self.nlp = nlp
         self.name = name

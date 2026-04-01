@@ -1,10 +1,10 @@
 import spacy
-from traiter.pylib.pipes import extensions
-from traiter.pylib.rules.date_ import Date
-from traiter.pylib.rules.elevation import Elevation
-from traiter.pylib.rules.lat_long import LatLong
-from traiter.pylib.rules.number import Number
-from traiter.pylib.rules.uuid import Uuid
+from traiter.pipes import extensions
+from traiter.rules.date_ import Date
+from traiter.rules.elevation import Elevation
+from traiter.rules.lat_long import LatLong
+from traiter.rules.number import Number
+from traiter.rules.uuid import Uuid
 
 from ranges.pylib import tokenizer
 from ranges.pylib.rules import delete

@@ -3,9 +3,9 @@ from dataclasses import dataclass
 from typing import Any
 
 from spacy import registry
+from traiter.pipes import add
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
 
 from ranges.pylib.rules.base import Base
 
@@ -48,7 +48,7 @@ class FemaleStateShorthand(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         add.trait_pipe(
             nlp,
             name="shorthand_female_states_patterns",
@@ -64,7 +64,6 @@ class FemaleStateShorthand(Base):
         return [
             Compiler(
                 label="shorthand_female_states",
-                keep="shorthand_female_states",
                 on_match="shorthand_female_states_match",
                 decoder=decoder,
                 patterns=[

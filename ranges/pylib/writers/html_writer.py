@@ -31,10 +31,10 @@ class HtmlWriterRow:
 
 
 class CssClasses:
-    def __init__(self):
+    def __init__(self) -> None:
         self.classes = {}
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> str:
         if key not in self.classes:
             self.classes[key] = next(BACKGROUNDS)
         return self.classes[key]
@@ -67,7 +67,7 @@ def write_template(
     html_file: Path,
     formatted: list[HtmlWriterRow],
     summary_field: str,
-):
+) -> None:
     species_count = summary_by_field(occurrences, summary_field)
     trait_count = summary_by_trait(occurrences)
 
@@ -85,11 +85,11 @@ def write_template(
         trait_count=trait_count,
     )
 
-    with html_file.open("w") as html_file:
-        html_file.write(template)
+    with html_file.open("w") as fh:
+        fh.write(template)
 
 
-def format_overwrite_field(occur: dict[str, Any], css_classes: CssClasses):
+def format_overwrite_field(occur: dict[str, Any], css_classes: CssClasses) -> dict:
     formatted_text = {}
     for name, raw_text in occur["overwrite_fields"].items():
         cls = css_classes[name]
@@ -110,7 +110,7 @@ def format_text(occur: dict[str, Any], css_classes: CssClasses) -> dict[str, str
 
 
 def format_text_fields(
-    raw_text: str, traits: list[dict[str, any]], css_classes: CssClasses
+    raw_text: str, traits: list[dict[str, Any]], css_classes: CssClasses
 ) -> str:
     """Wrap traits in the text with <spans> that can be formatted with CSS."""
     frags = defaultdict(lambda: {"raw": "", "cls": "", "title": []})
@@ -160,7 +160,7 @@ def summary_by_field(
     if not summary_field:
         return {}
 
-    counts = defaultdict(lambda: SummaryCounts())
+    counts = defaultdict(SummaryCounts)
 
     for occur in occurrences:
         name = occur["info_fields"].get(summary_field, "").strip()

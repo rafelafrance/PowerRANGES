@@ -4,10 +4,10 @@ from typing import Any, ClassVar
 
 from spacy import Language
 from spacy.tokens import Token
+from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
 
 from ranges.pylib.rules.base import Base
 
@@ -87,7 +87,7 @@ class BaseLength(Base):
         raise NotImplementedError
 
     @classmethod
-    def term_pipe(cls, nlp, delete_patterns: list[str] | str | None = None):
+    def term_pipe(cls, nlp, delete_patterns: list[str] | str | None = None) -> None:
         add.term_pipe(
             nlp,
             name=f"{cls.name}_length_terms",
@@ -96,7 +96,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def length_pipe(cls, nlp, *, allow_no_key=False, label=None):
+    def length_pipe(cls, nlp, *, allow_no_key=False, label=None) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_length_patterns",
@@ -105,7 +105,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def compound_length_pipe(cls, nlp, *, allow_no_key=False):
+    def compound_length_pipe(cls, nlp, *, allow_no_key=False) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_length_compound_patterns",
@@ -114,7 +114,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def range_length_pipe(cls, nlp, *, allow_no_key=False):
+    def range_length_pipe(cls, nlp, *, allow_no_key=False) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_range_patterns",
@@ -123,7 +123,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def bad_length_pipe(cls, nlp):
+    def bad_length_pipe(cls, nlp) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_bad_length_patterns",
@@ -132,7 +132,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def tic_pipe(cls, nlp, *, allow_no_key=False):
+    def tic_pipe(cls, nlp, *, allow_no_key=False) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_length_tic_patterns",
@@ -141,14 +141,14 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def cleanup_pipe(cls, nlp, delete: list[str] | None = None):
-        delete = delete if delete else []
+    def cleanup_pipe(cls, nlp, delete: list[str] | None = None) -> None:
+        delete = delete or []
         delete = ["bad_length", *delete]
         add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup", delete=delete)
 
     @classmethod
     def length_patterns(cls, *, allow_no_key=False, label=None):
-        label = label if label else f"{cls.name}_length"
+        label = label or f"{cls.name}_length"
         patterns = [
             ' key             "? : "? [ 99 ] mm* ] ',
             '      ambig :    "? : "? [ 99 ] mm+ ] ',
@@ -166,7 +166,6 @@ class BaseLength(Base):
         return [
             Compiler(
                 label=label,
-                keep=label,
                 on_match=f"{cls.name}_length_match",
                 decoder=DECODER,
                 patterns=patterns,
@@ -192,7 +191,6 @@ class BaseLength(Base):
         return [
             Compiler(
                 label=f"{cls.name}_length",
-                keep=f"{cls.name}_length",
                 on_match=f"{cls.name}_length_compound_match",
                 decoder=DECODER,
                 patterns=patterns,
@@ -217,7 +215,6 @@ class BaseLength(Base):
         return [
             Compiler(
                 label=f"{cls.name}_length",
-                keep=f"{cls.name}_length",
                 on_match=f"{cls.name}_length_range_match",
                 decoder=DECODER,
                 patterns=patterns,
@@ -242,7 +239,6 @@ class BaseLength(Base):
         return [
             Compiler(
                 label=f"{cls.name}_length",
-                keep=f"{cls.name}_length",
                 on_match=f"{cls.name}_length_tic_match",
                 decoder=DECODER | {'"': {"TEXT": {"IN": t_const.QUOTE}}},
                 patterns=patterns,
@@ -254,7 +250,6 @@ class BaseLength(Base):
         return [
             Compiler(
                 label="bad_length",
-                keep="bad_length",
                 on_match=f"{cls.name}_length_bad_match",
                 decoder=DECODER,
                 patterns=[

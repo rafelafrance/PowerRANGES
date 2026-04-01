@@ -4,12 +4,12 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import Language, registry
+from traiter.pipes import add
+from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
-from traiter.pylib.pipes.reject_match import RejectMatch
 
 from ranges.pylib.rules.base import Base
 
@@ -65,7 +65,7 @@ class Mammary(Base):
         return dwc
 
     @classmethod
-    def pipe(cls, nlp: Language):
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="mammary_terms", path=cls.csv)
 
         add.trait_pipe(
@@ -117,7 +117,6 @@ class Mammary(Base):
         return [
             Compiler(
                 label="mammary",
-                keep="mammary",
                 on_match="mammary_count_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -136,7 +135,6 @@ class Mammary(Base):
         return [
             Compiler(
                 label="mammary",
-                keep="mammary",
                 on_match="mammary_state_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -152,7 +150,6 @@ class Mammary(Base):
     def mammary_count_state_patterns(cls):
         return Compiler(
             label="mammary",
-            keep="mammary",
             on_match="mammary_count_state_match",
             decoder=cls.decoder,
             patterns=[
@@ -174,7 +171,7 @@ class Mammary(Base):
 
         if len(nums) == 1:
             count = nums[0]
-        elif len(nums) == 2:  # noqa: PLR2004
+        elif len(nums) == 2:
             count = sum(nums)
         else:
             count = nums[-1]

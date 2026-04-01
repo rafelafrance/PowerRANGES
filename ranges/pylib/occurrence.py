@@ -2,6 +2,7 @@ import csv
 import random
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from ranges.pylib.rules.base import Base
 from ranges.pylib.rules.sex import Sex
@@ -45,7 +46,7 @@ class Occurrence:
 
 
 def read_occurrences(
-    input_tsv: Path,
+    csv_file: Path,
     *,
     id_field: str,
     info_fields: list[str],
@@ -53,23 +54,33 @@ def read_occurrences(
     overwrite_fields: list[str],
 ) -> list[Occurrence]:
     csv.field_size_limit(10_000_000)
-    source = input_tsv.name
-    with input_tsv.open() as in_tsv:
-        reader = csv.DictReader(in_tsv, delimiter="\t")
-        rows = [
-            Occurrence(
+    source = csv_file.name
+    with csv_file.open() as in_csv:
+        reader = csv.DictReader(in_csv)
+        rows = []
+        for row in reader:
+            occur = Occurrence(
                 id_field=(id_field, row[id_field]),
                 source=source,
                 info_fields={k: row[k] for k in info_fields},
                 parse_fields={k: row[k] for k in parse_fields},
                 overwrite_fields={k: row[k] for k in overwrite_fields},
             )
-            for row in reader
-        ]
+            rows.append(occur)
+        # rows = [
+        #     Occurrence(
+        #         id_field=(id_field, row[id_field]),
+        #         source=source,
+        #         info_fields={k: row[k] for k in info_fields},
+        #         parse_fields={k: row[k] for k in parse_fields},
+        #         overwrite_fields={k: row[k] for k in overwrite_fields},
+        #     )
+        #     for row in reader
+        # ]
     return rows
 
 
-def parse_occurrences(occurrences: list[Occurrence], nlp):
+def parse_occurrences(occurrences: list[Occurrence], nlp: Any) -> None:
     for occur in occurrences:
         overwritten = set()
         for overwrite_field, text in occur.overwrite_fields.items():
@@ -95,7 +106,9 @@ def parse_occurrences(occurrences: list[Occurrence], nlp):
                 ]
 
 
-def sample_occurrences(occurrences, sample_size, sample_method, seed=93113):
+def sample_occurrences(
+    occurrences: list, sample_size: int, sample_method: str, seed: int = 93113
+) -> list:
     # Only get occurrences with data
     if sample_method == "fields":
         sampled = [o for o in occurrences if any(v for v in o["parse_fields"].values())]

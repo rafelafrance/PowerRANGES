@@ -6,22 +6,22 @@ from ranges.pylib import occurrence, pipeline
 
 
 def process_occurrences(
-    tsv_file: Path,
+    csv_file: Path,
     json_dir: Path,
     id_field: str,
-    info_fields=None,
-    parse_fields=None,
-    overwrite_fields=None,
+    info_fields: list[str] | None = None,
+    parse_fields: list[str] | None = None,
+    overwrite_fields: list[str] | None = None,
     *,
     debug: bool = False,
 ) -> str:
-    info_fields = info_fields if info_fields else []
-    parse_fields = parse_fields if parse_fields else []
-    overwrite_fields = overwrite_fields if overwrite_fields else []
+    info_fields = info_fields or []
+    parse_fields = parse_fields or []
+    overwrite_fields = overwrite_fields or []
 
     try:
         occurrences = occurrence.read_occurrences(
-            tsv_file,
+            csv_file,
             id_field=id_field,
             info_fields=info_fields,
             parse_fields=parse_fields,
@@ -31,7 +31,7 @@ def process_occurrences(
         nlp = pipeline.build()
         occurrence.parse_occurrences(occurrences, nlp)
 
-        json_file = json_dir / f"{tsv_file.stem}.jsonl"
+        json_file = json_dir / f"{csv_file.stem}.jsonl"
         with json_file.open("w") as out:
             for occur in occurrences:
                 as_dict = occur.as_dict()
@@ -41,6 +41,6 @@ def process_occurrences(
     except:  # noqa: E722
         if debug:
             print(traceback.format_exc())
-        return tsv_file.stem
+        return csv_file.stem
 
     return ""

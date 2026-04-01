@@ -4,12 +4,12 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import registry
+from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base import Base
 
@@ -45,7 +45,7 @@ class LifeStage(Base):
         return dwc.add(lifeStage=self.life_stage)
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         add.term_pipe(nlp, name="life_stage_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -90,7 +90,6 @@ class LifeStage(Base):
     def life_stage_patterns(cls):
         return Compiler(
             label="life_stage",
-            keep="life_stage",
             on_match="life_stage_match",
             decoder={
                 "99": {"ENT_TYPE": "number", "OP": "+"},
@@ -129,7 +128,9 @@ class LifeStage(Base):
         life_stage = cls.eq_re.sub("", life_stage)
         life_stage = cls.dash_re.sub(r"\1", life_stage)
         life_stage = re.sub(r"\s\.$", ".", life_stage)
-        life_stage = re.sub(r"(\d)\s(th|st|nd|rd)", r"\1\2", life_stage, flags=re.I)
+        life_stage = re.sub(
+            r"(\d)\s(th|st|nd|rd)", r"\1\2", life_stage, flags=re.IGNORECASE
+        )
         life_stage = cls.replace.get(life_stage, life_stage)
         return cls.from_ent(ent, life_stage=life_stage)
 

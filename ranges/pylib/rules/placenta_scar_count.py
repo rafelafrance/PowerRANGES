@@ -4,10 +4,10 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import Language, registry
+from traiter.pipes import add, reject_match
 from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add, reject_match
 
 from ranges.pylib.rules.base import Base
 
@@ -110,7 +110,7 @@ class PlacentalScarCount(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language):
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="placental_scar_terms", path=cls.csv)
 
         add.trait_pipe(
@@ -186,7 +186,6 @@ class PlacentalScarCount(Base):
         return [
             Compiler(
                 label="placental_scar_count",
-                keep="placental_scar_count",
                 on_match="placental_scar_total_at_0_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -201,7 +200,6 @@ class PlacentalScarCount(Base):
         return [
             Compiler(
                 label="placental_scar_count",
-                keep="placental_scar_count",
                 on_match="placental_scar_total_at_2_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -216,7 +214,6 @@ class PlacentalScarCount(Base):
         return [
             Compiler(
                 label="placental_scar_count",
-                keep="placental_scar_count",
                 on_match="placental_scar_total_missing_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -242,7 +239,6 @@ class PlacentalScarCount(Base):
         return [
             Compiler(
                 label="placental_scar_count",
-                keep="placental_scar_count",
                 on_match="placental_scar_present_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -256,7 +252,6 @@ class PlacentalScarCount(Base):
         return [
             Compiler(
                 label="placental_scar_count",
-                keep="placental_scar_count",
                 on_match="placental_scar_absent_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -271,7 +266,6 @@ class PlacentalScarCount(Base):
         return [
             Compiler(
                 label="placental_scar_count",
-                keep="placental_scar_count",
                 on_match="placental_scar_total_only_match",
                 decoder=cls.decoder,
                 patterns=[

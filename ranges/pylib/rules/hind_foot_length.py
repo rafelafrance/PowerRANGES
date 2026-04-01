@@ -6,7 +6,7 @@ from typing import Any, ClassVar
 from spacy import registry
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import BaseLength
 
@@ -62,7 +62,7 @@ class HindFootLength(BaseLength):
         return dwc
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         cls.term_pipe(nlp)
         cls.range_length_pipe(nlp)
         cls.tic_pipe(nlp)
@@ -70,7 +70,7 @@ class HindFootLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def get_includes(cls, ent, trait):
+    def get_includes(cls, ent, trait) -> None:
         keys = [e for e in ent.ents if e.label_ in cls.keys]
         for key in keys:
             if value := cls.includes_keys.get(key.text.lower()):

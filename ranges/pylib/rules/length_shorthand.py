@@ -24,13 +24,13 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import Language, registry
+from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib import util as t_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base import Base
 
@@ -174,7 +174,7 @@ class LengthShorthand(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language, _overwrite: list[str] | None = None):
+    def pipe(cls, nlp: Language, _overwrite: list[str] | None = None) -> None:
         add.term_pipe(nlp, name="shorthand_length_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -265,7 +265,6 @@ class LengthShorthand(Base):
         return [
             Compiler(
                 label="shorthand",
-                keep="shorthand",
                 on_match="shorthand_match",
                 decoder=decoder,
                 patterns=[
@@ -295,7 +294,6 @@ class LengthShorthand(Base):
         return [
             Compiler(
                 label="shorthand",
-                keep="shorthand",
                 on_match="shorthand_match",
                 decoder=decoder,
                 patterns=[

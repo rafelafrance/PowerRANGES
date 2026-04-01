@@ -3,10 +3,10 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import registry
+from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
 
 from ranges.pylib.rules.base import Base
 
@@ -34,7 +34,7 @@ class LactationState(Base):
         return dwc.add_dyn(lactationState=self.state)
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         add.term_pipe(nlp, name="lactation_state_terms", path=cls.csvs)
         add.trait_pipe(
             nlp,
@@ -55,7 +55,6 @@ class LactationState(Base):
         return [
             Compiler(
                 label="lactation_state",
-                keep="lactation_state",
                 on_match="lactating_match",
                 decoder=decoder,
                 patterns=[
@@ -64,7 +63,6 @@ class LactationState(Base):
             ),
             Compiler(
                 label="not_lactating_state",
-                keep="not_lactating_state",
                 on_match="not_lactating_match",
                 decoder=decoder,
                 patterns=[

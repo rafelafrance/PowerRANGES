@@ -3,14 +3,14 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import registry
+from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
-from traiter.pylib.pipes.reject_match import RejectMatch
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import BaseLength
 
-# from traiter.pylib.pipes import add
+# from traiter.pipes import add
 
 
 @dataclass(eq=False)
@@ -65,7 +65,7 @@ class EarLength(BaseLength):
         return dwc
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         cls.term_pipe(nlp)
         cls.bad_length_pipe(nlp)
         cls.range_length_pipe(nlp)
@@ -76,12 +76,12 @@ class EarLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def check_ambiguous_key(cls, trait):
+    def check_ambiguous_key(cls, trait) -> None:
         if trait.ambiguous and trait.units_inferred:
             raise RejectMatch
 
     @classmethod
-    def get_measured_from(cls, ent, trait):
+    def get_measured_from(cls, ent, trait) -> None:
         keys = [e for e in ent.ents if e.label_ in cls.keys]
         for key in keys:
             if value := cls.measured_keys.get(key.text.lower()):

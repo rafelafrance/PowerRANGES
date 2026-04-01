@@ -35,11 +35,11 @@ def write_csv(
     csv_file: Path,
     occurrences: list[dict[str, Any]],
     id_field: str,
-    info_fields=None,
-    parse_fields=None,
+    info_fields: list[str] | None = None,
+    parse_fields: list[str] | None = None,
 ) -> None:
-    info_fields = info_fields if info_fields else []
-    parse_fields = parse_fields if parse_fields else []
+    info_fields = info_fields or []
+    parse_fields = parse_fields or []
 
     data = []
     trait_cols = set()
@@ -112,7 +112,9 @@ def filter_traits(name: str, traits: list[dict], max_traits: int) -> list[dict]:
     return [p.trait for i, p in enumerate(players) if winners[i]]
 
 
-def choose_looser(i, j, players, winners):
+def choose_looser(
+    i: int, j: int, players: list[Contestant], winners: list[bool]
+) -> None:
     len1 = len([k for k in players[i].trait if not k.startswith("_")])
     len2 = len([k for k in players[j].trait if not k.startswith("_")])
     if len2 > len1:

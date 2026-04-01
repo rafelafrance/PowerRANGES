@@ -12,12 +12,12 @@ from typing import Any, ClassVar
 
 from spacy import Language, registry
 from spacy.tokens import Token
+from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base import Base
 
@@ -177,7 +177,7 @@ class Ovary(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language, _overwrite: list[str] | None = None):
+    def pipe(cls, nlp: Language, _overwrite: list[str] | None = None) -> None:
         add.term_pipe(nlp, name="ovary_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -255,7 +255,6 @@ class Ovary(Base):
         return [
             Compiler(
                 label="ovary",
-                keep="ovary",
                 on_match="ovary_state_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -276,7 +275,6 @@ class Ovary(Base):
         return [
             Compiler(
                 label="ovary",
-                keep="ovary",
                 on_match="ovary_size_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -299,7 +297,6 @@ class Ovary(Base):
         return [
             Compiler(
                 label="ovary",
-                keep="ovary",
                 on_match="ovary_keyed_size_match",
                 decoder=cls.decoder,
                 patterns=[

@@ -11,12 +11,12 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import Language, registry
+from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import SEP, BaseLength
 
@@ -151,7 +151,7 @@ class Embryo(BaseLength):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language):
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="embryo_terms", path=cls.csvs, delete_patterns="in")
 
         cls.bad_embryo_pipe(nlp)
@@ -170,7 +170,7 @@ class Embryo(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def bad_embryo_pipe(cls, nlp):
+    def bad_embryo_pipe(cls, nlp) -> None:
         add.trait_pipe(
             nlp,
             name="bad_embryo_patterns",
@@ -179,7 +179,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_count_pipe(cls, nlp):
+    def embryo_count_pipe(cls, nlp) -> None:
         add.trait_pipe(
             nlp,
             name="embryo_count_patterns",
@@ -188,7 +188,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_present_pipe(cls, nlp):
+    def embryo_present_pipe(cls, nlp) -> None:
         add.trait_pipe(
             nlp,
             name="embryo_present_patterns",
@@ -197,7 +197,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_0_pipe(cls, nlp):
+    def embryo_mix_0_pipe(cls, nlp) -> None:
         """Length is at index 1."""
         add.trait_pipe(
             nlp,
@@ -207,7 +207,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_1_pipe(cls, nlp):
+    def embryo_mix_1_pipe(cls, nlp) -> None:
         """Length is at index 1."""
         add.trait_pipe(
             nlp,
@@ -217,7 +217,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_1_2_pipe(cls, nlp):
+    def embryo_mix_1_2_pipe(cls, nlp) -> None:
         """Length is at index 1."""
         add.trait_pipe(
             nlp,
@@ -227,7 +227,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_2_pipe(cls, nlp):
+    def embryo_mix_2_pipe(cls, nlp) -> None:
         """Length is at index 2."""
         add.trait_pipe(
             nlp,
@@ -237,7 +237,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_2_3_pipe(cls, nlp):
+    def embryo_mix_2_3_pipe(cls, nlp) -> None:
         """Length is at index 2."""
         add.trait_pipe(
             nlp,
@@ -247,7 +247,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_3_pipe(cls, nlp):
+    def embryo_mix_3_pipe(cls, nlp) -> None:
         """Length is at index 3."""
         add.trait_pipe(
             nlp,
@@ -257,7 +257,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_width_pipe(cls, nlp):
+    def embryo_width_pipe(cls, nlp) -> None:
         add.trait_pipe(
             nlp,
             name="embryo_width_patterns",
@@ -283,7 +283,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_count_match",
                 decoder=DECODER,
                 patterns=[
@@ -311,7 +310,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_present_match",
                 decoder=DECODER,
                 patterns=[
@@ -328,7 +326,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_mix_0_match",
                 decoder=DECODER,
                 patterns=[
@@ -344,7 +341,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_mix_1_match",
                 decoder=DECODER,
                 patterns=[
@@ -372,7 +368,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_mix_1_2_match",
                 decoder=DECODER,
                 patterns=[
@@ -392,7 +387,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_mix_2_match",
                 decoder=DECODER,
                 patterns=[
@@ -411,7 +405,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_mix_2_3_match",
                 decoder=DECODER,
                 patterns=[
@@ -427,7 +420,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_mix_3_match",
                 decoder=DECODER,
                 patterns=[
@@ -445,7 +437,6 @@ class Embryo(BaseLength):
         return [
             Compiler(
                 label="embryo",
-                keep="embryo",
                 on_match="embryo_width_match",
                 decoder=DECODER,
                 patterns=[
@@ -455,7 +446,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def add_sides(cls, data, counts, sides):
+    def add_sides(cls, data, counts, sides) -> None:
         for count, side in zip(counts, sides, strict=False):
             if side == "both":
                 data["left"] = count

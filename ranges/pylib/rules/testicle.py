@@ -5,13 +5,13 @@ from typing import Any, ClassVar
 
 from spacy import registry
 from spacy.tokens import Token
+from traiter.pipes import add
+from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
-from traiter.pylib.pipes.reject_match import RejectMatch
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base import Base
 
@@ -123,7 +123,7 @@ class Testicle(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         add.term_pipe(nlp, name="testicle_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -226,7 +226,6 @@ class Testicle(Base):
         return [
             Compiler(
                 label="testicle",
-                keep="testicle",
                 on_match="testicle_state_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -244,7 +243,6 @@ class Testicle(Base):
         return [
             Compiler(
                 label="testicle",
-                keep="testicle",
                 on_match="testicle_size_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -272,7 +270,6 @@ class Testicle(Base):
         return [
             Compiler(
                 label="testicle",
-                keep="testicle",
                 on_match="testicle_double_match",
                 decoder=cls.decoder,
                 patterns=[

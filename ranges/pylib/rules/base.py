@@ -3,7 +3,7 @@ from typing import Any
 
 from spacy.language import Language
 from traiter.pylib.darwin_core import DarwinCore
-from traiter.pylib.rules.base import Base as TraiterBase
+from traiter.rules.base_rule import BaseRule as TraiterBase
 
 
 @dataclass(eq=False)

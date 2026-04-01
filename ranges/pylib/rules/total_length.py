@@ -4,11 +4,11 @@ from typing import Any, ClassVar
 
 from spacy import registry
 from traiter.pylib import term_util
-from traiter.pylib.rules import terms as t_terms
+from traiter.rules import terms as t_terms
 
 from ranges.pylib.rules.base_length import BaseLength
 
-# from traiter.pylib.pipes import add
+# from traiter.pipes import add
 
 
 @dataclass(eq=False)
@@ -44,7 +44,7 @@ class TotalLength(BaseLength):
         return value
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         cls.term_pipe(nlp, delete_patterns="in")
         cls.bad_length_pipe(nlp)
         cls.compound_length_pipe(nlp, allow_no_key=True)

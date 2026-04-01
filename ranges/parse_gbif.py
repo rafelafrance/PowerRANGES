@@ -6,19 +6,19 @@ import multiprocessing
 import os
 import tempfile
 import textwrap
+from collections.abc import Generator
 from contextlib import contextmanager
 from glob import glob
 from pathlib import Path
 
+from pylib import log
 from pylib.occurrence import sample_occurrences
 from pylib.writers import csv_writer, html_writer, json_writer
 from tqdm import tqdm
-from util.pylib import log
 
 
-def main():  # noqa: C901
+def main(args: argparse.Namespace) -> None:  # noqa: C901
     log.started()
-    args = parse_args()
 
     if args.json_dir:
         args.json_dir.mkdir(parents=True, exist_ok=True)
@@ -113,10 +113,10 @@ def main():  # noqa: C901
     log.finished()
 
 
-def single_process(args, json_dir):
-    for tsv in tqdm(args.tsv_file):
+def single_process(args: argparse.Namespace, json_dir: Path) -> None:
+    for csv_file in tqdm(args.csv_in):
         json_writer.process_occurrences(
-            tsv,
+            csv_file,
             json_dir,
             args.id_field,
             args.info_field,
@@ -125,25 +125,27 @@ def single_process(args, json_dir):
         )
 
 
-def multiple_processes(args, json_dir):
-    with tqdm(total=len(args.tsv_file)) as bar:
-        with multiprocessing.Pool(processes=args.cpus) as pool:
-            results = [
-                pool.apply_async(
-                    json_writer.process_occurrences,
-                    args=(
-                        tsv,
-                        json_dir,
-                        args.id_field,
-                        args.info_field,
-                        args.parse_field,
-                        args.overwrite_field,
-                    ),
-                    callback=lambda _: bar.update(1),
-                )
-                for tsv in args.tsv_file
-            ]
-            fails = ", ".join([val for r in results if (val := r.get())])
+def multiple_processes(args: argparse.Namespace, json_dir: Path) -> None:
+    with (
+        tqdm(total=len(args.csv_in)) as bar,
+        multiprocessing.Pool(processes=args.cpus) as pool,
+    ):
+        results = [
+            pool.apply_async(
+                json_writer.process_occurrences,
+                args=(
+                    csv_file,
+                    json_dir,
+                    args.id_field,
+                    args.info_field,
+                    args.parse_field,
+                    args.overwrite_field,
+                ),
+                callback=lambda _: bar.update(1),
+            )
+            for csv_file in args.csv_in
+        ]
+        fails = ", ".join([val for r in results if (val := r.get())])
 
     if fails:
         msg = f"The following extractions did not work: {fails}"
@@ -154,8 +156,8 @@ def multiple_processes(args, json_dir):
 
 
 @contextmanager
-def get_json_dir(json_dir=None):
-    dir_ = json_dir if json_dir else tempfile.mkdtemp()
+def get_json_dir(json_dir: Path | None = None) -> Generator[Path]:
+    dir_ = json_dir or Path(tempfile.mkdtemp())
     try:
         yield dir_
     finally:
@@ -164,20 +166,18 @@ def get_json_dir(json_dir=None):
 
 def parse_args() -> argparse.Namespace:
     arg_parser = argparse.ArgumentParser(
-        fromfile_prefix_chars="@",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
         description=textwrap.dedent(
             """Extract information about vertebrates from GBIF TSV data dumps.""",
         ),
     )
 
     arg_parser.add_argument(
-        "--tsv-file",
+        "--csv-in",
         type=Path,
         action="append",
         required=True,
         metavar="PATH",
-        help="""Get input this TSV. Wild cards must be quoted""",
+        help="""Input this CSV. Wild cards must be quoted""",
     )
 
     arg_parser.add_argument(
@@ -287,7 +287,8 @@ def parse_args() -> argparse.Namespace:
     )
 
     keep = 4
-    cpus = min(10, os.cpu_count() - keep if os.cpu_count() > keep else 1)
+    count = os.cpu_count() or 0
+    cpus = min(10, count - keep if count > keep else 1)
     arg_parser.add_argument(
         "--cpus",
         type=int,
@@ -317,13 +318,14 @@ def parse_args() -> argparse.Namespace:
     if args.summary_field and args.summary_field not in args.info_field:
         args.info_field.append(args.summary_field)
 
-    tsv_file = []
-    for tsv in args.tsv_file:
-        tsv_file += glob(str(tsv))  # noqa: PTH207
-    args.tsv_file = [Path(f) for f in sorted(tsv_file)]
+    csv_in = []
+    for csv_file in args.csv_in:
+        csv_in += glob(str(csv_file))  # noqa: PTH207
+    args.csv_in = [Path(f) for f in sorted(csv_in)]
 
     return args
 
 
 if __name__ == "__main__":
-    main()
+    ARGS = parse_args()
+    main(ARGS)

@@ -5,11 +5,11 @@ import logging
 import textwrap
 from pathlib import Path
 
+from pylib import log
 from pylib.writers import summary_writer
-from util.pylib import log
 
 
-def main():
+def main() -> None:
     log.started()
     args = parse_args()
 

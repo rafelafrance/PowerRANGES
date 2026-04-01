@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import registry
+from traiter.pipes import add
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
-from traiter.pylib.pipes import add
 
 from ranges.pylib.rules.base import Base
 
@@ -33,7 +33,7 @@ class VaginaState(Base):
         return dwc.add_dyn(vaginaState=self.state)
 
     @classmethod
-    def pipe(cls, nlp):
+    def pipe(cls, nlp) -> None:
         add.term_pipe(nlp, name="vagina_state_terms", path=cls.csvs)
         # add.debug_tokens(nlp)  # ############################################
         add.trait_pipe(
@@ -54,7 +54,6 @@ class VaginaState(Base):
         return [
             Compiler(
                 label="vagina_state",
-                keep="vagina_state",
                 on_match="vagina_state_match",
                 decoder=decoder,
                 patterns=[

@@ -1,4 +1,4 @@
-def clear_tokens(ent):
+def clear_tokens(ent) -> None:
     """Clear tokens in an entity."""
     for token in ent:
         token._.trait = None

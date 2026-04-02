@@ -8,7 +8,7 @@ from spacy.util import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
-from ranges.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength, DictFunc
 
 
 @dataclass(eq=False)
@@ -38,7 +38,7 @@ class ForearmLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = {"forearm_length": {"forearm_length_mm": self.length}}
+        value: dict[str, Any] = {"forearm_length": {"forearm_length_mm": self.length}}
         value["forearm_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
@@ -52,17 +52,22 @@ class ForearmLength(BaseLength):
 
         return value
 
+    @classmethod
+    def upcast(cls, ent: Span, dict_func: DictFunc) -> "ForearmLength":
+        base = cls.class_dict(ent, dict_func)
+        return cls(**base)
+
 
 @registry.misc("forearm_length_match")
 def forearm_length_match(ent: Span) -> ForearmLength:
-    return ForearmLength.length_match(ent)
+    return ForearmLength.upcast(ent, DictFunc.LENGTH)
 
 
 @registry.misc("forearm_length_range_match")
 def forearm_length_range_match(ent: Span) -> ForearmLength:
-    return ForearmLength.range_match(ent)
+    return ForearmLength.upcast(ent, DictFunc.RANGE)
 
 
 @registry.misc("forearm_length_tic_match")
 def forearm_length_tic_match(ent: Span) -> ForearmLength:
-    return ForearmLength.tic_match(ent)
+    return ForearmLength.upcast(ent, DictFunc.TIC)

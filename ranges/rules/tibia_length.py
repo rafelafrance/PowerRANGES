@@ -8,7 +8,7 @@ from spacy.util import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
-from ranges.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength, DictFunc
 
 
 @dataclass(eq=False)
@@ -30,7 +30,7 @@ class TibiaLength(BaseLength):
     # ---------------------
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = {"tibia_length": {"tibia_length_mm": self.length}}
+        value: dict[str, Any] = {"tibia_length": {"tibia_length_mm": self.length}}
         value["tibia_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
@@ -52,17 +52,22 @@ class TibiaLength(BaseLength):
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 
+    @classmethod
+    def upcast(cls, ent: Span, dict_func: DictFunc) -> "TibiaLength":
+        base = cls.class_dict(ent, dict_func)
+        return cls(**base)
+
 
 @registry.misc("tibia_length_match")
 def tibia_length_match(ent: Span) -> TibiaLength:
-    return TibiaLength.length_match(ent)
+    return TibiaLength.upcast(ent, DictFunc.LENGTH)
 
 
 @registry.misc("tibia_length_range_match")
 def tibia_length_range_match(ent: Span) -> TibiaLength:
-    return TibiaLength.range_match(ent)
+    return TibiaLength.upcast(ent, DictFunc.RANGE)
 
 
 @registry.misc("tibia_length_tic_match")
 def tibia_length_tic_match(ent: Span) -> TibiaLength:
-    return TibiaLength.tic_match(ent)
+    return TibiaLength.upcast(ent, DictFunc.TIC)

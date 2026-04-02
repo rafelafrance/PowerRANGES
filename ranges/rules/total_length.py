@@ -8,7 +8,7 @@ from spacy.util import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
-from ranges.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength, DictFunc
 
 # from traiter.pipes import add
 
@@ -31,7 +31,7 @@ class TotalLength(BaseLength):
     # ---------------------
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = {"total_length": {"total_length_mm": self.length}}
+        value: dict[str, Any] = {"total_length": {"total_length_mm": self.length}}
         value["total_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
@@ -56,27 +56,32 @@ class TotalLength(BaseLength):
         # add.debug_tokens(nlp)  # ###########################################
         cls.cleanup_pipe(nlp)
 
+    @classmethod
+    def upcast(cls, ent: Span, dict_func: DictFunc) -> "TotalLength":
+        base = cls.class_dict(ent, dict_func)
+        return cls(**base)
+
 
 @registry.misc("total_length_match")
 def total_length_match(ent: Span) -> TotalLength:
-    return TotalLength.length_match(ent)
+    return TotalLength.upcast(ent, DictFunc.LENGTH)
 
 
 @registry.misc("total_length_compound_match")
 def total_length_compound_match(ent: Span) -> TotalLength:
-    return TotalLength.compound_match(ent)
+    return TotalLength.upcast(ent, DictFunc.COMPUND)
 
 
 @registry.misc("total_length_tic_match")
 def total_length_tic_match(ent: Span) -> TotalLength:
-    return TotalLength.tic_match(ent)
+    return TotalLength.upcast(ent, DictFunc.TIC)
 
 
 @registry.misc("total_length_range_match")
 def total_length_range_match(ent: Span) -> TotalLength:
-    return TotalLength.range_match(ent)
+    return TotalLength.upcast(ent, DictFunc.RANGE)
 
 
 @registry.misc("total_length_bad_match")
-def total_length_bad_match(ent: Span) -> TotalLength:
+def total_length_bad_match(ent: Span) -> BaseLength:
     return TotalLength.bad_match(ent)

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum, auto
 from pathlib import Path
 from typing import Any, ClassVar
 
@@ -10,6 +11,14 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
 from ranges.rules.base import Base
+
+
+class DictFunc(Enum):
+    LENGTH = auto()
+    COMPUND = auto()
+    RANGE = auto()
+    TIC = auto()
+
 
 SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ + t_const.SLASH
 SEP += [r"&", r"!", r"+", r"~"]
@@ -297,7 +306,7 @@ class BaseLength(Base):
         return ambiguous, prefix
 
     @classmethod
-    def length_match(cls, ent: Span) -> "BaseLength":
+    def length_match(cls, ent: Span) -> dict:
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
@@ -308,17 +317,16 @@ class BaseLength(Base):
         number = next(e for e in ent.ents if e.label_ == "number")
         length = cls.in_millimeters(number, units)
 
-        return cls.from_ent(
-            ent,
-            length=length,
-            _prefix=prefix,
-            ambiguous=ambiguous,
-            estimated=estimated,
-            units_inferred=units_inferred,
-        )
+        return {
+            "length": length,
+            "_prefix": prefix,
+            "ambiguous": ambiguous,
+            "estimated": estimated,
+            "units_inferred": units_inferred,
+        }
 
     @classmethod
-    def compound_match(cls, ent: Span) -> "BaseLength":
+    def compound_match(cls, ent: Span) -> dict[str, Any]:
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         numbers = [e for e in ent.ents if e.label_ == "number"]
@@ -338,10 +346,10 @@ class BaseLength(Base):
                 round(length + cls.in_millimeters(numbers[2], units[1]), 2),
             ]
 
-        return cls.from_ent(ent, length=length, ambiguous=ambiguous, _prefix=prefix)
+        return {"length": length, "ambiguous": ambiguous, "_prefix": prefix}
 
     @classmethod
-    def range_match(cls, ent: Span) -> "BaseLength":
+    def range_match(cls, ent: Span) -> dict[str, Any]:
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
@@ -354,16 +362,27 @@ class BaseLength(Base):
             cls.in_millimeters(numbers[1], units),
         ]
 
-        return cls.from_ent(
-            ent,
-            length=length,
-            _prefix=prefix,
-            ambiguous=ambiguous,
-            units_inferred=units_inferred,
-        )
+        return {
+            "length": length,
+            "_prefix": prefix,
+            "ambiguous": ambiguous,
+            "units_inferred": units_inferred,
+        }
 
     @classmethod
-    def tic_match(cls, ent: Span) -> "BaseLength":
+    def class_dict(cls, ent: Span, dict_func: DictFunc) -> dict[str, Any]:
+        match dict_func:
+            case DictFunc.LENGTH:
+                return cls.length_match(ent)
+            case DictFunc.COMPUND:
+                return cls.compound_match(ent)
+            case DictFunc.RANGE:
+                return cls.range_match(ent)
+            case DictFunc.TIC:
+                return cls.tic_match(ent)
+
+    @classmethod
+    def tic_match(cls, ent: Span) -> dict[str, Any]:
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         number = next(e for e in ent.ents if e.label_ == "number")

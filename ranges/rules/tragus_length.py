@@ -8,7 +8,7 @@ from spacy.util import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
-from ranges.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength, DictFunc
 
 
 @dataclass(eq=False)
@@ -30,7 +30,7 @@ class TragusLength(BaseLength):
     # ---------------------
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = {"tragus_length": {"tragus_length_mm": self.length}}
+        value: dict[str, Any] = {"tragus_length": {"tragus_length_mm": self.length}}
         value["tragus_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
@@ -52,17 +52,22 @@ class TragusLength(BaseLength):
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 
+    @classmethod
+    def upcast(cls, ent: Span, dict_func: DictFunc) -> "TragusLength":
+        base = cls.class_dict(ent, dict_func)
+        return cls(**base)
+
 
 @registry.misc("tragus_length_match")
 def tragus_length_match(ent: Span) -> TragusLength:
-    return TragusLength.length_match(ent)
+    return TragusLength.upcast(ent, DictFunc.LENGTH)
 
 
 @registry.misc("tragus_length_range_match")
 def tragus_length_range_match(ent: Span) -> TragusLength:
-    return TragusLength.range_match(ent)
+    return TragusLength.upcast(ent, DictFunc.RANGE)
 
 
 @registry.misc("tragus_length_tic_match")
 def tragus_length_tic_match(ent: Span) -> TragusLength:
-    return TragusLength.tic_match(ent)
+    return TragusLength.upcast(ent, DictFunc.TIC)

@@ -27,6 +27,7 @@ from spacy.language import Language
 from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes import add
+from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib import util as t_util
@@ -215,15 +216,13 @@ class LengthShorthand(Base):
 
     @classmethod
     def missing_patterns(cls) -> list[Compiler]:
-        decoder = {
-            "missing": {"LOWER": {"REGEX": r"^(x|\?){1,2}$"}},
-        }
-
         return [
             Compiler(
                 label="missing",
                 on_match="cell_match",
-                decoder=decoder,
+                decoder={
+                    "missing": {"LOWER": {"REGEX": r"^(x|\?){1,2}$"}},
+                },
                 patterns=[
                     " missing ",
                 ],
@@ -381,6 +380,8 @@ class LengthShorthand(Base):
 
     @classmethod
     def cell_match(cls, ent: Span) -> "LengthShorthand":
+        if ent.label_ == "missing":
+            raise RejectMatch
         return cls.from_ent(ent)
 
 

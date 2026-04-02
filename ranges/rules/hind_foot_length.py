@@ -10,7 +10,7 @@ from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.rules import terms as t_terms
 
-from ranges.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength, DictFunc
 
 
 @dataclass(eq=False)
@@ -33,7 +33,7 @@ class HindFootLength(BaseLength):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    includes: str = None
+    includes: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
@@ -80,21 +80,26 @@ class HindFootLength(BaseLength):
 
     @classmethod
     def hind_foot_length_match(cls, ent: Span) -> "HindFootLength":
-        trait = cls.length_match(ent)
+        trait = cls.upcast(ent, DictFunc.LENGTH)
         cls.get_includes(ent, trait)
         return trait
 
     @classmethod
     def hind_foot_length_range_match(cls, ent: Span) -> "HindFootLength":
-        trait = cls.range_match(ent)
+        trait = cls.upcast(ent, DictFunc.RANGE)
         cls.get_includes(ent, trait)
         return trait
 
     @classmethod
     def hind_foot_length_tic_match(cls, ent: Span) -> "HindFootLength":
-        trait = cls.tic_match(ent)
+        trait = cls.upcast(ent, DictFunc.TIC)
         cls.get_includes(ent, trait)
         return trait
+
+    @classmethod
+    def upcast(cls, ent: Span, dict_func: DictFunc) -> "HindFootLength":
+        base = cls.class_dict(ent, dict_func)
+        return cls(**base)
 
 
 @registry.misc("hind_foot_length_match")

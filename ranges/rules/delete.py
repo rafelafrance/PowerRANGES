@@ -7,7 +7,15 @@ from ranges.pylib import trait_util as tu
 
 def pipe(nlp: Language) -> None:
     config = {
-        "delete": ["number", "date", "elevation", "lat_long", "uuid"],
+        "delete": [
+            "number",
+            "date",
+            "elevation",
+            "lat_long",
+            "uuid",
+            "not_body_mass",
+            "bad_embryo",
+        ],
     }
     add.custom_pipe(nlp, "delete", config=config)
 

@@ -9,7 +9,7 @@ from spacy.util import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
-from ranges.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength, DictFunc
 
 
 @dataclass(eq=False)
@@ -56,22 +56,27 @@ class TailLength(BaseLength):
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 
+    @classmethod
+    def upcast(cls, ent: Span, dict_func: DictFunc) -> "TailLength":
+        base = cls.class_dict(ent, dict_func)
+        return cls(**base)
+
 
 @registry.misc("tail_length_match")
 def tail_length_match(ent: Span) -> TailLength:
-    return TailLength.length_match(ent)
+    return TailLength.upcast(ent, DictFunc.LENGTH)
 
 
 @registry.misc("tail_length_range_match")
 def tail_length_range_match(ent: Span) -> TailLength:
-    return TailLength.range_match(ent)
+    return TailLength.upcast(ent, DictFunc.RANGE)
 
 
 @registry.misc("tail_length_tic_match")
 def tail_length_tic_match(ent: Span) -> TailLength:
-    return TailLength.tic_match(ent)
+    return TailLength.upcast(ent, DictFunc.TIC)
 
 
 @registry.misc("tail_length_bad_match")
-def tail_length_bad_match(ent: Span) -> TailLength:
+def tail_length_bad_match(ent: Span) -> BaseLength:
     return TailLength.bad_match(ent)

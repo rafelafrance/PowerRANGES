@@ -8,8 +8,7 @@ from traiter.rules.number import Number
 from traiter.rules.uuid import Uuid
 
 from ranges.pylib import tokenizer
-
-# from ranges.rules import delete
+from ranges.rules import delete
 from ranges.rules.body_mass import BodyMass
 from ranges.rules.ear_length import EarLength
 from ranges.rules.embryo import Embryo
@@ -46,10 +45,10 @@ def build() -> Language:
 
     Number.pipe(nlp)
 
+    BodyMass.pipe(nlp)
+
     LengthShorthand.pipe(nlp)
     Number.pipe(nlp)
-
-    BodyMass.pipe(nlp)
 
     PlacentalScarCount.pipe(nlp)
     Number.pipe(nlp)
@@ -87,6 +86,6 @@ def build() -> Language:
     LifeStage.pipe(nlp)
     Sex.pipe(nlp)
 
-    # delete.pipe(nlp)
+    delete.pipe(nlp)
 
     return nlp

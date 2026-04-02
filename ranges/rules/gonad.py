@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language, registry
-from spacy.tokens import Token
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
@@ -75,7 +76,7 @@ class Gonad(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 
         if self.description is not None:
@@ -114,7 +115,7 @@ class Gonad(Base):
         add.cleanup_pipe(nlp, name="gonad_cleanup")
 
     @classmethod
-    def gonad_numbered_size_patterns(cls):
+    def gonad_numbered_size_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="gonad",
@@ -127,7 +128,7 @@ class Gonad(Base):
         ]
 
     @classmethod
-    def gonad_keyed_size_patterns(cls):
+    def gonad_keyed_size_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="gonad",
@@ -140,7 +141,7 @@ class Gonad(Base):
         ]
 
     @classmethod
-    def in_millimeters(cls, number, units: Token | str | None):
+    def in_millimeters(cls, number: Span, units: Span | str | None) -> float:
         if hasattr(units, "text"):
             units = units.text.lower()
         elif isinstance(units, str):
@@ -151,36 +152,38 @@ class Gonad(Base):
         return round(value, 2)
 
     @classmethod
-    def get_units(cls, ent, key):
+    def get_units(cls, ent: Span, key: str) -> str:
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         if not units and key in ("gonad_len_mm", "gonad_width_mm"):
             units = "mm"
         return units
 
     @classmethod
-    def get_key(cls, ent):
+    def get_key(cls, ent: Span) -> Span | None:
         return next((e.label_ for e in ent.ents if e.label_ in cls.keys), None)
 
     @classmethod
-    def get_numbers(cls, ent, units):
+    def get_numbers(cls, ent: Span, units: str) -> list[float]:
         return [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
 
     @classmethod
-    def gonad_numbered_size_match(cls, ent):
+    def gonad_numbered_size_match(cls, ent: Span) -> "Gonad":
         key = cls.get_key(ent)
         units = cls.get_units(ent, key)
         nums = cls.get_numbers(ent, units)
         return cls.gonad_labeled_size_match(ent, nums[1:], units, key)
 
     @classmethod
-    def gonad_keyed_size_match(cls, ent):
+    def gonad_keyed_size_match(cls, ent: Span) -> "Gonad":
         key = cls.get_key(ent)
         units = cls.get_units(ent, key)
         nums = cls.get_numbers(ent, units)
         return cls.gonad_labeled_size_match(ent, nums, units, key)
 
     @classmethod
-    def gonad_labeled_size_match(cls, ent, nums, units, key):
+    def gonad_labeled_size_match(
+        cls, ent: Span, nums: list[float], units: str, key: str
+    ) -> "Gonad":
         data = {}
 
         if key.startswith("gonad_len"):
@@ -206,10 +209,10 @@ class Gonad(Base):
 
 
 @registry.misc("gonad_numbered_size_match")
-def gonad_numbered_size_match(ent):
+def gonad_numbered_size_match(ent: Span) -> Gonad:
     return Gonad.gonad_numbered_size_match(ent)
 
 
 @registry.misc("gonad_keyed_size_match")
-def gonad_keyed_size_match(ent):
+def gonad_keyed_size_match(ent: Span) -> Gonad:
     return Gonad.gonad_keyed_size_match(ent)

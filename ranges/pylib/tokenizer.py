@@ -1,8 +1,9 @@
 from spacy.lang.char_classes import ALPHA
+from spacy.language import Language
 from traiter.pipes import tokenizer
 
 
-def setup(nlp) -> None:
+def setup(nlp: Language) -> None:
     tokenizer.setup_tokenizer(nlp)  # Normal setup
 
     tokenizer.append_prefix_regex(

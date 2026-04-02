@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language, registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
@@ -17,7 +19,7 @@ from ranges.rules.base import Base
 @dataclass(eq=False)
 class Mammary(Base):
     # Class vars ----------
-    csv: ClassVar[list[Path]] = Path(__file__).parent / "terms" / "mammary_terms.csv"
+    csv: ClassVar[Path] = Path(__file__).parent / "terms" / "mammary_terms.csv"
 
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csv, "replace")
 
@@ -55,7 +57,7 @@ class Mammary(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         if self.count is not None:
             dwc.add_dyn(mammaryCount=self.count)
 
@@ -99,7 +101,7 @@ class Mammary(Base):
         add.cleanup_pipe(nlp, name="mammary_cleanup")
 
     @classmethod
-    def mammary_bad_patterns(cls):
+    def mammary_bad_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="bad_mammary_count",
@@ -113,7 +115,7 @@ class Mammary(Base):
         ]
 
     @classmethod
-    def mammary_count_patterns(cls):
+    def mammary_count_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="mammary",
@@ -131,7 +133,7 @@ class Mammary(Base):
         ]
 
     @classmethod
-    def mammary_state_patterns(cls):
+    def mammary_state_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="mammary",
@@ -147,7 +149,7 @@ class Mammary(Base):
         ]
 
     @classmethod
-    def mammary_count_state_patterns(cls):
+    def mammary_count_state_patterns(cls) -> Compiler:
         return Compiler(
             label="mammary",
             on_match="mammary_count_state_match",
@@ -163,7 +165,7 @@ class Mammary(Base):
         )
 
     @classmethod
-    def get_count(cls, ent) -> int:
+    def get_count(cls, ent: Span) -> int:
         nums = [t._.trait.number for t in ent if t._.flag == "number"]
 
         if len(nums) == 0:
@@ -182,7 +184,7 @@ class Mammary(Base):
         return int(count)
 
     @classmethod
-    def get_state(cls, ent) -> str | None:
+    def get_state(cls, ent: Span) -> str | None:
         states = [e.text.lower() for e in ent.ents if e.label_ == "state"]
         states = [cls.replace.get(s, s) for s in states]
         neg = next((e.text.lower() for e in ent.ents if e.label_ == "none"), None)
@@ -192,19 +194,19 @@ class Mammary(Base):
         return " ".join(states) if states else None
 
     @classmethod
-    def mammary_count_match(cls, ent):
+    def mammary_count_match(cls, ent: Span) -> "Mammary":
         return cls.from_ent(ent, count=cls.get_count(ent))
 
     @classmethod
-    def mammary_bad_match(cls, ent):
+    def mammary_bad_match(cls, ent: Span) -> "Mammary":
         return cls.from_ent(ent)
 
     @classmethod
-    def mammary_state_match(cls, ent):
+    def mammary_state_match(cls, ent: Span) -> "Mammary":
         return cls.from_ent(ent, state=cls.get_state(ent))
 
     @classmethod
-    def mammary_count_state_match(cls, ent):
+    def mammary_count_state_match(cls, ent: Span) -> "Mammary":
         return cls.from_ent(
             ent,
             count=cls.get_count(ent),
@@ -213,20 +215,20 @@ class Mammary(Base):
 
 
 @registry.misc("mammary_count_match")
-def mammary_count_match(ent):
+def mammary_count_match(ent: Span) -> Mammary:
     return Mammary.mammary_count_match(ent)
 
 
 @registry.misc("mammary_bad_match")
-def mammary_bad_match(ent):
+def mammary_bad_match(ent: Span) -> Mammary:
     return Mammary.mammary_bad_match(ent)
 
 
 @registry.misc("mammary_state_match")
-def mammary_state_match(ent):
+def mammary_state_match(ent: Span) -> Mammary:
     return Mammary.mammary_state_match(ent)
 
 
 @registry.misc("mammary_count_state_match")
-def mammary_count_state_match(ent):
+def mammary_count_state_match(ent: Span) -> Mammary:
     return Mammary.mammary_count_state_match(ent)

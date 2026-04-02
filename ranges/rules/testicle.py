@@ -3,8 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
-from spacy.tokens import Token
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
@@ -99,7 +100,7 @@ class Testicle(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 
         if self.description is not None:
@@ -123,7 +124,7 @@ class Testicle(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="testicle_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -172,7 +173,7 @@ class Testicle(Base):
         add.cleanup_pipe(nlp, name="testicle_description_cleanup")
 
     @classmethod
-    def not_testicle_size_patterns(cls):
+    def not_testicle_size_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="not_length",
@@ -185,7 +186,7 @@ class Testicle(Base):
         ]
 
     @classmethod
-    def testicle_description_patterns(cls):
+    def testicle_description_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="description",
@@ -208,7 +209,7 @@ class Testicle(Base):
         ]
 
     @classmethod
-    def testicle_descr_alone_patterns(cls):
+    def testicle_descr_alone_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="descr_alone",
@@ -222,7 +223,7 @@ class Testicle(Base):
         ]
 
     @classmethod
-    def testicle_state_patterns(cls):
+    def testicle_state_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="testicle",
@@ -239,7 +240,7 @@ class Testicle(Base):
         ]
 
     @classmethod
-    def testicle_size_patterns(cls):
+    def testicle_size_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="testicle",
@@ -266,7 +267,7 @@ class Testicle(Base):
         ]
 
     @classmethod
-    def testicle_double_patterns(cls):
+    def testicle_double_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="testicle",
@@ -280,7 +281,7 @@ class Testicle(Base):
         ]
 
     @classmethod
-    def in_millimeters(cls, number, units: Token | str | None):
+    def in_millimeters(cls, number: Span, units: Span | str | None) -> float:
         if hasattr(units, "text"):
             units = units.text.lower()
         elif isinstance(units, str):
@@ -291,19 +292,19 @@ class Testicle(Base):
         return round(value, 2)
 
     @classmethod
-    def not_testicle_size_match(cls, ent):
+    def not_testicle_size_match(cls, ent: Span) -> "Testicle":
         return cls.from_ent(ent)
 
     @classmethod
-    def testicle_description_match(cls, ent):
+    def testicle_description_match(cls, ent: Span) -> "Testicle":
         return cls.from_ent(ent)
 
     @classmethod
-    def descr_alone_match(cls, ent):
+    def descr_alone_match(cls, ent: Span) -> "Testicle":
         return cls.from_ent(ent)
 
     @classmethod
-    def testicle_state_match(cls, ent):
+    def testicle_state_match(cls, ent: Span) -> "Testicle":
         data = {}
         descr = [
             cls.replace.get(e.text.lower(), e.text.lower())
@@ -314,7 +315,7 @@ class Testicle(Base):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def testicle_size_match(cls, ent):
+    def testicle_size_match(cls, ent: Span) -> "Testicle":
         data = {}
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         descr = [
@@ -342,7 +343,7 @@ class Testicle(Base):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def testicle_double_match(cls, ent):
+    def testicle_double_match(cls, ent: Span) -> "Testicle":
         data = {}
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         descr = [
@@ -364,30 +365,30 @@ class Testicle(Base):
 
 
 @registry.misc("testicle_description_match")
-def testicle_description_match(ent):
+def testicle_description_match(ent: Span) -> Testicle:
     return Testicle.testicle_description_match(ent)
 
 
 @registry.misc("descr_alone_match")
-def descr_alone_match(ent):
+def descr_alone_match(ent: Span) -> Testicle:
     return Testicle.descr_alone_match(ent)
 
 
 @registry.misc("testicle_state_match")
-def testicle_state_match(ent):
+def testicle_state_match(ent: Span) -> Testicle:
     return Testicle.testicle_state_match(ent)
 
 
 @registry.misc("testicle_size_match")
-def testicle_size_match(ent):
+def testicle_size_match(ent: Span) -> Testicle:
     return Testicle.testicle_size_match(ent)
 
 
 @registry.misc("not_testicle_size_match")
-def not_testicle_size_match(ent):
+def not_testicle_size_match(ent: Span) -> Testicle:
     return Testicle.not_testicle_size_match(ent)
 
 
 @registry.misc("testicle_double_match")
-def testicle_double_match(ent):
+def testicle_double_match(ent: Span) -> Testicle:
     return Testicle.testicle_double_match(ent)

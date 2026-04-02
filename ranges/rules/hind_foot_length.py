@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.rules import terms as t_terms
@@ -53,7 +55,7 @@ class HindFootLength(BaseLength):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         super().to_dwc(dwc)
 
         if self.includes:
@@ -62,7 +64,7 @@ class HindFootLength(BaseLength):
         return dwc
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         cls.term_pipe(nlp)
         cls.range_length_pipe(nlp)
         cls.tic_pipe(nlp)
@@ -70,41 +72,41 @@ class HindFootLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def get_includes(cls, ent, trait) -> None:
+    def get_includes(cls, ent: Span, trait: "HindFootLength") -> None:
         keys = [e for e in ent.ents if e.label_ in cls.keys]
         for key in keys:
             if value := cls.includes_keys.get(key.text.lower()):
                 trait.includes = value
 
     @classmethod
-    def hind_foot_length_match(cls, ent):
+    def hind_foot_length_match(cls, ent: Span) -> "HindFootLength":
         trait = cls.length_match(ent)
         cls.get_includes(ent, trait)
         return trait
 
     @classmethod
-    def hind_foot_length_range_match(cls, ent):
+    def hind_foot_length_range_match(cls, ent: Span) -> "HindFootLength":
         trait = cls.range_match(ent)
         cls.get_includes(ent, trait)
         return trait
 
     @classmethod
-    def hind_foot_length_tic_match(cls, ent):
+    def hind_foot_length_tic_match(cls, ent: Span) -> "HindFootLength":
         trait = cls.tic_match(ent)
         cls.get_includes(ent, trait)
         return trait
 
 
 @registry.misc("hind_foot_length_match")
-def hind_foot_length_match(ent):
+def hind_foot_length_match(ent: Span) -> HindFootLength:
     return HindFootLength.hind_foot_length_match(ent)
 
 
 @registry.misc("hind_foot_length_range_match")
-def hind_foot_length_range_match(ent):
+def hind_foot_length_range_match(ent: Span) -> HindFootLength:
     return HindFootLength.hind_foot_length_range_match(ent)
 
 
 @registry.misc("hind_foot_length_tic_match")
-def hind_foot_length_tic_match(ent):
+def hind_foot_length_tic_match(ent: Span) -> HindFootLength:
     return HindFootLength.hind_foot_length_tic_match(ent)

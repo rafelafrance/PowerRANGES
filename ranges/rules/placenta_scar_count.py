@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language, registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add, reject_match
 from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
@@ -83,7 +85,7 @@ class PlacentalScarCount(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 
         if self.present is not None:
@@ -167,7 +169,7 @@ class PlacentalScarCount(Base):
         add.cleanup_pipe(nlp, name="placental_scar_cleanup")
 
     @classmethod
-    def placental_scar_bad_patterns(cls):
+    def placental_scar_bad_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="bad_placental_scar_count",
@@ -182,7 +184,7 @@ class PlacentalScarCount(Base):
         ]
 
     @classmethod
-    def placental_scar_total_at_0_patterns(cls):
+    def placental_scar_total_at_0_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="placental_scar_count",
@@ -196,7 +198,7 @@ class PlacentalScarCount(Base):
         ]
 
     @classmethod
-    def placental_scar_total_at_2_patterns(cls):
+    def placental_scar_total_at_2_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="placental_scar_count",
@@ -210,7 +212,7 @@ class PlacentalScarCount(Base):
         ]
 
     @classmethod
-    def placental_scar_total_missing_patterns(cls):
+    def placental_scar_total_missing_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="placental_scar_count",
@@ -235,7 +237,7 @@ class PlacentalScarCount(Base):
         ]
 
     @classmethod
-    def placental_scar_present_patterns(cls):
+    def placental_scar_present_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="placental_scar_count",
@@ -248,7 +250,7 @@ class PlacentalScarCount(Base):
         ]
 
     @classmethod
-    def placental_scar_absent_patterns(cls):
+    def placental_scar_absent_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="placental_scar_count",
@@ -262,7 +264,7 @@ class PlacentalScarCount(Base):
         ]
 
     @classmethod
-    def placental_scar_total_only_patterns(cls):
+    def placental_scar_total_only_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="placental_scar_count",
@@ -276,24 +278,26 @@ class PlacentalScarCount(Base):
         ]
 
     @classmethod
-    def get_counts(cls, ent) -> list[int]:
+    def get_counts(cls, ent: Span) -> list[int]:
         if any(e._.trait.is_fraction for e in ent.ents if e.label_ == "number"):
             raise reject_match.RejectMatch
         nums = [int(t._.trait.number) for t in ent if t._.flag == "number"]
         return nums
 
     @classmethod
-    def get_sides(cls, ent) -> list[str]:
+    def get_sides(cls, ent: Span) -> list[str]:
         sides = [e.label_ for e in ent.ents if e.label_ in cls.sides]
         sides += ["side1", "side2"]
         return sides
 
     @classmethod
-    def placental_scar_bad_match(cls, ent):
+    def placental_scar_bad_match(cls, ent: Span) -> "PlacentalScarCount":
         return cls.from_ent(ent)
 
     @classmethod
-    def placental_scar_match(cls, ent, total_at=None):
+    def placental_scar_match(
+        cls, ent: Span, total_at: int | None = None
+    ) -> "PlacentalScarCount":
         counts = cls.get_counts(ent)
         sides = cls.get_sides(ent)
 
@@ -306,40 +310,42 @@ class PlacentalScarCount(Base):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def placental_scar_no_counts_match(cls, ent, *, present):
+    def placental_scar_no_counts_match(
+        cls, ent: Span, *, present: bool
+    ) -> "PlacentalScarCount":
         return cls.from_ent(ent, present=present)
 
 
 @registry.misc("placental_scar_total_at_0_match")
-def placental_scar_total_at_0_match(ent):
+def placental_scar_total_at_0_match(ent: Span) -> PlacentalScarCount:
     return PlacentalScarCount.placental_scar_match(ent, 0)
 
 
 @registry.misc("placental_scar_total_only_match")
-def placental_scar_total_only_match(ent):
+def placental_scar_total_only_match(ent: Span) -> PlacentalScarCount:
     return PlacentalScarCount.placental_scar_match(ent, 0)
 
 
 @registry.misc("placental_scar_total_at_2_match")
-def placental_scar_total_at_2_match(ent):
+def placental_scar_total_at_2_match(ent: Span) -> PlacentalScarCount:
     return PlacentalScarCount.placental_scar_match(ent, 2)
 
 
 @registry.misc("placental_scar_total_missing_match")
-def placental_scar_total_missing_match(ent):
+def placental_scar_total_missing_match(ent: Span) -> PlacentalScarCount:
     return PlacentalScarCount.placental_scar_match(ent)
 
 
 @registry.misc("placental_scar_present_match")
-def placental_scar_present_match(ent):
+def placental_scar_present_match(ent: Span) -> PlacentalScarCount:
     return PlacentalScarCount.placental_scar_no_counts_match(ent, present=True)
 
 
 @registry.misc("placental_scar_absent_match")
-def placental_scar_absent_match(ent):
+def placental_scar_absent_match(ent: Span) -> PlacentalScarCount:
     return PlacentalScarCount.placental_scar_no_counts_match(ent, present=False)
 
 
 @registry.misc("placental_scar_bad_match")
-def placental_scar_bad_match(ent):
+def placental_scar_bad_match(ent: Span) -> PlacentalScarCount:
     return PlacentalScarCount.placental_scar_bad_match(ent)

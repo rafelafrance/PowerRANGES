@@ -17,7 +17,7 @@ def parse(text: str) -> list:
     return traits
 
 
-def to_dwc(label: str, text: str):
+def to_dwc(label: str, text: str) -> dict:
     doc = PIPELINE(text)
 
     # Isolate the trait being tested

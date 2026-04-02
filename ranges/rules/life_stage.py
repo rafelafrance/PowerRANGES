@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
@@ -41,11 +43,11 @@ class LifeStage(Base):
             }
         }
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         return dwc.add(lifeStage=self.life_stage)
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="life_stage_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -67,7 +69,7 @@ class LifeStage(Base):
         add.cleanup_pipe(nlp, name="life_stage_cleanup")
 
     @classmethod
-    def bad_life_stage_patterns(cls):
+    def bad_life_stage_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="bad_life_stage",
@@ -87,7 +89,7 @@ class LifeStage(Base):
         ]
 
     @classmethod
-    def life_stage_patterns(cls):
+    def life_stage_patterns(cls) -> Compiler:
         return Compiler(
             label="life_stage",
             on_match="life_stage_match",
@@ -122,7 +124,7 @@ class LifeStage(Base):
         )
 
     @classmethod
-    def life_stage_match(cls, ent):
+    def life_stage_match(cls, ent: Span) -> "LifeStage":
         life_stage = [t.lower_ for t in ent if t.ent_type_ != "key"]
         life_stage = " ".join(life_stage)
         life_stage = cls.eq_re.sub("", life_stage)
@@ -135,15 +137,15 @@ class LifeStage(Base):
         return cls.from_ent(ent, life_stage=life_stage)
 
     @classmethod
-    def bad_life_stage_match(cls, ent):
+    def bad_life_stage_match(cls, ent: Span) -> "LifeStage":
         return cls.from_ent(ent)
 
 
 @registry.misc("life_stage_match")
-def life_stage_match(ent):
+def life_stage_match(ent: Span) -> LifeStage:
     return LifeStage.life_stage_match(ent)
 
 
 @registry.misc("bad_life_stage_match")
-def bad_life_stage_match(ent):
+def bad_life_stage_match(ent: Span) -> LifeStage:
     return LifeStage.bad_life_stage_match(ent)

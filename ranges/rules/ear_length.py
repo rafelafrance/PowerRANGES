@@ -2,9 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
 from spacy.language import Language
 from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
@@ -78,7 +78,7 @@ class EarLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def check_ambiguous_key(cls, trait) -> None:
+    def check_ambiguous_key(cls, trait: "EarLength") -> None:
         if trait.ambiguous and trait.units_inferred:
             raise RejectMatch
 
@@ -90,21 +90,21 @@ class EarLength(BaseLength):
                 trait.measured_from = value
 
     @classmethod
-    def ear_length_match(cls, ent: Span) -> "EarLength | BaseLength":
+    def ear_length_match(cls, ent: Span) -> "BaseLength":
         trait = cls.length_match(ent)
         # cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
-    def ear_length_range_match(cls, ent: Span) -> "EarLength | BaseLength":
+    def ear_length_range_match(cls, ent: Span) -> "BaseLength":
         trait = cls.range_match(ent)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
-    def ear_length_tic_match(cls, ent: Span) -> "EarLength | BaseLength":
+    def ear_length_tic_match(cls, ent: Span) -> "BaseLength":
         trait = cls.tic_match(ent)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
@@ -112,20 +112,20 @@ class EarLength(BaseLength):
 
 
 @registry.misc("ear_length_match")
-def ear_length_match(ent: Span) -> EarLength | BaseLength:
+def ear_length_match(ent: Span) -> EarLength:
     return EarLength.ear_length_match(ent)
 
 
 @registry.misc("ear_length_range_match")
-def ear_length_range_match(ent: Span) -> EarLength | BaseLength:
+def ear_length_range_match(ent: Span) -> EarLength:
     return EarLength.ear_length_range_match(ent)
 
 
 @registry.misc("ear_length_tic_match")
-def ear_length_tic_match(ent: Span) -> EarLength | BaseLength:
+def ear_length_tic_match(ent: Span) -> EarLength:
     return EarLength.ear_length_tic_match(ent)
 
 
 @registry.misc("ear_length_bad_match")
-def ear_length_bad_match(ent: Span) -> EarLength | BaseLength:
+def ear_length_bad_match(ent: Span) -> EarLength:
     return EarLength.bad_match(ent)

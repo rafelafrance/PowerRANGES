@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
@@ -43,7 +45,7 @@ class TragusLength(BaseLength):
         return value
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         cls.term_pipe(nlp)
         cls.range_length_pipe(nlp)
         cls.tic_pipe(nlp)
@@ -52,15 +54,15 @@ class TragusLength(BaseLength):
 
 
 @registry.misc("tragus_length_match")
-def tragus_length_match(ent):
+def tragus_length_match(ent: Span) -> TragusLength:
     return TragusLength.length_match(ent)
 
 
 @registry.misc("tragus_length_range_match")
-def tragus_length_range_match(ent):
+def tragus_length_range_match(ent: Span) -> TragusLength:
     return TragusLength.range_match(ent)
 
 
 @registry.misc("tragus_length_tic_match")
-def tragus_length_tic_match(ent):
+def tragus_length_tic_match(ent: Span) -> TragusLength:
     return TragusLength.tic_match(ent)

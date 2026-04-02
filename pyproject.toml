@@ -48,10 +48,6 @@ docstring-code-format = true
 select = ["ALL"]
 
 ignore = [
-  "ANN001",  # Missing type annotation for function argument
-  "ANN201",  # Missing return type annotation for public function
-  "ANN205",  # Missing return type annotation for staticmethod
-  "ANN206",  # Missing return type annotation for classmethod
   "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
   "COM812",  # Trailing comma missing
   "D100",    # Missing docstring in public module
@@ -71,7 +67,7 @@ ignore = [
   "FA102",   # Missing `from __future__ import annotations`, but uses PEP 604 union
   "FIX002",  # Line contains TODO
   "G004",    # Logging statement uses f-string
-  "LOG015",   # Don not use root logger
+  "LOG015",  # Do not use root logger (DELETE ME)
   "N815",    # Variable in class scope should not be mixedCase
   "N818",    # Exception name {name} should be named with an Error suffix
   "PLR0913", # Too many arguments in function definition ({c_args} > {max_args})

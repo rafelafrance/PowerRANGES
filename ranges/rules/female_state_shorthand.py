@@ -2,7 +2,9 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
@@ -33,7 +35,7 @@ class FemaleStateShorthand(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 
         if self.vagina_state:
@@ -48,7 +50,7 @@ class FemaleStateShorthand(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.trait_pipe(
             nlp,
             name="shorthand_female_states_patterns",
@@ -57,7 +59,7 @@ class FemaleStateShorthand(Base):
         add.cleanup_pipe(nlp, name="shorthand_female_states_cleanup")
 
     @classmethod
-    def shorthand_female_states_patterns(cls):
+    def shorthand_female_states_patterns(cls) -> list[Compiler]:
         decoder = {
             "triple": {"LOWER": {"REGEX": r"^[oc][smel][ln](ac)?$"}},
         }
@@ -73,7 +75,7 @@ class FemaleStateShorthand(Base):
         ]
 
     @classmethod
-    def shorthand_female_states_match(cls, ent):
+    def shorthand_female_states_match(cls, ent: Span) -> "FemaleStateShorthand":
         vag, nip, lac, *_ = list(ent.text.lower())
 
         vag = "open" if vag == "o" else "closed"
@@ -95,5 +97,5 @@ class FemaleStateShorthand(Base):
 
 
 @registry.misc("shorthand_female_states_match")
-def shorthand_female_states_match(ent):
+def shorthand_female_states_match(ent: Span) -> FemaleStateShorthand:
     return FemaleStateShorthand.shorthand_female_states_match(ent)

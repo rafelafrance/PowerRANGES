@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
@@ -35,11 +37,11 @@ class Sex(Base):
             }
         }
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         return dwc.add(sex=self.sex)
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="sex_terms", path=cls.csvs)
         add.trait_pipe(
             nlp,
@@ -50,7 +52,7 @@ class Sex(Base):
         add.cleanup_pipe(nlp, name="sex_cleanup")
 
     @classmethod
-    def sex_patterns(cls):
+    def sex_patterns(cls) -> Compiler:
         return Compiler(
             label="sex",
             on_match="sex_match",
@@ -71,7 +73,7 @@ class Sex(Base):
         )
 
     @classmethod
-    def sex_match(cls, ent):
+    def sex_match(cls, ent: Span) -> "Sex":
         sex = " ".join(t.lower_ for t in ent if t._.term in cls.sex_labels)
         sex = cls.replace.get(sex, sex)
         q_mark = "?" if "?" in ent.text else ""
@@ -79,5 +81,5 @@ class Sex(Base):
 
 
 @registry.misc("sex_match")
-def sex_match(ent):
+def sex_match(ent: Span) -> Sex:
     return Sex.sex_match(ent)

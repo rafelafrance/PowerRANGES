@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
@@ -30,11 +32,11 @@ class LactationState(Base):
             }
         }
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         return dwc.add_dyn(lactationState=self.state)
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="lactation_state_terms", path=cls.csvs)
         add.trait_pipe(
             nlp,
@@ -45,7 +47,7 @@ class LactationState(Base):
         add.cleanup_pipe(nlp, name="lactation_state_cleanup")
 
     @classmethod
-    def lactation_state_patterns(cls):
+    def lactation_state_patterns(cls) -> list[Compiler]:
         decoder = {
             "lac": {"ENT_TYPE": "lac"},
             "not": {"ENT_TYPE": {"IN": ["not", "post"]}},
@@ -74,20 +76,20 @@ class LactationState(Base):
         ]
 
     @classmethod
-    def lactating_match(cls, ent):
+    def lactating_match(cls, ent: Span) -> "LactationState":
         return cls.from_ent(ent, state="lactating")
 
     @classmethod
-    def not_lactating_match(cls, ent):
+    def not_lactating_match(cls, ent: Span) -> "LactationState":
         ent._.relabel = "lactation_state"
         return cls.from_ent(ent, state="not lactating")
 
 
 @registry.misc("lactating_match")
-def lactating_match(ent):
+def lactating_match(ent: Span) -> LactationState:
     return LactationState.lactating_match(ent)
 
 
 @registry.misc("not_lactating_match")
-def not_lactating_match(ent):
+def not_lactating_match(ent: Span) -> LactationState:
     return LactationState.not_lactating_match(ent)

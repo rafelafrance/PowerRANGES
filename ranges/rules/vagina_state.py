@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
@@ -29,11 +31,11 @@ class VaginaState(Base):
             }
         }
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         return dwc.add_dyn(vaginaState=self.state)
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="vagina_state_terms", path=cls.csvs)
         # add.debug_tokens(nlp)  # ############################################
         add.trait_pipe(
@@ -44,7 +46,7 @@ class VaginaState(Base):
         add.cleanup_pipe(nlp, name="vagina_state_cleanup")
 
     @classmethod
-    def vagina_state_patterns(cls):
+    def vagina_state_patterns(cls) -> list[Compiler]:
         decoder = {
             ",": {"IS_PUNCT": True, "OP": "?"},
             "vagina": {"ENT_TYPE": "vagina", "OP": "+"},
@@ -67,12 +69,12 @@ class VaginaState(Base):
         ]
 
     @classmethod
-    def vagina_state_match(cls, ent):
+    def vagina_state_match(cls, ent: Span) -> "VaginaState":
         state = [e.label_ for e in ent.ents if e.label_ in cls.states]
         state = ", ".join(state)
         return cls.from_ent(ent, state=state)
 
 
 @registry.misc("vagina_state_match")
-def vagina_state_match(ent):
+def vagina_state_match(ent: Span) -> VaginaState:
     return VaginaState.vagina_state_match(ent)

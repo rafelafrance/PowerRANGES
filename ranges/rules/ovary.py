@@ -10,8 +10,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language, registry
-from spacy.tokens import Token
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
@@ -161,7 +162,7 @@ class Ovary(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 
         if self.description is not None:
@@ -236,7 +237,7 @@ class Ovary(Base):
         add.cleanup_pipe(nlp, name="ovary_cleanup")
 
     @classmethod
-    def ovary_grouper_patterns(cls):
+    def ovary_grouper_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="ovaries",
@@ -251,7 +252,7 @@ class Ovary(Base):
         ]
 
     @classmethod
-    def ovary_description_patterns(cls):
+    def ovary_description_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="description",
@@ -268,7 +269,7 @@ class Ovary(Base):
         ]
 
     @classmethod
-    def ovary_state_patterns(cls):
+    def ovary_state_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="ovary",
@@ -288,7 +289,7 @@ class Ovary(Base):
         ]
 
     @classmethod
-    def ovary_size_patterns(cls):
+    def ovary_size_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="ovary",
@@ -310,7 +311,7 @@ class Ovary(Base):
         ]
 
     @classmethod
-    def ovary_keyed_size_patterns(cls):
+    def ovary_keyed_size_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="ovary",
@@ -323,15 +324,15 @@ class Ovary(Base):
         ]
 
     @classmethod
-    def ovary_grouper_match(cls, ent):
+    def ovary_grouper_match(cls, ent: Span) -> "Ovary":
         return cls.from_ent(ent)
 
     @classmethod
-    def ovary_description_match(cls, ent):
+    def ovary_description_match(cls, ent: Span) -> "Ovary":
         return cls.from_ent(ent)
 
     @classmethod
-    def in_millimeters(cls, number, units: Token | str | None):
+    def in_millimeters(cls, number: Span, units: Span | str | None) -> float:
         if hasattr(units, "text"):
             units = units.text.lower()
         elif isinstance(units, str):
@@ -342,7 +343,7 @@ class Ovary(Base):
         return round(value, 2)
 
     @classmethod
-    def ovary_state_match(cls, ent):
+    def ovary_state_match(cls, ent: Span) -> "Ovary":
         data = {}
 
         sides = [e.label_ for e in ent.ents if e.label_ in cls.all_sides]
@@ -356,7 +357,7 @@ class Ovary(Base):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def ovary_size_match(cls, ent):
+    def ovary_size_match(cls, ent: Span) -> "Ovary":
         data = {}
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
@@ -387,7 +388,7 @@ class Ovary(Base):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def ovary_keyed_size_match(cls, ent):
+    def ovary_keyed_size_match(cls, ent: Span) -> "Ovary":
         data = {}
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         key = next((e.label_ for e in ent.ents if e.label_ in cls.keys), None)
@@ -408,25 +409,25 @@ class Ovary(Base):
 
 
 @registry.misc("ovary_grouper_match")
-def ovary_grouper_match(ent):
+def ovary_grouper_match(ent: Span) -> Ovary:
     return Ovary.ovary_grouper_match(ent)
 
 
 @registry.misc("ovary_description_match")
-def ovary_description_match(ent):
+def ovary_description_match(ent: Span) -> Ovary:
     return Ovary.ovary_description_match(ent)
 
 
 @registry.misc("ovary_state_match")
-def ovary_state_match(ent):
+def ovary_state_match(ent: Span) -> Ovary:
     return Ovary.ovary_state_match(ent)
 
 
 @registry.misc("ovary_size_match")
-def ovary_size_match(ent):
+def ovary_size_match(ent: Span) -> Ovary:
     return Ovary.ovary_size_match(ent)
 
 
 @registry.misc("ovary_keyed_size_match")
-def ovary_keyed_size_match(ent):
+def ovary_keyed_size_match(ent: Span) -> Ovary:
     return Ovary.ovary_keyed_size_match(ent)

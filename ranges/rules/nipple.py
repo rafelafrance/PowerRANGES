@@ -3,7 +3,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language, registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
@@ -55,7 +57,7 @@ class Nipple(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         if self.count is not None:
             dwc.add_dyn(nippleCount=self.count)
 
@@ -99,7 +101,7 @@ class Nipple(Base):
         add.cleanup_pipe(nlp, name="nipple_cleanup")
 
     @classmethod
-    def nipple_bad_patterns(cls):
+    def nipple_bad_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="bad_nipple_count",
@@ -113,7 +115,7 @@ class Nipple(Base):
         ]
 
     @classmethod
-    def nipple_count_patterns(cls):
+    def nipple_count_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="nipple",
@@ -131,7 +133,7 @@ class Nipple(Base):
         ]
 
     @classmethod
-    def nipple_state_patterns(cls):
+    def nipple_state_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="nipple",
@@ -147,7 +149,7 @@ class Nipple(Base):
         ]
 
     @classmethod
-    def nipple_count_state_patterns(cls):
+    def nipple_count_state_patterns(cls) -> Compiler:
         return Compiler(
             label="nipple",
             on_match="nipple_count_state_match",
@@ -163,7 +165,7 @@ class Nipple(Base):
         )
 
     @classmethod
-    def get_count(cls, ent) -> int:
+    def get_count(cls, ent: Span) -> int:
         nums = [t._.trait.number for t in ent if t._.flag == "number"]
 
         if len(nums) == 0:
@@ -182,7 +184,7 @@ class Nipple(Base):
         return int(count)
 
     @classmethod
-    def get_state(cls, ent) -> str | None:
+    def get_state(cls, ent: Span) -> str | None:
         states = [e.text.lower() for e in ent.ents if e.label_ == "state"]
         states = [cls.replace.get(s, s) for s in states]
         neg = next((e.text.lower() for e in ent.ents if e.label_ == "none"), None)
@@ -194,19 +196,19 @@ class Nipple(Base):
         return " ".join(states) if states else None
 
     @classmethod
-    def nipple_count_match(cls, ent):
+    def nipple_count_match(cls, ent: Span) -> "Nipple":
         return cls.from_ent(ent, count=cls.get_count(ent))
 
     @classmethod
-    def nipple_bad_match(cls, ent):
+    def nipple_bad_match(cls, ent: Span) -> "Nipple":
         return cls.from_ent(ent)
 
     @classmethod
-    def nipple_state_match(cls, ent):
+    def nipple_state_match(cls, ent: Span) -> "Nipple":
         return cls.from_ent(ent, state=cls.get_state(ent))
 
     @classmethod
-    def nipple_count_state_match(cls, ent):
+    def nipple_count_state_match(cls, ent: Span) -> "Nipple":
         return cls.from_ent(
             ent,
             count=cls.get_count(ent),
@@ -215,20 +217,20 @@ class Nipple(Base):
 
 
 @registry.misc("nipple_count_match")
-def nipple_count_match(ent):
+def nipple_count_match(ent: Span) -> Nipple:
     return Nipple.nipple_count_match(ent)
 
 
 @registry.misc("nipple_bad_match")
-def nipple_bad_match(ent):
+def nipple_bad_match(ent: Span) -> Nipple:
     return Nipple.nipple_bad_match(ent)
 
 
 @registry.misc("nipple_state_match")
-def nipple_state_match(ent):
+def nipple_state_match(ent: Span) -> Nipple:
     return Nipple.nipple_state_match(ent)
 
 
 @registry.misc("nipple_count_state_match")
-def nipple_count_state_match(ent):
+def nipple_count_state_match(ent: Span) -> Nipple:
     return Nipple.nipple_count_state_match(ent)

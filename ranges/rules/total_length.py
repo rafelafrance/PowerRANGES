@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
@@ -44,7 +46,7 @@ class TotalLength(BaseLength):
         return value
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         cls.term_pipe(nlp)
         cls.bad_length_pipe(nlp)
         cls.compound_length_pipe(nlp, allow_no_key=True)
@@ -56,25 +58,25 @@ class TotalLength(BaseLength):
 
 
 @registry.misc("total_length_match")
-def total_length_match(ent):
+def total_length_match(ent: Span) -> TotalLength:
     return TotalLength.length_match(ent)
 
 
 @registry.misc("total_length_compound_match")
-def total_length_compound_match(ent):
+def total_length_compound_match(ent: Span) -> TotalLength:
     return TotalLength.compound_match(ent)
 
 
 @registry.misc("total_length_tic_match")
-def total_length_tic_match(ent):
+def total_length_tic_match(ent: Span) -> TotalLength:
     return TotalLength.tic_match(ent)
 
 
 @registry.misc("total_length_range_match")
-def total_length_range_match(ent):
+def total_length_range_match(ent: Span) -> TotalLength:
     return TotalLength.range_match(ent)
 
 
 @registry.misc("total_length_bad_match")
-def total_length_bad_match(ent):
+def total_length_bad_match(ent: Span) -> TotalLength:
     return TotalLength.bad_match(ent)

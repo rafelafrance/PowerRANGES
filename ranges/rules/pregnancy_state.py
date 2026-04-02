@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
@@ -30,11 +32,11 @@ class PregnancyState(Base):
             }
         }
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         return dwc.add_dyn(pregnancyState=self.state)
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="pregnancy_state_terms", path=cls.csvs)
         add.trait_pipe(
             nlp,
@@ -44,7 +46,7 @@ class PregnancyState(Base):
         add.cleanup_pipe(nlp, name="pregnancy_state_cleanup")
 
     @classmethod
-    def pregnancy_state_patterns(cls):
+    def pregnancy_state_patterns(cls) -> list[Compiler]:
         decoder = {
             "not": {"ENT_TYPE": {"IN": cls.nots}, "OP": "+"},
             "not_pregnant": {"ENT_TYPE": "not_pregnant", "OP": "+"},
@@ -67,7 +69,7 @@ class PregnancyState(Base):
         ]
 
     @classmethod
-    def pregnancy_state_match(cls, ent):
+    def pregnancy_state_match(cls, ent: Span) -> "PregnancyState":
         state = "pregnant"
         if next((e for e in ent.ents if e.label_ in cls.not_preg), None):
             state = "not pregnant"
@@ -75,5 +77,5 @@ class PregnancyState(Base):
 
 
 @registry.misc("pregnancy_state_match")
-def pregnancy_state_match(ent):
+def pregnancy_state_match(ent: Span) -> PregnancyState:
     return PregnancyState.pregnancy_state_match(ent)

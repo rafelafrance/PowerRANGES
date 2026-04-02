@@ -1,4 +1,5 @@
 import spacy
+from spacy.language import Language
 from traiter.pipes import extensions
 from traiter.rules.date_ import Date
 from traiter.rules.elevation import Elevation
@@ -32,7 +33,7 @@ from ranges.rules.tragus_length import TragusLength
 from ranges.rules.vagina_state import VaginaState
 
 
-def build():
+def build() -> Language:
     extensions.add_extensions()
     nlp = spacy.load("en_core_web_md", exclude=["ner"])
 

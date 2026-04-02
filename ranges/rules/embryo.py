@@ -10,7 +10,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language, registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
@@ -119,7 +121,7 @@ class Embryo(BaseLength):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         super().to_dwc(dwc)  # Get length fields
 
         value = {}
@@ -170,7 +172,7 @@ class Embryo(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def bad_embryo_pipe(cls, nlp) -> None:
+    def bad_embryo_pipe(cls, nlp: Language) -> None:
         add.trait_pipe(
             nlp,
             name="bad_embryo_patterns",
@@ -179,7 +181,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_count_pipe(cls, nlp) -> None:
+    def embryo_count_pipe(cls, nlp: Language) -> None:
         add.trait_pipe(
             nlp,
             name="embryo_count_patterns",
@@ -188,7 +190,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_present_pipe(cls, nlp) -> None:
+    def embryo_present_pipe(cls, nlp: Language) -> None:
         add.trait_pipe(
             nlp,
             name="embryo_present_patterns",
@@ -197,7 +199,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_0_pipe(cls, nlp) -> None:
+    def embryo_mix_0_pipe(cls, nlp: Language) -> None:
         """Length is at index 1."""
         add.trait_pipe(
             nlp,
@@ -207,7 +209,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_1_pipe(cls, nlp) -> None:
+    def embryo_mix_1_pipe(cls, nlp: Language) -> None:
         """Length is at index 1."""
         add.trait_pipe(
             nlp,
@@ -217,7 +219,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_1_2_pipe(cls, nlp) -> None:
+    def embryo_mix_1_2_pipe(cls, nlp: Language) -> None:
         """Length is at index 1."""
         add.trait_pipe(
             nlp,
@@ -227,7 +229,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_2_pipe(cls, nlp) -> None:
+    def embryo_mix_2_pipe(cls, nlp: Language) -> None:
         """Length is at index 2."""
         add.trait_pipe(
             nlp,
@@ -237,7 +239,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_2_3_pipe(cls, nlp) -> None:
+    def embryo_mix_2_3_pipe(cls, nlp: Language) -> None:
         """Length is at index 2."""
         add.trait_pipe(
             nlp,
@@ -247,7 +249,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_mix_3_pipe(cls, nlp) -> None:
+    def embryo_mix_3_pipe(cls, nlp: Language) -> None:
         """Length is at index 3."""
         add.trait_pipe(
             nlp,
@@ -257,7 +259,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def embryo_width_pipe(cls, nlp) -> None:
+    def embryo_width_pipe(cls, nlp: Language) -> None:
         add.trait_pipe(
             nlp,
             name="embryo_width_patterns",
@@ -266,7 +268,7 @@ class Embryo(BaseLength):
         )
 
     @classmethod
-    def bad_embryo_patterns(cls):
+    def bad_embryo_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="bad_embryo",
@@ -279,7 +281,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_count_patterns(cls):
+    def embryo_count_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -306,7 +308,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_present_patterns(cls):
+    def embryo_present_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -322,7 +324,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_mix_0_patterns(cls):
+    def embryo_mix_0_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -337,7 +339,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_mix_1_patterns(cls):
+    def embryo_mix_1_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -364,7 +366,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_mix_1_2_patterns(cls):
+    def embryo_mix_1_2_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -383,7 +385,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_mix_2_patterns(cls):
+    def embryo_mix_2_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -401,7 +403,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_mix_2_3_patterns(cls):
+    def embryo_mix_2_3_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -416,7 +418,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_mix_3_patterns(cls):
+    def embryo_mix_3_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -433,7 +435,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def embryo_width_patterns(cls):
+    def embryo_width_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="embryo",
@@ -446,7 +448,7 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def add_sides(cls, data, counts, sides) -> None:
+    def add_sides(cls, data: dict, counts: list[int], sides: list[str]) -> None:
         for count, side in zip(counts, sides, strict=False):
             if side == "both":
                 data["left"] = count
@@ -456,7 +458,7 @@ class Embryo(BaseLength):
                 data[side] = count
 
     @classmethod
-    def get_sides(cls, ent, counts):
+    def get_sides(cls, ent: Span, counts: list[int]) -> list[str]:
         needs_sides = 3
         sides = [e for e in ent.ents if e.label_ == "side"]
         sides = [cls.side.get(s.text.lower()) for s in sides]
@@ -464,7 +466,7 @@ class Embryo(BaseLength):
         return sides
 
     @classmethod
-    def embryo_count_match(cls, ent):
+    def embryo_count_match(cls, ent: Span) -> "Embryo":
         counts = [e for e in ent.ents if e.label_ == "number"]
         counts = [int(c._.trait.number) for c in counts]
 
@@ -482,7 +484,7 @@ class Embryo(BaseLength):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def embryo_present_match(cls, ent):
+    def embryo_present_match(cls, ent: Span) -> "Embryo":
         side = [e for e in ent.ents if e.label_ == "side"]
         side = [cls.side.get(s.text.lower()) for s in side]
 
@@ -497,7 +499,9 @@ class Embryo(BaseLength):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def embryo_mix_match(cls, ent, length_idx, width_idx=None):
+    def embryo_mix_match(
+        cls, ent: Span, length_idx: int, width_idx: int | None = None
+    ) -> "Embryo":
         counts = [e for e in ent.ents if e.label_ == "number"]
 
         length = counts.pop(length_idx)
@@ -530,7 +534,7 @@ class Embryo(BaseLength):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def embryo_width_match(cls, ent):
+    def embryo_width_match(cls, ent: Span) -> "Embryo":
         length, width = (e for e in ent.ents if e.label_ == "number")
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
@@ -549,65 +553,65 @@ class Embryo(BaseLength):
         return cls.from_ent(ent, **data)
 
     @classmethod
-    def bad_embryo_match(cls, ent):
+    def bad_embryo_match(cls, ent: Span) -> "Embryo":
         return cls.from_ent(ent)
 
 
 @registry.misc("embryo_count_match")
-def embryo_count_match(ent):
+def embryo_count_match(ent: Span) -> Embryo:
     return Embryo.embryo_count_match(ent)
 
 
 @registry.misc("embryo_present_match")
-def embryo_present_match(ent):
+def embryo_present_match(ent: Span) -> Embryo:
     return Embryo.embryo_present_match(ent)
 
 
 @registry.misc("embryo_length_match")
-def embryo_length_match(ent):
+def embryo_length_match(ent: Span) -> Embryo:
     return Embryo.length_match(ent)
 
 
 @registry.misc("embryo_mix_0_match")
-def embryo_mix_0_match(ent):
+def embryo_mix_0_match(ent: Span) -> Embryo:
     return Embryo.embryo_mix_match(ent, length_idx=0)
 
 
 @registry.misc("embryo_mix_1_match")
-def embryo_mix_1_match(ent):
+def embryo_mix_1_match(ent: Span) -> Embryo:
     return Embryo.embryo_mix_match(ent, length_idx=1)
 
 
 @registry.misc("embryo_mix_1_2_match")
-def embryo_mix_1_2_match(ent):
+def embryo_mix_1_2_match(ent: Span) -> Embryo:
     return Embryo.embryo_mix_match(ent, length_idx=1, width_idx=2)
 
 
 @registry.misc("embryo_mix_2_match")
-def embryo_mix_2_match(ent):
+def embryo_mix_2_match(ent: Span) -> Embryo:
     return Embryo.embryo_mix_match(ent, length_idx=2)
 
 
 @registry.misc("embryo_mix_2_3_match")
-def embryo_mix_2_3_match(ent):
+def embryo_mix_2_3_match(ent: Span) -> Embryo:
     return Embryo.embryo_mix_match(ent, length_idx=2, width_idx=3)
 
 
 @registry.misc("embryo_mix_3_match")
-def embryo_mix_3_match(ent):
+def embryo_mix_3_match(ent: Span) -> Embryo:
     return Embryo.embryo_mix_match(ent, length_idx=3)
 
 
 @registry.misc("embryo_length_bad_match")
-def embryo_length_bad_match(ent):
+def embryo_length_bad_match(ent: Span) -> Embryo:
     return Embryo.bad_match(ent)
 
 
 @registry.misc("embryo_width_match")
-def embryo_width_match(ent):
+def embryo_width_match(ent: Span) -> Embryo:
     return Embryo.embryo_width_match(ent)
 
 
 @registry.misc("bad_embryo_match")
-def bad_embryo_match(ent):
+def bad_embryo_match(ent: Span) -> Embryo:
     return Embryo.bad_embryo_match(ent)

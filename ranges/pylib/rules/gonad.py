@@ -26,8 +26,13 @@ class Gonad(Base):
     units: ClassVar[list[str]] = ["metric_length", "imperial_length"]
     overwrite: ClassVar[list[str]] = ["number", *units]
 
-    keys: ClassVar[list[str]] = """
-        gonad gonad_len gonad_len_mm gonad_width gonad_width_mm """.split()
+    keys: ClassVar[list[str]] = [
+        "gonad",
+        "gonad_len",
+        "gonad_len_mm",
+        "gonad_width",
+        "gonad_width_mm",
+    ]
 
     decoder: ClassVar[dict[str, dict]] = {
         "'": {"LOWER": {"IN": t_const.QUOTE}, "OP": "?"},
@@ -39,7 +44,7 @@ class Gonad(Base):
     }
 
     factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
-    factor_mm: ClassVar[dict[str, str]] = {
+    factor_mm: ClassVar[dict[str, float]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
     # ---------------------

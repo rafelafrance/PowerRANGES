@@ -17,7 +17,7 @@ from ranges.pylib.rules.base import Base
 @dataclass(eq=False)
 class Nipple(Base):
     # Class vars ----------y
-    csv: ClassVar[list[Path]] = Path(__file__).parent / "terms" / "mammary_terms.csv"
+    csv: ClassVar[Path] = Path(__file__).parent / "terms" / "mammary_terms.csv"
 
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csv, "replace")
 

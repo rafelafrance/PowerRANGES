@@ -15,7 +15,7 @@ from ranges.pylib.rules.base import Base
 @dataclass(eq=False)
 class PlacentalScarCount(Base):
     # Class vars ----------y
-    csv: ClassVar[list[Path]] = (
+    csv: ClassVar[Path] = (
         Path(__file__).parent / "terms" / "placental_scar_count_terms.csv"
     )
 

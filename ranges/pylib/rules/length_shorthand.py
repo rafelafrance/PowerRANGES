@@ -60,9 +60,12 @@ class LengthShorthand(Base):
     skip: ClassVar[str] = last + t_const.COLON + t_const.QUOTE
 
     # Expected order of cells
-    order: ClassVar[list[str]] = """
-        total_length tail_length hind_foot_length ear_length
-        """.split()
+    order: ClassVar[list[str]] = [
+        "total_length",
+        "tail_length",
+        "hind_foot_length",
+        "ear_length",
+    ]
     # ---------------------
 
     total_length: float = None
@@ -206,7 +209,7 @@ class LengthShorthand(Base):
         )
         # add.debug_tokens(nlp)  # ###########################################
 
-        add.cleanup_pipe(nlp, name="shorthand_length_cleanup", clear=False)
+        add.cleanup_pipe(nlp, name="shorthand_length_cleanup")
 
     @classmethod
     def missing_patterns(cls):

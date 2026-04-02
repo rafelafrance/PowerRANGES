@@ -22,11 +22,9 @@ class BodyMass(Base):
     ]
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     factor: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_g")
-    factor: ClassVar[dict[str, str]] = {k: float(v) for k, v in factor.items()}
-    keys: ClassVar[list[str]] = """ key_with_units key_leader wt_key """.split()
-    units: ClassVar[list[str]] = """
-        key_with_units metric_mass imperial_mass
-        """.split()
+    factor: ClassVar[dict[str, float]] = {k: float(v) for k, v in factor.items()}
+    keys: ClassVar[list[str]] = ["key_with_units", "key_leader", "wt_key"]
+    units: ClassVar[list[str]] = ["key_with_units", "metric_mass", "imperial_mass"]
     # ---------------------
 
     mass: float | list[float] = None

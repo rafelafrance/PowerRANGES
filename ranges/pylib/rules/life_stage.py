@@ -25,8 +25,8 @@ class LifeStage(Base):
     eq: ClassVar[list[str]] = t_const.COLON + t_const.DASH + t_const.EQ
     dash: ClassVar[list[str]] = t_const.DASH + t_const.SLASH
 
-    eq_re: ClassVar[re.Pattern] = re.compile(rf'^\s*({"|".join(eq)})\s*')
-    dash_re: ClassVar[re.Pattern] = re.compile(rf'\s*({"|".join(dash)})\s*')
+    eq_re: ClassVar[re.Pattern] = re.compile(rf"^\s*({'|'.join(eq)})\s*")
+    dash_re: ClassVar[re.Pattern] = re.compile(rf"\s*({'|'.join(dash)})\s*")
 
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
@@ -61,7 +61,7 @@ class LifeStage(Base):
             nlp,
             name="life_stage_patterns",
             compiler=cls.life_stage_patterns(),
-            overwrite=""" number ordinal ordinal_suffix time_units """.split(),
+            overwrite=["number", "ordinal", "ordinal_suffix", "time_units"],
         )
 
         add.cleanup_pipe(nlp, name="life_stage_cleanup")

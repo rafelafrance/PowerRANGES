@@ -7,7 +7,7 @@ from ranges.pylib import trait_util as tu
 
 def pipe(nlp: Language) -> None:
     config = {
-        "delete": """ number date elevation lat_long uuid """.split(),
+        "delete": ["number", "date", "elevation", "lat_long", "uuid"],
     }
     add.custom_pipe(nlp, "delete", config=config)
 

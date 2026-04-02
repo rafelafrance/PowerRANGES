@@ -38,24 +38,41 @@ class Ovary(Base):
         "right_ovary": "right_side",
     }
 
-    keys: ClassVar[list[str]] = """
-        ovary_len ovary_len_mm ovary_width ovary_width_mm """.split()
+    keys: ClassVar[list[str]] = [
+        "ovary_len",
+        "ovary_len_mm",
+        "ovary_width",
+        "ovary_width_mm",
+    ]
 
     sides: ClassVar[list[str]] = ["left", "right", "both"]
     side_ovary: ClassVar[list[str]] = ["left_ovary", "right_ovary"]
     all_sides: ClassVar[list[str]] = sides + side_ovary
 
     factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
-    factor_mm: ClassVar[dict[str, str]] = {
+    factor_mm: ClassVar[dict[str, float]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
 
     units: ClassVar[list[str]] = ["metric_length", "imperial_length"]
 
-    descriptors: ClassVar[list[str]] = """
-        active albicans color corpus covered cyst destroyed developed fallopian luteum
-        mature other size texture visible
-        """.split()
+    descriptors: ClassVar[list[str]] = [
+        "active",
+        "albicans",
+        "color",
+        "corpus",
+        "covered",
+        "cyst",
+        "destroyed",
+        "developed",
+        "fallopian",
+        "luteum",
+        "mature",
+        "other",
+        "size",
+        "texture",
+        "visible",
+    ]
 
     decoder: ClassVar[dict[str, dict]] = {
         "'": {"LOWER": {"IN": t_const.QUOTE}, "OP": "?"},

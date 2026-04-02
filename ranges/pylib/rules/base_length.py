@@ -12,9 +12,9 @@ from traiter.pylib.pattern_compiler import Compiler
 from ranges.pylib.rules.base import Base
 
 SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ + t_const.SLASH
-SEP += r""" & ! + ~ """.split()
+SEP += [r"&", r"!", r"+", r"~"]
 
-BAD = """ tag """.split()
+BAD = ["tag"]
 
 DECODER = {
     ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
@@ -46,10 +46,13 @@ class BaseLength(Base):
 
     csvs: ClassVar[list[Path]] = []
 
-    keys: ClassVar[list[str]] = """ key_with_units key_leader len_key """.split()
-    units: ClassVar[
-        list[str]
-    ] = """ key_with_units metric_length imperial_length imperial_inches """.split()
+    keys: ClassVar[list[str]] = ["key_with_units", "key_leader", "len_key"]
+    units: ClassVar[list[str]] = [
+        "key_with_units",
+        "metric_length",
+        "imperial_length",
+        "imperial_inches",
+    ]
 
     factor_mm: ClassVar[dict[str, str]] = {}
 
@@ -144,7 +147,7 @@ class BaseLength(Base):
     def cleanup_pipe(cls, nlp, delete: list[str] | None = None) -> None:
         delete = delete or []
         delete = ["bad_length", *delete]
-        add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup", delete=delete)
+        add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup")
 
     @classmethod
     def length_patterns(cls, *, allow_no_key=False, label=None):

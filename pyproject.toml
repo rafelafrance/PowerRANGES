@@ -10,13 +10,22 @@ description = ""
 license = { file = "LICENSE" }
 authors = [{ name = "Raphael LaFrance", email = "raphael.lafrance@gmail.com" }]
 requires-python = "==3.13.*"
-dependencies = ["Jinja2", "jupyter", "pandas", "regex", "spacy", "tqdm"]
+dependencies = [
+    "Jinja2",
+    "jupyter",
+    "pandas",
+    "regex",
+    "spacy",
+    "sqlglot>=30.1.0",
+    "tqdm",
+    "uv-build>=0.11.2",
+]
 
 [dependency-groups]
 dev = [
   "pre-commit>=4.3.0",
   "ruff>=0.15.8",
-  "sqlglot>=30.1.0",
+  "sqlglot>=30.2.1",
   "ty>=0.0.1a27",
   "uv-build>=0.9.5",
 ]
@@ -28,6 +37,9 @@ module-name = "ranges"
 [tool.ty.rules]
 not-subscriptable = "ignore"
 
+[tool.ruff]
+show-fixes = true
+
 [tool.ruff.format]
 docstring-code-format = true
 
@@ -37,8 +49,6 @@ select = ["ALL"]
 
 ignore = [
   "ANN001",  # Missing type annotation for function argument
-  "ANN101",  # Missing type annotation for `self` in method
-  "ANN102",  # Missing type annotation for `cls` in classmethod
   "ANN201",  # Missing return type annotation for public function
   "ANN205",  # Missing return type annotation for staticmethod
   "ANN206",  # Missing return type annotation for classmethod
@@ -61,9 +71,9 @@ ignore = [
   "FA102",   # Missing `from __future__ import annotations`, but uses PEP 604 union
   "FIX002",  # Line contains TODO
   "G004",    # Logging statement uses f-string
+#  "LOG015",  # Root logger call
   "N815",    # Variable in class scope should not be mixedCase
   "N818",    # Exception name {name} should be named with an Error suffix
-  "PD901",   # Avoid using the generic variable name `df` for DataFrames
   "PLR0913", # Too many arguments in function definition ({c_args} > {max_args})
   "PLR0915", # Too many statements (x > 50)
   "PLR2004", # Magic value used in comparison, consider replacing with a constant variable

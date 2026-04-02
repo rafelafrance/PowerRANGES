@@ -22,7 +22,7 @@ class TotalLength(BaseLength):
         Path(__file__).parent / "terms" / "total_length_terms.csv",
     ]
     factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
-    factor_mm: ClassVar[dict[str, str]] = {
+    factor_mm: ClassVar[dict[str, float]] = {
         k: float(v) * 10.0 for k, v in factor_cm.items()
     }
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")

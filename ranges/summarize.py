@@ -6,7 +6,8 @@ import textwrap
 from pathlib import Path
 
 from pylib import log
-from pylib.writers import summary_writer
+
+from ranges.writers import summary_writer
 
 
 def main() -> None:

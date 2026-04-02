@@ -1,17 +1,17 @@
 import unittest
 
-from ranges.pylib.rules.placenta_scar_count import PlacentalScarCount
+from ranges.rules.placenta_scar_count import PlacentalScarCount
 from tests.setup import parse
 
 
 class TestPlacentalScarCount(unittest.TestCase):
-    def test_placental_scar_count_01(self):
+    def test_placental_scar_count_01(self) -> None:
         self.assertEqual(
             parse("7 plac scar"),
             [PlacentalScarCount(count=7, present=True, start=0, end=11)],
         )
 
-    def test_placental_scar_count_02(self):
+    def test_placental_scar_count_02(self) -> None:
         self.assertEqual(
             parse("5 plac scar 3L 2R"),
             [
@@ -21,7 +21,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_03(self):
+    def test_placental_scar_count_03(self) -> None:
         self.assertEqual(
             parse("3 placental scars, 1L, 2R"),
             [
@@ -31,19 +31,19 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_04(self):
+    def test_placental_scar_count_04(self) -> None:
         self.assertEqual(
             parse("4 plac scar"),
             [PlacentalScarCount(present=True, count=4, start=0, end=11)],
         )
 
-    def test_placental_scar_count_05(self):
+    def test_placental_scar_count_05(self) -> None:
         self.assertEqual(
             parse("no placental scars"),
             [PlacentalScarCount(present=False, start=0, end=18)],
         )
 
-    def test_placental_scar_count_06(self):
+    def test_placental_scar_count_06(self) -> None:
         self.assertEqual(
             parse("2+1=3 placental scars"),
             [
@@ -53,7 +53,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_07(self):
+    def test_placental_scar_count_07(self) -> None:
         self.assertEqual(
             parse("placental scar 1 + 2"),
             [
@@ -63,13 +63,13 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_08(self):
+    def test_placental_scar_count_08(self) -> None:
         self.assertEqual(
             parse("uterus enlarged, scarring"),
             [PlacentalScarCount(present=True, start=17, end=25)],
         )
 
-    def test_placental_scar_count_09(self):
+    def test_placental_scar_count_09(self) -> None:
         self.assertEqual(
             parse("scars 2R, 3L,"),
             [
@@ -79,19 +79,19 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_10(self):
+    def test_placental_scar_count_10(self) -> None:
         self.assertEqual(
             parse("plac scar 1L"),
             [PlacentalScarCount(present=True, count=1, left=1, start=0, end=12)],
         )
 
-    def test_placental_scar_count_11(self):
+    def test_placental_scar_count_11(self) -> None:
         self.assertEqual(
             parse("; 4 faint placental scars"),
             [PlacentalScarCount(present=True, count=4, start=2, end=25)],
         )
 
-    def test_placental_scar_count_12(self):
+    def test_placental_scar_count_12(self) -> None:
         self.assertEqual(
             parse("5 plac scars: 3(R)&2(L)"),
             [
@@ -101,7 +101,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_13(self):
+    def test_placental_scar_count_13(self) -> None:
         self.assertEqual(
             parse("2 placental scars, 0L, 2R"),
             [
@@ -111,7 +111,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_14(self):
+    def test_placental_scar_count_14(self) -> None:
         self.assertEqual(
             parse("2+1=3 placental scars"),
             [
@@ -121,7 +121,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_15(self):
+    def test_placental_scar_count_15(self) -> None:
         self.assertEqual(
             parse("not breeding, two scars, 1 left, 1 right"),
             [
@@ -131,7 +131,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_16(self):
+    def test_placental_scar_count_16(self) -> None:
         self.assertEqual(
             parse("placental scars 1 + 1, mam tissue"),
             [
@@ -141,7 +141,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_17(self):
+    def test_placental_scar_count_17(self) -> None:
         self.assertEqual(
             parse("2 P-SCAR R, 1 P-SCAR L"),
             [
@@ -151,7 +151,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_18(self):
+    def test_placental_scar_count_18(self) -> None:
         self.assertEqual(
             parse("5 scars: 2lf,3rt"),
             [
@@ -161,7 +161,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_19(self):
+    def test_placental_scar_count_19(self) -> None:
         self.assertEqual(
             parse("P-SCAR-R 3, P-SCAR-L 2"),
             [
@@ -171,7 +171,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_20(self):
+    def test_placental_scar_count_20(self) -> None:
         self.assertEqual(
             parse("1R,0L plac scar"),
             [
@@ -181,7 +181,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_21(self):
+    def test_placental_scar_count_21(self) -> None:
         self.assertEqual(
             parse("3 pac. scars:1(R)&2(L)"),
             [
@@ -191,13 +191,13 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_22(self):
+    def test_placental_scar_count_22(self) -> None:
         self.assertEqual(
             parse("plac scar-9;)"),
             [PlacentalScarCount(present=True, count=9, start=0, end=11)],
         )
 
-    def test_placental_scar_count_23(self):
+    def test_placental_scar_count_23(self) -> None:
         self.assertEqual(
             parse("1 lt. plac. scar, 2 rt"),
             [
@@ -207,7 +207,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_24(self):
+    def test_placental_scar_count_24(self) -> None:
         self.assertEqual(
             parse("3+4= 7 placental scars"),
             [
@@ -217,25 +217,25 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_25(self):
+    def test_placental_scar_count_25(self) -> None:
         self.assertEqual(
             parse("; no scar"),
             [PlacentalScarCount(present=False, start=2, end=9)],
         )
 
-    def test_placental_scar_count_26(self):
+    def test_placental_scar_count_26(self) -> None:
         self.assertEqual(
             parse("; 3 prominent placental scars"),
             [PlacentalScarCount(present=True, count=3, start=2, end=29)],
         )
 
-    def test_placental_scar_count_27(self):
+    def test_placental_scar_count_27(self) -> None:
         self.assertEqual(
             parse("reproductive data=no plsc ; "),
             [PlacentalScarCount(present=False, start=18, end=25)],
         )
 
-    def test_placental_scar_count_28(self):
+    def test_placental_scar_count_28(self) -> None:
         self.assertEqual(
             parse("L 3 plac scars, R 2 pl. scars;"),
             [
@@ -245,7 +245,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_29(self):
+    def test_placental_scar_count_29(self) -> None:
         self.assertEqual(
             parse("reproductive data=3R, 2L, placental scars;"),
             [
@@ -255,7 +255,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_30(self):
+    def test_placental_scar_count_30(self) -> None:
         self.assertEqual(
             parse("reproductive data=Scars - 5 on left, 5 of right"),
             [
@@ -265,22 +265,22 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_31(self):
+    def test_placental_scar_count_31(self) -> None:
         self.assertEqual(
             parse(";reproductive data=Placental scars-2R;"),
             [PlacentalScarCount(present=True, count=2, right=2, start=19, end=37)],
         )
 
-    def test_placental_scar_count_32(self):
+    def test_placental_scar_count_32(self) -> None:
         self.assertEqual(
             parse("no visible placental scarring"),
             [PlacentalScarCount(present=False, start=0, end=29)],
         )
 
-    def test_placental_scar_count_33(self):
+    def test_placental_scar_count_33(self) -> None:
         self.assertEqual(parse("; 1 scar on tail ;"), [])
 
-    def test_placental_scar_count_34(self):
+    def test_placental_scar_count_34(self) -> None:
         self.assertEqual(
             parse(", no scars horns R 2 plac scars, L 3 plac scars,"),
             [
@@ -300,13 +300,13 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_35(self):
+    def test_placental_scar_count_35(self) -> None:
         self.assertEqual(
             parse("reproductive data=plac. scars,"),
             [PlacentalScarCount(present=True, start=18, end=29)],
         )
 
-    def test_placental_scar_count_36(self):
+    def test_placental_scar_count_36(self) -> None:
         self.assertEqual(
             parse("; reproductive data=scars  0R-4L ;"),
             [
@@ -316,7 +316,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_37(self):
+    def test_placental_scar_count_37(self) -> None:
         self.assertEqual(
             parse(
                 "SKULL CLEANED AT ILLINOIS STATE MUSEUM OCT 95; "
@@ -325,7 +325,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             [],
         )
 
-    def test_placental_scar_count_38(self):
+    def test_placental_scar_count_38(self) -> None:
         self.assertEqual(
             parse("ut horns: R 1 definite scar, L 2+ scars;"),
             [
@@ -335,25 +335,25 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_39(self):
+    def test_placental_scar_count_39(self) -> None:
         self.assertEqual(
             parse("DINO 14431; placental scars"),
             [PlacentalScarCount(present=True, start=12, end=27)],
         )
 
-    def test_placental_scar_count_40(self):
+    def test_placental_scar_count_40(self) -> None:
         self.assertEqual(
-            parse('"Note in catalog: same as 135478";Scarritt ' 'Venezuelan Exped."'),
+            parse('"Note in catalog: same as 135478";Scarritt Venezuelan Exped."'),
             [],
         )
 
-    def test_placental_scar_count_41(self):
+    def test_placental_scar_count_41(self) -> None:
         self.assertEqual(
             parse("5 ut scars,"),
             [PlacentalScarCount(present=True, count=5, start=0, end=10)],
         )
 
-    def test_placental_scar_count_42(self):
+    def test_placental_scar_count_42(self) -> None:
         self.assertEqual(
             parse("specimen number AJU 372; P-SCAR-R 5, P-SCAR-L 5"),
             [
@@ -363,13 +363,13 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_43(self):
+    def test_placental_scar_count_43(self) -> None:
         self.assertEqual(
             parse("Zion 11396; NK 36683; scars"),
             [PlacentalScarCount(present=True, start=22, end=27)],
         )
 
-    def test_placental_scar_count_44(self):
+    def test_placental_scar_count_44(self) -> None:
         self.assertEqual(
             parse(
                 "negative for nematodes; skull labeled 14 Nov 57. PSM: "
@@ -378,31 +378,31 @@ class TestPlacentalScarCount(unittest.TestCase):
             [],
         )
 
-    def test_placental_scar_count_46(self):
+    def test_placental_scar_count_46(self) -> None:
         self.assertEqual(
             parse("H,K,L,L,S; UTERINE SCARS=2R"),
             [PlacentalScarCount(present=True, count=2, right=2, start=11, end=27)],
         )
 
-    def test_placental_scar_count_47(self):
+    def test_placental_scar_count_47(self) -> None:
         self.assertEqual(
             parse("no embryonic scars"),
             [PlacentalScarCount(present=False, start=0, end=18)],
         )
 
-    def test_placental_scar_count_48(self):
+    def test_placental_scar_count_48(self) -> None:
         self.assertEqual(
             parse("scars"),
             [PlacentalScarCount(present=True, start=0, end=5)],
         )
 
-    def test_placental_scar_count_49(self):
+    def test_placental_scar_count_49(self) -> None:
         self.assertEqual(
             parse("fat=2; 14 embryo scars"),
             [PlacentalScarCount(present=True, count=14, start=7, end=22)],
         )
 
-    def test_placental_scar_count_50(self):
+    def test_placental_scar_count_50(self) -> None:
         self.assertEqual(
             parse("3 scars left, 3 right;"),
             [
@@ -412,7 +412,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_51(self):
+    def test_placental_scar_count_51(self) -> None:
         self.assertEqual(
             parse("Uterine scars: 1 L, 3 R."),
             [
@@ -422,7 +422,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_52(self):
+    def test_placental_scar_count_52(self) -> None:
         self.assertEqual(
             parse("scars: 2R, 2L"),
             [
@@ -432,7 +432,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_53(self):
+    def test_placental_scar_count_53(self) -> None:
         self.assertEqual(
             parse("scars 3L, 3R"),
             [
@@ -442,7 +442,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_54(self):
+    def test_placental_scar_count_54(self) -> None:
         self.assertEqual(
             parse("2 embryo scars, 1 in each horn,"),
             [
@@ -455,7 +455,7 @@ class TestPlacentalScarCount(unittest.TestCase):
             ],
         )
 
-    def test_placental_scar_count_55(self):
+    def test_placental_scar_count_55(self) -> None:
         """It gets a zero count with separating words."""
         self.assertEqual(
             parse("no scars or embryos, mod. fat"),

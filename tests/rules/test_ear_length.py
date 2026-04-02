@@ -1,17 +1,17 @@
 import unittest
 
-from ranges.pylib.rules.ear_length import EarLength
+from ranges.rules.ear_length import EarLength
 from tests.setup import parse
 
 
 class TestEarLength(unittest.TestCase):
-    def test_total_length_01(self):
+    def test_total_length_01(self) -> None:
         self.assertEqual(
             parse('{"earLengthInMM":"9" };'),
             [EarLength(length=9, start=2, end=19)],
         )
 
-    def test_ear_length_02(self):
+    def test_ear_length_02(self) -> None:
         """It parses an ear length given as a fraction."""
         self.assertEqual(
             parse('ear 9/16"'),
@@ -24,7 +24,7 @@ class TestEarLength(unittest.TestCase):
             ],
         )
 
-    def test_ear_length_03(self):
+    def test_ear_length_03(self) -> None:
         """It handles a really short ear key."""
         self.assertEqual(
             parse('E 1",'),
@@ -38,15 +38,15 @@ class TestEarLength(unittest.TestCase):
             ],
         )
 
-    def test_ear_length_04(self):
+    def test_ear_length_04(self) -> None:
         """It skips an ear tag."""
         self.assertEqual(parse("ear tag 570"), [])
 
-    def test_ear_length_05(self):
+    def test_ear_length_05(self) -> None:
         """It skips a name."""
         self.assertEqual(parse("verbatim collector=E. E. Makela 2432 "), [])
 
-    def test_ear_length_06(self):
+    def test_ear_length_06(self) -> None:
         """It gets a measured from notch notation."""
         self.assertEqual(
             parse("ear from notch=17 mm;"),
@@ -60,7 +60,7 @@ class TestEarLength(unittest.TestCase):
             ],
         )
 
-    def test_ear_length_07(self):
+    def test_ear_length_07(self) -> None:
         """It gets a measured from crown notation."""
         self.assertEqual(
             parse("earfromcrown=17mm;"),
@@ -74,15 +74,15 @@ class TestEarLength(unittest.TestCase):
             ],
         )
 
-    def test_ear_length_08(self):
+    def test_ear_length_08(self) -> None:
         """It does not parse_fields this."""
         self.assertEqual(parse("Hawaiian chain. Magnemite 610-E 7050."), [])
 
-    def test_ear_length_09(self):
+    def test_ear_length_09(self) -> None:
         """It does not pick up a name."""
         self.assertEqual(parse("Gray, J. E. (1866)."), [])
 
-    def test_ear_length_10(self):
+    def test_ear_length_10(self) -> None:
         """It gets an abbreviation."""
         self.assertEqual(
             parse(";E=6;"),

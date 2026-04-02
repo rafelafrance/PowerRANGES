@@ -7,7 +7,7 @@ from traiter.pipes import add
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
-from ranges.pylib.rules.base import Base
+from ranges.rules.base import Base
 
 
 @dataclass(eq=False)

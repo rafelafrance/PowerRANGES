@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -7,18 +6,18 @@ from spacy import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
-from ranges.pylib.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength
 
 
 @dataclass(eq=False)
-class TailLength(BaseLength):
+class TibiaLength(BaseLength):
     # Class vars ----------
-    name: ClassVar[str] = "tail"
+    name: ClassVar[str] = "tibia"
 
     csvs: ClassVar[list[Path]] = [
         Path(t_terms.__file__).parent / "unit_length_terms.csv",
         Path(t_terms.__file__).parent / "unit_tic_terms.csv",
-        Path(__file__).parent / "terms" / "tail_length_terms.csv",
+        Path(__file__).parent / "terms" / "tibia_length_terms.csv",
     ]
 
     factor_cm: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_cm")
@@ -29,47 +28,39 @@ class TailLength(BaseLength):
     # ---------------------
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        value["tail_length"] = {"tail_length_mm": self.length}
-        value["tail_length"]["_parser"] = self.__class__.__name__
+        value = {"tibia_length": {"tibia_length_mm": self.length}}
+        value["tibia_length"]["_parser"] = self.__class__.__name__
 
         if self.units_inferred:
-            value["tail_length"] |= {"tail_length_units_inferred": True}
+            value["tibia_length"] |= {"tibia_length_units_inferred": True}
 
         if self.ambiguous:
-            value["tail_length"] |= {"tail_length_ambiguous": True}
+            value["tibia_length"] |= {"tibia_length_ambiguous": True}
 
         if self.estimated:
-            value["tail_length"] |= {"tail_length_estimated": True}
+            value["tibia_length"] |= {"tibia_length_estimated": True}
 
         return value
 
     @classmethod
     def pipe(cls, nlp) -> None:
         cls.term_pipe(nlp)
-        cls.bad_length_pipe(nlp)
         cls.range_length_pipe(nlp)
         cls.tic_pipe(nlp)
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 
 
-@registry.misc("tail_length_match")
-def tail_length_match(ent):
-    return TailLength.length_match(ent)
+@registry.misc("tibia_length_match")
+def tibia_length_match(ent):
+    return TibiaLength.length_match(ent)
 
 
-@registry.misc("tail_length_range_match")
-def tail_length_range_match(ent):
-    return TailLength.range_match(ent)
+@registry.misc("tibia_length_range_match")
+def tibia_length_range_match(ent):
+    return TibiaLength.range_match(ent)
 
 
-@registry.misc("tail_length_tic_match")
-def tail_length_tic_match(ent):
-    return TailLength.tic_match(ent)
-
-
-@registry.misc("tail_length_bad_match")
-def tail_length_bad_match(ent):
-    return TailLength.bad_match(ent)
+@registry.misc("tibia_length_tic_match")
+def tibia_length_tic_match(ent):
+    return TibiaLength.tic_match(ent)

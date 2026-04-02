@@ -1,12 +1,12 @@
 import unittest
 
-from ranges.pylib.rules.body_mass import BodyMass
-from ranges.pylib.rules.total_length import TotalLength
+from ranges.rules.body_mass import BodyMass
+from ranges.rules.total_length import TotalLength
 from tests.setup import parse
 
 
 class TestBodyMass(unittest.TestCase):
-    def test_body_mass_01(self):
+    def test_body_mass_01(self) -> None:
         """It handles a total length before the mass."""
         self.assertEqual(
             parse("TL (mm) 44,Weight (g) 0.77 xx"),
@@ -16,14 +16,14 @@ class TestBodyMass(unittest.TestCase):
             ],
         )
 
-    def test_body_mass_02(self):
+    def test_body_mass_02(self) -> None:
         """It handles a prefix key."""
         self.assertEqual(
             parse("body mass=20 g"),
             [BodyMass(mass=20, start=0, end=14)],
         )
 
-    def test_body_mass_03(self):
+    def test_body_mass_03(self) -> None:
         """It handles a compound value."""
         self.assertEqual(
             parse("Weight=22 lbs., 7 oz.;"),
@@ -36,7 +36,7 @@ class TestBodyMass(unittest.TestCase):
             ],
         )
 
-    def test_body_mass_04(self):
+    def test_body_mass_04(self) -> None:
         """It handles a compound value range."""
         self.assertEqual(
             parse("2 lbs. 3.1 - 4.5 oz "),
@@ -50,7 +50,7 @@ class TestBodyMass(unittest.TestCase):
             ],
         )
 
-    def test_body_mass_05(self):
+    def test_body_mass_05(self) -> None:
         # It handles an estimated value.
         self.assertEqual(
             parse('"weight":"[139.5] g" }'),
@@ -64,56 +64,56 @@ class TestBodyMass(unittest.TestCase):
             ],
         )
 
-    def test_body_mass_06(self):
+    def test_body_mass_06(self) -> None:
         """It handles other units."""
         self.assertEqual(
             parse('"weight":"94 gr."'),
             [BodyMass(mass=94, start=1, end=16)],
         )
 
-    def test_body_mass_07(self):
+    def test_body_mass_07(self) -> None:
         """It handles no space between the mass and units."""
         self.assertEqual(
             parse('{"measurements":"20.2g,}'),
             [BodyMass(mass=20.2, ambiguous=True, start=14, end=22)],
         )
 
-    def test_body_mass_08(self):
+    def test_body_mass_08(self) -> None:
         """It handles a leader only key."""
         self.assertEqual(
             parse("Body: 15 g"),
             [BodyMass(mass=15, start=0, end=10)],
         )
 
-    def test_body_mass_09(self):
+    def test_body_mass_09(self) -> None:
         """It handles the units being in the key."""
         self.assertEqual(
             parse('{ "massingrams"="20.1" }'),
             [BodyMass(mass=20.1, start=3, end=21)],
         )
 
-    def test_body_mass_10(self):
+    def test_body_mass_10(self) -> None:
         """It handles commas in the mass."""
         self.assertEqual(
             parse('"weight":"1,192.0g" }'),
             [BodyMass(mass=1192, start=1, end=18)],
         )
 
-    def test_body_mass_11(self):
+    def test_body_mass_11(self) -> None:
         """It handles inferring the units."""
         self.assertEqual(
             parse('"weight":"1,192.0" }'),
             [BodyMass(mass=1192, units_inferred=True, start=1, end=17)],
         )
 
-    def test_body_mass_12(self):
+    def test_body_mass_12(self) -> None:
         """It parses a weight range."""
         self.assertEqual(
             parse('"weight: 20.5-31.8gms'),
             [BodyMass(mass=[20.5, 31.8], start=1, end=21)],
         )
 
-    def test_body_mass_13(self):
+    def test_body_mass_13(self) -> None:
         """It parses a weight range without units."""
         self.assertEqual(
             parse('"weight: 20.5-32'),
@@ -127,43 +127,43 @@ class TestBodyMass(unittest.TestCase):
             ],
         )
 
-    def test_body_mass_14(self):
+    def test_body_mass_14(self) -> None:
         """It handles other units."""
         self.assertEqual(
             parse("Body: 1.2 kg"),
             [BodyMass(mass=1200, start=0, end=12)],
         )
 
-    def test_body_mass_15(self):
+    def test_body_mass_15(self) -> None:
         """It should not parse_fields this."""
         self.assertEqual(parse("Specimen #'s - 5491,5492"), [])
 
-    def test_body_mass_16(self):
+    def test_body_mass_16(self) -> None:
         """It parses a zero mass."""
         self.assertEqual(
             parse("body mass=0 g"),
             [BodyMass(mass=0, start=0, end=13)],
         )
 
-    def test_body_mass_17(self):
+    def test_body_mass_17(self) -> None:
         """It parses a different key."""
         self.assertEqual(
             parse("wt=10 g"),
             [BodyMass(mass=10, start=0, end=7)],
         )
 
-    def test_body_mass_18(self):
+    def test_body_mass_18(self) -> None:
         """It parses a mass without a leading zero."""
         self.assertEqual(
             parse("weight=.65 kg;"),
             [BodyMass(mass=650, start=0, end=13)],
         )
 
-    def test_body_mass_19(self):
+    def test_body_mass_19(self) -> None:
         """It skips weights that are not a body mass."""
         self.assertEqual(parse("bacu wt=10 g"), [])
 
-    def test_body_mass_20(self):
+    def test_body_mass_20(self) -> None:
         self.assertEqual(
             parse("Verbatim weight=10;weight=10 g"),
             [

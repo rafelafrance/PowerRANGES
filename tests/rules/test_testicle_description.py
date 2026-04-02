@@ -1,71 +1,71 @@
 import unittest
 
-from ranges.pylib.rules.testicle import Testicle
+from ranges.rules.testicle import Testicle
 from tests.setup import parse
 
 
 class TestTesticleState(unittest.TestCase):
-    def test_testicle_description_01(self):
+    def test_testicle_description_01(self) -> None:
         self.assertEqual(
             parse("some words reproductive data=No testicles; more words"),
             [Testicle(description="no testicles", start=29, end=41)],
         )
 
-    def test_testicle_description_02(self):
+    def test_testicle_description_02(self) -> None:
         self.assertEqual(
             parse("testes descended"),
             [Testicle(description="descended", start=0, end=16)],
         )
 
-    def test_testicle_description_03(self):
+    def test_testicle_description_03(self) -> None:
         self.assertEqual(
             parse("testes undescended"),
             [Testicle(description="undescended", start=0, end=18)],
         )
 
-    def test_testicle_description_04(self):
+    def test_testicle_description_04(self) -> None:
         self.assertEqual(
             parse("testes undesc."),
             [Testicle(description="undescended", start=0, end=13)],
         )
 
-    def test_testicle_description_06(self):
+    def test_testicle_description_06(self) -> None:
         self.assertEqual(
             parse("testes not fully descended"),
             [Testicle(description="not fully descended", start=0, end=26)],
         )
 
-    def test_testicle_description_07(self):
+    def test_testicle_description_07(self) -> None:
         self.assertEqual(
             parse("tes undescend."),
             [Testicle(description="undescended", start=0, end=13)],
         )
 
-    def test_testicle_description_08(self):
+    def test_testicle_description_08(self) -> None:
         self.assertEqual(
             parse("t abdominal"),
             [Testicle(description="abdominal", start=0, end=11)],
         )
 
-    def test_testicle_description_09(self):
+    def test_testicle_description_09(self) -> None:
         self.assertEqual(
             parse("reproductive data=Testicle partially descended. "),
             [Testicle(description="partially descended", start=18, end=46)],
         )
 
-    def test_testicle_description_10(self):
+    def test_testicle_description_10(self) -> None:
         self.assertEqual(
             parse("reproductive data=testis 5mm, abdominal "),
             [Testicle(description="abdominal", length=5, start=18, end=39)],
         )
 
-    def test_testicle_description_12(self):
+    def test_testicle_description_12(self) -> None:
         self.assertEqual(
             parse("reproductive data=No testicles"),
             [Testicle(description="no testicles", start=18, end=30)],
         )
 
-    def test_testicle_description_13(self):
+    def test_testicle_description_13(self) -> None:
         self.assertEqual(
             parse("reproductive data=testes decended, T=8x3 ;"),
             [
@@ -80,49 +80,49 @@ class TestTesticleState(unittest.TestCase):
             ],
         )
 
-    def test_testicle_description_14(self):
+    def test_testicle_description_14(self) -> None:
         self.assertEqual(
             parse("reproductive data=Testicle small"),
             [Testicle(description="small", start=18, end=32)],
         )
 
-    def test_testicle_description_16(self):
+    def test_testicle_description_16(self) -> None:
         self.assertEqual(parse("puncture wound in left abdominal region."), [])
 
-    def test_testicle_description_18(self):
+    def test_testicle_description_18(self) -> None:
         self.assertEqual(
             parse("junk before reproductive data=Testicle small, not descended"),
             [Testicle(description="small, not descended", start=30, end=59)],
         )
 
-    def test_testicle_description_19(self):
+    def test_testicle_description_19(self) -> None:
         self.assertEqual(
             parse("Mixed woods // TESTES NOT DESCENDED"),
             [Testicle(description="not descended", start=15, end=35)],
         )
 
-    def test_testicle_description_20(self):
+    def test_testicle_description_20(self) -> None:
         self.assertEqual(parse("reproductive data=Uteri small, clear"), [])
 
-    def test_testicle_description_21(self):
+    def test_testicle_description_21(self) -> None:
         self.assertEqual(
             parse("; reproductive data=testes = 4x3 mm; "),
             [Testicle(length=4, width=3, start=20, end=35)],
         )
 
-    def test_testicle_description_22(self):
+    def test_testicle_description_22(self) -> None:
         self.assertEqual(
             parse("Deciduous woods // TESTES DESCENDED, AND ENLARGED"),
             [Testicle(description="descended enlarged", start=19, end=49)],
         )
 
-    def test_testicle_description_23(self):
+    def test_testicle_description_23(self) -> None:
         self.assertEqual(
             parse("Testis abd. Collected with 22 cal. pellet rifle."),
             [Testicle(description="abdominal", start=0, end=10)],
         )
 
-    def test_testicle_description_24(self):
+    def test_testicle_description_24(self) -> None:
         self.assertEqual(
             parse("reproductive data=test 3.5x2, pt desc, Et not visib,"),
             [
@@ -137,59 +137,59 @@ class TestTesticleState(unittest.TestCase):
             ],
         )
 
-    def test_scrotal_state_25(self):
+    def test_scrotal_state_25(self) -> None:
         self.assertEqual(
             parse("testes not-scrotal"),
             [Testicle(description="not-scrotal", start=0, end=18)],
         )
 
-    def test_scrotal_state_26(self):
+    def test_scrotal_state_26(self) -> None:
         self.assertEqual(
             parse("testes no scrotum"),
             [Testicle(description="no scrotum", start=0, end=17)],
         )
 
-    def test_scrotal_state_27(self):
+    def test_scrotal_state_27(self) -> None:
         self.assertEqual(
             parse("testis nscr"),
             [Testicle(description="non-scrotal", start=0, end=11)],
         )
 
-    def test_scrotal_state_29(self):
+    def test_scrotal_state_29(self) -> None:
         self.assertEqual(
             parse("testes ns"), [Testicle(description="non-scrotal", start=0, end=9)]
         )
 
-    def test_scrotal_state_30(self):
+    def test_scrotal_state_30(self) -> None:
         self.assertEqual(
             parse("t nscr"), [Testicle(description="non-scrotal", start=0, end=6)]
         )
 
-    def test_scrotal_state_31(self):
+    def test_scrotal_state_31(self) -> None:
         self.assertEqual(
             parse("reproductive data=testes: 11x7 mm (scrotal)"),
             [Testicle(description="scrotal", length=11, width=7, start=18, end=42)],
         )
 
-    def test_scrotal_state_32(self):
+    def test_scrotal_state_32(self) -> None:
         self.assertEqual(
             parse("non-scrotal, "),
             [Testicle(description="non-scrotal", start=0, end=11)],
         )
 
-    def test_scrotal_state_33(self):
+    def test_scrotal_state_33(self) -> None:
         self.assertEqual(
             parse("reproductive data=NS ;"),
             [Testicle(description="non-scrotal", start=18, end=20)],
         )
 
-    def test_scrotal_state_34(self):
+    def test_scrotal_state_34(self) -> None:
         self.assertEqual(
             parse("reproductive data=SCR ;"),
             [Testicle(description="scrotal", start=18, end=21)],
         )
 
-    def test_scrotal_state_35(self):
+    def test_scrotal_state_35(self) -> None:
         self.assertEqual(
             parse("t ns"), [Testicle(description="non-scrotal", start=0, end=4)]
         )

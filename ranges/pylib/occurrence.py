@@ -4,8 +4,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from ranges.pylib.rules.base import Base
-from ranges.pylib.rules.sex import Sex
+from ranges.rules import Base, Sex
 
 OVERWRITE = {
     "sex": Sex,

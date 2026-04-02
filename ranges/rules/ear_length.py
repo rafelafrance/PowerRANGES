@@ -3,12 +3,14 @@ from pathlib import Path
 from typing import Any, ClassVar
 
 from spacy import registry
+from spacy.language import Language
+from spacy.tokens import Span
 from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import term_util
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.rules import terms as t_terms
 
-from ranges.pylib.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength
 
 # from traiter.pipes import add
 
@@ -35,7 +37,7 @@ class EarLength(BaseLength):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    measured_from: str = None
+    measured_from: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         value = {"ear_length": {"_parser": self.__class__.__name__}}
@@ -56,7 +58,7 @@ class EarLength(BaseLength):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         super().to_dwc(dwc)
 
         if self.measured_from:
@@ -65,7 +67,7 @@ class EarLength(BaseLength):
         return dwc
 
     @classmethod
-    def pipe(cls, nlp) -> None:
+    def pipe(cls, nlp: Language) -> None:
         cls.term_pipe(nlp)
         cls.bad_length_pipe(nlp)
         cls.range_length_pipe(nlp)
@@ -81,28 +83,28 @@ class EarLength(BaseLength):
             raise RejectMatch
 
     @classmethod
-    def get_measured_from(cls, ent, trait) -> None:
+    def get_measured_from(cls, ent: Span, trait: "EarLength") -> None:
         keys = [e for e in ent.ents if e.label_ in cls.keys]
         for key in keys:
             if value := cls.measured_keys.get(key.text.lower()):
                 trait.measured_from = value
 
     @classmethod
-    def ear_length_match(cls, ent):
+    def ear_length_match(cls, ent: Span) -> "EarLength | BaseLength":
         trait = cls.length_match(ent)
         # cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
-    def ear_length_range_match(cls, ent):
+    def ear_length_range_match(cls, ent: Span) -> "EarLength | BaseLength":
         trait = cls.range_match(ent)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
-    def ear_length_tic_match(cls, ent):
+    def ear_length_tic_match(cls, ent: Span) -> "EarLength | BaseLength":
         trait = cls.tic_match(ent)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
@@ -110,20 +112,20 @@ class EarLength(BaseLength):
 
 
 @registry.misc("ear_length_match")
-def ear_length_match(ent):
+def ear_length_match(ent: Span) -> EarLength | BaseLength:
     return EarLength.ear_length_match(ent)
 
 
 @registry.misc("ear_length_range_match")
-def ear_length_range_match(ent):
+def ear_length_range_match(ent: Span) -> EarLength | BaseLength:
     return EarLength.ear_length_range_match(ent)
 
 
 @registry.misc("ear_length_tic_match")
-def ear_length_tic_match(ent):
+def ear_length_tic_match(ent: Span) -> EarLength | BaseLength:
     return EarLength.ear_length_tic_match(ent)
 
 
 @registry.misc("ear_length_bad_match")
-def ear_length_bad_match(ent):
+def ear_length_bad_match(ent: Span) -> EarLength | BaseLength:
     return EarLength.bad_match(ent)

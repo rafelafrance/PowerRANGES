@@ -1,11 +1,11 @@
 import unittest
 
-from ranges.pylib.rules.female_state_shorthand import FemaleStateShorthand
+from ranges.rules.female_state_shorthand import FemaleStateShorthand
 from tests.setup import parse
 
 
 class TestFemaleStateShorthand(unittest.TestCase):
-    def test_female_state_shorthand_01(self):
+    def test_female_state_shorthand_01(self) -> None:
         self.assertEqual(
             parse("oen"),
             [
@@ -19,7 +19,7 @@ class TestFemaleStateShorthand(unittest.TestCase):
             ],
         )
 
-    def test_female_state_shorthand_02(self):
+    def test_female_state_shorthand_02(self) -> None:
         self.assertEqual(
             parse("cmlac"),
             [

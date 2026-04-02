@@ -1,23 +1,23 @@
 import unittest
 
-from ranges.pylib.rules.ovary import Ovary
+from ranges.rules.ovary import Ovary
 from tests.setup import parse
 
 
 class TestOvarySize(unittest.TestCase):
-    def test_ovary_size_01(self):
+    def test_ovary_size_01(self) -> None:
         self.assertEqual(
             parse("ovaries = 8x5 mm"),
             [Ovary(length=8.0, width=5.0, start=0, end=16)],
         )
 
-    def test_ovary_size_02(self):
+    def test_ovary_size_02(self) -> None:
         self.assertEqual(
             parse("ovary < 1 x 1 mm"),
             [Ovary(length=1.0, width=1.0, start=0, end=16)],
         )
 
-    def test_ovary_size_03(self):
+    def test_ovary_size_03(self) -> None:
         self.assertEqual(
             parse("[right ovary listed, left ovary: 4 x 2 mm]"),
             [
@@ -26,7 +26,7 @@ class TestOvarySize(unittest.TestCase):
             ],
         )
 
-    def test_ovary_size_04(self):
+    def test_ovary_size_04(self) -> None:
         self.assertEqual(
             parse("Rt Ovary 2.0x3.5mm, Lft Ovary 2.1x4.0mm."),
             [
@@ -45,7 +45,7 @@ class TestOvarySize(unittest.TestCase):
             ],
         )
 
-    def test_ovary_size_05(self):
+    def test_ovary_size_05(self) -> None:
         self.assertEqual(
             parse("ovaries: 20mm X 12mm, 18mm X 9mm."),
             [
@@ -60,13 +60,13 @@ class TestOvarySize(unittest.TestCase):
             ],
         )
 
-    def test_ovary_size_06(self):
+    def test_ovary_size_06(self) -> None:
         self.assertEqual(
             parse("ovaries = 8 mm"),
             [Ovary(length=8, start=0, end=14)],
         )
 
-    def test_ovary_size_07(self):
+    def test_ovary_size_07(self) -> None:
         self.assertEqual(
             parse('"ovaryLengthInMM":"12", "ovaryWidthInMM":"5",'),
             [
@@ -83,7 +83,7 @@ class TestOvarySize(unittest.TestCase):
             ],
         )
 
-    def test_ovary_size_08(self):
+    def test_ovary_size_08(self) -> None:
         self.assertEqual(
             parse('"ovaryLength":"12", "ovaryWidth":"5",'),
             [
@@ -102,7 +102,7 @@ class TestOvarySize(unittest.TestCase):
             ],
         )
 
-    def test_ovary_size_09(self):
+    def test_ovary_size_09(self) -> None:
         self.assertEqual(
             parse('"ovaryLength":"12mm", "ovaryWidth":"5 mm",'),
             [
@@ -119,7 +119,7 @@ class TestOvarySize(unittest.TestCase):
             ],
         )
 
-    def test_ovary_size_10(self):
+    def test_ovary_size_10(self) -> None:
         self.assertEqual(
             parse("reproductive data=ovary 2 x 1 1/4 mm"),
             [Ovary(length=2, width=1.25, start=18, end=36)],

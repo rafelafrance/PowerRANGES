@@ -1,26 +1,26 @@
 import unittest
 
-from ranges.pylib.rules.sex import Sex
+from ranges.rules.sex import Sex
 from tests.setup import parse
 
 
 class TestSex(unittest.TestCase):
-    def test_sex_01(self):
+    def test_sex_01(self) -> None:
         self.assertEqual(parse("sex=female ?"), [Sex(sex="female?", start=0, end=12)])
 
-    def test_sex_02(self):
+    def test_sex_02(self) -> None:
         self.assertEqual(
             parse("sex=unknown ;"),
             [Sex(sex="unknown", start=0, end=11)],
         )
 
-    def test_sex_03(self):
+    def test_sex_03(self) -> None:
         self.assertEqual(
             parse("sex=F "),
             [Sex(sex="female", start=0, end=5)],
         )
 
-    def test_sex_04(self):
+    def test_sex_04(self) -> None:
         self.assertEqual(
             parse("words male female unknown more words"),
             [
@@ -29,7 +29,7 @@ class TestSex(unittest.TestCase):
             ],
         )
 
-    def test_sex_05(self):
+    def test_sex_05(self) -> None:
         self.assertEqual(
             parse("words male female male more words"),
             [
@@ -39,10 +39,10 @@ class TestSex(unittest.TestCase):
             ],
         )
 
-    def test_sex_06(self):
+    def test_sex_06(self) -> None:
         self.assertEqual(parse("Respective sex and msmt. in mm"), [])
 
-    def test_sex_07(self):
+    def test_sex_07(self) -> None:
         self.assertEqual(
             parse("male or female"),
             [
@@ -51,22 +51,22 @@ class TestSex(unittest.TestCase):
             ],
         )
 
-    def test_sex_08(self):
+    def test_sex_08(self) -> None:
         self.assertEqual(
             parse("sex=unknown "),
             [Sex(sex="unknown", start=0, end=11)],
         )
 
-    def test_sex_09(self):
+    def test_sex_09(self) -> None:
         self.assertEqual(parse("sex=female?"), [Sex(sex="female?", start=0, end=11)])
 
-    def test_sex_10(self):
+    def test_sex_10(self) -> None:
         self.assertEqual(
             parse("sex=not recorded ;"),
             [Sex(sex="unknown", start=0, end=16)],
         )
 
-    def test_sex_11(self):
+    def test_sex_11(self) -> None:
         self.assertEqual(
             parse("sex=male ; sex=male ;"),
             [

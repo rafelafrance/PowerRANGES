@@ -1,11 +1,11 @@
 import unittest
 
-from ranges.pylib.rules.gonad import Gonad
+from ranges.rules.gonad import Gonad
 from tests.setup import parse
 
 
 class TestGonadSize(unittest.TestCase):
-    def test_gonad_size_01(self):
+    def test_gonad_size_01(self) -> None:
         self.assertEqual(
             parse('"gonad length 1":"3.0", "gonad length 2":"2.0",'),
             [
@@ -24,7 +24,7 @@ class TestGonadSize(unittest.TestCase):
             ],
         )
 
-    def test_gonad_size_02(self):
+    def test_gonad_size_02(self) -> None:
         self.assertEqual(
             parse('"gonadLengthInMM":"12", "gonadWidthInMM":"5",'),
             [
@@ -41,13 +41,13 @@ class TestGonadSize(unittest.TestCase):
             ],
         )
 
-    def test_gonad_03(self):
+    def test_gonad_03(self) -> None:
         self.assertEqual(
             parse("tag# 1089; bag# 156; no gonads"),
             [],
         )
 
-    def test_gonad_04(self):
+    def test_gonad_04(self) -> None:
         self.assertEqual(
             parse('"gonad length 1":"3.0", "gonad length 2":"2.0",'),
             [
@@ -66,7 +66,7 @@ class TestGonadSize(unittest.TestCase):
             ],
         )
 
-    def test_gonad_05(self):
+    def test_gonad_05(self) -> None:
         self.assertEqual(
             parse(
                 "left gonad width=9.1 mm; right gonad width=9.2 mm; "
@@ -80,7 +80,7 @@ class TestGonadSize(unittest.TestCase):
             ],
         )
 
-    def test_gonad_06(self):
+    def test_gonad_06(self) -> None:
         self.assertEqual(
             parse('"gonadLengthInMM":"9mm w.o./epid", '),
             [Gonad(length=9, start=1, end=22)],

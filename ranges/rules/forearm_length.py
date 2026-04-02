@@ -6,7 +6,7 @@ from spacy import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
-from ranges.pylib.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength
 
 
 @dataclass(eq=False)

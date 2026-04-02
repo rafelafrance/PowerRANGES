@@ -6,7 +6,7 @@ from spacy import registry
 from traiter.pylib import term_util
 from traiter.rules import terms as t_terms
 
-from ranges.pylib.rules.base_length import BaseLength
+from ranges.rules.base_length import BaseLength
 
 # from traiter.pipes import add
 
@@ -45,7 +45,7 @@ class TotalLength(BaseLength):
 
     @classmethod
     def pipe(cls, nlp) -> None:
-        cls.term_pipe(nlp, delete_patterns="in")
+        cls.term_pipe(nlp)
         cls.bad_length_pipe(nlp)
         cls.compound_length_pipe(nlp, allow_no_key=True)
         cls.range_length_pipe(nlp, allow_no_key=True)

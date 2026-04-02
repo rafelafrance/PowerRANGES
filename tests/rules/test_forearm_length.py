@@ -1,18 +1,18 @@
 import unittest
 
-from ranges.pylib.rules.forearm_length import ForearmLength
+from ranges.rules.forearm_length import ForearmLength
 from tests.setup import parse
 
 
 class TestForearmLength(unittest.TestCase):
-    def test_forearm_length_01(self):
+    def test_forearm_length_01(self) -> None:
         """It parses a forearm notation."""
         self.assertEqual(
             parse("Forearm 33 mm;"),
             [ForearmLength(length=33, start=0, end=13)],
         )
 
-    def test_forearm_length_02(self):
+    def test_forearm_length_02(self) -> None:
         """It handles missing units."""
         self.assertEqual(
             parse("For.A. 33;"),
@@ -26,14 +26,14 @@ class TestForearmLength(unittest.TestCase):
             ],
         )
 
-    def test_forearm_length_03(self):
+    def test_forearm_length_03(self) -> None:
         """It parses a key with units."""
         self.assertEqual(
             parse("forearmleninmm 90"),
             [ForearmLength(length=90, start=0, end=17)],
         )
 
-    def test_forearm_length_04(self):
+    def test_forearm_length_04(self) -> None:
         """It handles a suffix key."""
         self.assertEqual(
             parse('{"measurements":"44.0 (FA)" }'),

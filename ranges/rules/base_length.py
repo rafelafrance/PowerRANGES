@@ -2,14 +2,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language
-from spacy.tokens import Token
+from spacy.language import Language
+from spacy.tokens import Span
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
-from ranges.pylib.rules.base import Base
+from ranges.rules.base import Base
 
 SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ + t_const.SLASH
 SEP += [r"&", r"!", r"+", r"~"]
@@ -54,21 +54,22 @@ class BaseLength(Base):
         "imperial_inches",
     ]
 
-    factor_mm: ClassVar[dict[str, str]] = {}
+    factor_mm: ClassVar[dict[str, float]] = {}
 
     dwc_prefix: ClassVar[dict[str, str]] = {}
+    replace: ClassVar[dict[str, str]] = {}
     # ---------------------
 
-    length: float | list[float] = None
-    units_inferred: bool = None
-    ambiguous: bool = None
-    estimated: bool = None
-    _prefix: str = None
+    length: float | list[float] | None = None
+    units_inferred: bool | None = None
+    ambiguous: bool | None = None
+    estimated: bool | None = None
+    _prefix: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         raise NotImplementedError
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 
         if self.length is not None:
@@ -86,20 +87,21 @@ class BaseLength(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language):
+    def pipe(cls, nlp: Language) -> None:
         raise NotImplementedError
 
     @classmethod
-    def term_pipe(cls, nlp, delete_patterns: list[str] | str | None = None) -> None:
+    def term_pipe(cls, nlp: Language) -> None:
         add.term_pipe(
             nlp,
             name=f"{cls.name}_length_terms",
             path=cls.csvs,
-            delete_patterns=delete_patterns,
         )
 
     @classmethod
-    def length_pipe(cls, nlp, *, allow_no_key=False, label=None) -> None:
+    def length_pipe(
+        cls, nlp: Language, *, allow_no_key: bool = False, label: str | None = None
+    ) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_length_patterns",
@@ -108,7 +110,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def compound_length_pipe(cls, nlp, *, allow_no_key=False) -> None:
+    def compound_length_pipe(cls, nlp: Language, *, allow_no_key: bool = False) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_length_compound_patterns",
@@ -117,7 +119,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def range_length_pipe(cls, nlp, *, allow_no_key=False) -> None:
+    def range_length_pipe(cls, nlp: Language, *, allow_no_key: bool = False) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_range_patterns",
@@ -126,7 +128,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def bad_length_pipe(cls, nlp) -> None:
+    def bad_length_pipe(cls, nlp: Language) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_bad_length_patterns",
@@ -135,7 +137,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def tic_pipe(cls, nlp, *, allow_no_key=False) -> None:
+    def tic_pipe(cls, nlp: Language, *, allow_no_key: bool = False) -> None:
         add.trait_pipe(
             nlp,
             name=f"{cls.name}_length_tic_patterns",
@@ -144,13 +146,15 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def cleanup_pipe(cls, nlp, delete: list[str] | None = None) -> None:
+    def cleanup_pipe(cls, nlp: Language, delete: list[str] | None = None) -> None:
         delete = delete or []
         delete = ["bad_length", *delete]
         add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup")
 
     @classmethod
-    def length_patterns(cls, *, allow_no_key=False, label=None):
+    def length_patterns(
+        cls, *, allow_no_key: bool = False, label: str | None = None
+    ) -> list[Compiler]:
         label = label or f"{cls.name}_length"
         patterns = [
             ' key             "? : "? [ 99 ] mm* ] ',
@@ -176,7 +180,7 @@ class BaseLength(Base):
         ]
 
     @classmethod
-    def compound_length_patterns(cls, *, allow_no_key=False):
+    def compound_length_patterns(cls, *, allow_no_key: bool = False) -> list[Compiler]:
         patterns = [
             " key       : 99 ft ,       99 in ",
             " key       : 99 ft , 99 to 99 in ",
@@ -201,7 +205,7 @@ class BaseLength(Base):
         ]
 
     @classmethod
-    def range_length_patterns(cls, *, allow_no_key=False):
+    def range_length_patterns(cls, *, allow_no_key: bool = False) -> list[Compiler]:
         patterns = [
             ' key       "? : "? 99 to 99 mm* ',
             ' key ambig "? : "? 99 to 99 mm* ',
@@ -225,7 +229,7 @@ class BaseLength(Base):
         ]
 
     @classmethod
-    def tic_length_patterns(cls, *, allow_no_key=False):
+    def tic_length_patterns(cls, *, allow_no_key: bool = False) -> list[Compiler]:
         patterns = [
             ' ambig key   : 99 "+ ',
             '       key   : 99 "+ ',
@@ -249,7 +253,7 @@ class BaseLength(Base):
         ]
 
     @classmethod
-    def bad_length_patterns(cls):
+    def bad_length_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
                 label="bad_length",
@@ -267,32 +271,33 @@ class BaseLength(Base):
         ]
 
     @classmethod
-    def in_millimeters(cls, number, units: Token | str | None):
-        if hasattr(units, "text"):
-            units = units.text.lower()
+    def in_millimeters(cls, number: Span, units: Span | str | None) -> float:
+        units_ = ""
+        if isinstance(units, Span):
+            units_ = units.text.lower()
         elif isinstance(units, str):
-            units = units.lower()
+            units_ = units.lower()
 
-        factor = cls.factor_mm.get(units, 1.0)
+        factor = cls.factor_mm.get(units_, 1.0)
         value = factor * number._.trait.number
         return round(value, 2)
 
     @classmethod
-    def get_prefix(cls, labels):
+    def get_prefix(cls, labels: list[Span]) -> str:
         for ent in labels:
             if prefix := cls.dwc_prefix.get(ent.text.lower()):
                 return prefix
         return cls.name
 
     @classmethod
-    def get_ambiguous_and_prefix(cls, ent):
+    def get_ambiguous_and_prefix(cls, ent: Span) -> tuple[bool | None, str]:
         labels = [e for e in ent.ents if e.label_ in cls.keys]
         prefix = cls.get_prefix(labels)
         ambiguous = True if len(labels) == 0 else None
         return ambiguous, prefix
 
     @classmethod
-    def length_match(cls, ent):
+    def length_match(cls, ent: Span) -> "BaseLength":
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
@@ -313,7 +318,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def compound_match(cls, ent):
+    def compound_match(cls, ent: Span) -> "BaseLength":
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         numbers = [e for e in ent.ents if e.label_ == "number"]
@@ -336,7 +341,7 @@ class BaseLength(Base):
         return cls.from_ent(ent, length=length, ambiguous=ambiguous, _prefix=prefix)
 
     @classmethod
-    def range_match(cls, ent):
+    def range_match(cls, ent: Span) -> "BaseLength":
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
@@ -358,7 +363,7 @@ class BaseLength(Base):
         )
 
     @classmethod
-    def tic_match(cls, ent):
+    def tic_match(cls, ent: Span) -> "BaseLength":
         ambiguous, prefix = cls.get_ambiguous_and_prefix(ent)
 
         number = next(e for e in ent.ents if e.label_ == "number")
@@ -369,5 +374,5 @@ class BaseLength(Base):
         return cls.from_ent(ent, length=length, ambiguous=ambiguous, _prefix=prefix)
 
     @classmethod
-    def bad_match(cls, ent):
+    def bad_match(cls, ent: Span) -> "BaseLength":
         return cls.from_ent(ent)

@@ -9,10 +9,10 @@ from traiter.rules.base_rule import BaseRule as TraiterBase
 @dataclass(eq=False)
 class Base(TraiterBase):
     @classmethod
-    def pipe(cls, nlp: Language):
+    def pipe(cls, nlp: Language) -> None:
         raise NotImplementedError
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         raise NotImplementedError
 
     def as_dict(self) -> dict[str, dict[str, Any]]:

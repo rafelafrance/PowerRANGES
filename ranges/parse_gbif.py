@@ -13,11 +13,12 @@ from pathlib import Path
 
 from pylib import log
 from pylib.occurrence import sample_occurrences
-from pylib.writers import csv_writer, html_writer, json_writer
 from tqdm import tqdm
 
+from ranges.writers import csv_writer, html_writer, json_writer
 
-def main(args: argparse.Namespace) -> None:  # noqa: C901
+
+def main(args: argparse.Namespace) -> None:  # noqa: C901 PLR0912
     log.started()
 
     if args.json_dir:

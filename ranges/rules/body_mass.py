@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language, registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
@@ -10,7 +12,7 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
-from ranges.pylib.rules.base import Base
+from ranges.rules.base import Base
 
 
 @dataclass(eq=False)
@@ -21,16 +23,16 @@ class BodyMass(Base):
         Path(__file__).parent / "terms" / "body_mass_terms.csv",
     ]
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
-    factor: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "factor_g")
+    factor: ClassVar[dict[str, float]] = term_util.look_up_table(csvs, "factor_g")
     factor: ClassVar[dict[str, float]] = {k: float(v) for k, v in factor.items()}
     keys: ClassVar[list[str]] = ["key_with_units", "key_leader", "wt_key"]
     units: ClassVar[list[str]] = ["key_with_units", "metric_mass", "imperial_mass"]
     # ---------------------
 
-    mass: float | list[float] = None
-    units_inferred: bool = None
-    ambiguous: bool = None
-    estimated: bool = None
+    mass: float | list[float] | None = None
+    units_inferred: bool | None = None
+    ambiguous: bool | None = None
+    estimated: bool | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         value = {
@@ -51,7 +53,7 @@ class BodyMass(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {"bodyMassInGrams": self.mass}
 
         if self.units_inferred:
@@ -66,7 +68,7 @@ class BodyMass(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language, _overwrite: list[str] | None = None) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="body_mass_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -101,7 +103,7 @@ class BodyMass(Base):
         add.cleanup_pipe(nlp, name="body_mass_cleanup")
 
     @classmethod
-    def not_mass_patterns(cls):
+    def not_mass_patterns(cls) -> list[Compiler]:
         decoder = {
             "99": {"ENT_TYPE": "number", "OP": "+"},
             ":": {
@@ -131,7 +133,7 @@ class BodyMass(Base):
         ]
 
     @classmethod
-    def body_mass_patterns(cls):
+    def body_mass_patterns(cls) -> list[Compiler]:
         decoder = {
             "99": {"ENT_TYPE": "number", "OP": "+"},
             ":": {
@@ -161,7 +163,7 @@ class BodyMass(Base):
         ]
 
     @classmethod
-    def compound_mass_patterns(cls):
+    def compound_mass_patterns(cls) -> list[Compiler]:
         decoder = {
             ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
             "99": {"ENT_TYPE": "number", "OP": "+"},
@@ -189,7 +191,7 @@ class BodyMass(Base):
         ]
 
     @classmethod
-    def mass_range_patterns(cls):
+    def mass_range_patterns(cls) -> list[Compiler]:
         decoder = {
             "99": {"ENT_TYPE": "number", "OP": "+"},
             ":": {
@@ -216,14 +218,14 @@ class BodyMass(Base):
         ]
 
     @classmethod
-    def in_grams(cls, number, units):
-        units = units.text.lower() if units else ""
-        factor = cls.factor.get(units, 1.0)
+    def in_grams(cls, number: Span, units: Span | None) -> float:
+        units_ = units.text.lower() if units else ""
+        factor = cls.factor.get(units_, 1.0)
         value = factor * number._.trait.number
         return round(value, 2)
 
     @classmethod
-    def body_mass_match(cls, ent):
+    def body_mass_match(cls, ent: Span) -> "BodyMass":
         ambiguous = [e for e in ent.ents if e.label_ in cls.keys]
         ambiguous = True if len(ambiguous) == 0 else None
 
@@ -244,7 +246,7 @@ class BodyMass(Base):
         )
 
     @classmethod
-    def compound_mass_match(cls, ent):
+    def compound_mass_match(cls, ent: Span) -> "BodyMass":
         ambiguous = [e for e in ent.ents if e.label_ in cls.keys]
         ambiguous = True if len(ambiguous) == 0 else None
 
@@ -268,7 +270,7 @@ class BodyMass(Base):
         return cls.from_ent(ent, mass=mass, ambiguous=ambiguous)
 
     @classmethod
-    def mass_range_match(cls, ent):
+    def mass_range_match(cls, ent: Span) -> "BodyMass":
         ambiguous = [e for e in ent.ents if e.label_ in cls.keys]
         ambiguous = True if len(ambiguous) == 0 else None
 
@@ -284,25 +286,25 @@ class BodyMass(Base):
         )
 
     @classmethod
-    def not_body_mass_match(cls, ent):
+    def not_body_mass_match(cls, ent: Span) -> "BodyMass":
         return cls.from_ent(ent)
 
 
 @registry.misc("body_mass_match")
-def body_mass_match(ent):
+def body_mass_match(ent: Span) -> BodyMass:
     return BodyMass.body_mass_match(ent)
 
 
 @registry.misc("compound_mass_match")
-def compound_mass_match(ent):
+def compound_mass_match(ent: Span) -> BodyMass:
     return BodyMass.compound_mass_match(ent)
 
 
 @registry.misc("mass_range_match")
-def mass_range_match(ent):
+def mass_range_match(ent: Span) -> BodyMass:
     return BodyMass.mass_range_match(ent)
 
 
 @registry.misc("not_body_mass_match")
-def not_body_mass_match(ent):
+def not_body_mass_match(ent: Span) -> BodyMass:
     return BodyMass.not_body_mass_match(ent)

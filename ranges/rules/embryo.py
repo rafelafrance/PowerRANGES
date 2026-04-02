@@ -18,7 +18,7 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
-from ranges.pylib.rules.base_length import SEP, BaseLength
+from ranges.rules.base_length import SEP, BaseLength
 
 DECODER = {
     "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
@@ -152,7 +152,7 @@ class Embryo(BaseLength):
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:
-        add.term_pipe(nlp, name="embryo_terms", path=cls.csvs, delete_patterns="in")
+        add.term_pipe(nlp, name="embryo_terms", path=cls.csvs)
 
         cls.bad_embryo_pipe(nlp)
         cls.bad_length_pipe(nlp)

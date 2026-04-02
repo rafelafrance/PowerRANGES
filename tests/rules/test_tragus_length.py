@@ -1,11 +1,11 @@
 import unittest
 
-from ranges.pylib.rules.tragus_length import TragusLength
+from ranges.rules.tragus_length import TragusLength
 from tests.setup import parse
 
 
 class TestTragusLength(unittest.TestCase):
-    def test_tragus_length_01(self):
+    def test_tragus_length_01(self) -> None:
         """It parses a length without units."""
         self.assertEqual(
             parse("Tragus 7;"),

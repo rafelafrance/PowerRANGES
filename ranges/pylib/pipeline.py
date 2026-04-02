@@ -7,28 +7,29 @@ from traiter.rules.number import Number
 from traiter.rules.uuid import Uuid
 
 from ranges.pylib import tokenizer
-from ranges.pylib.rules import delete
-from ranges.pylib.rules.body_mass import BodyMass
-from ranges.pylib.rules.ear_length import EarLength
-from ranges.pylib.rules.embryo import Embryo
-from ranges.pylib.rules.female_state_shorthand import FemaleStateShorthand
-from ranges.pylib.rules.forearm_length import ForearmLength
-from ranges.pylib.rules.gonad import Gonad
-from ranges.pylib.rules.hind_foot_length import HindFootLength
-from ranges.pylib.rules.lactation_state import LactationState
-from ranges.pylib.rules.length_shorthand import LengthShorthand
-from ranges.pylib.rules.life_stage import LifeStage
-from ranges.pylib.rules.mammary import Mammary
-from ranges.pylib.rules.nipple import Nipple
-from ranges.pylib.rules.ovary import Ovary
-from ranges.pylib.rules.placenta_scar_count import PlacentalScarCount
-from ranges.pylib.rules.pregnancy_state import PregnancyState
-from ranges.pylib.rules.sex import Sex
-from ranges.pylib.rules.tail_length import TailLength
-from ranges.pylib.rules.testicle import Testicle
-from ranges.pylib.rules.total_length import TotalLength
-from ranges.pylib.rules.tragus_length import TragusLength
-from ranges.pylib.rules.vagina_state import VaginaState
+
+# from ranges.rules import delete
+from ranges.rules.body_mass import BodyMass
+from ranges.rules.ear_length import EarLength
+from ranges.rules.embryo import Embryo
+from ranges.rules.female_state_shorthand import FemaleStateShorthand
+from ranges.rules.forearm_length import ForearmLength
+from ranges.rules.gonad import Gonad
+from ranges.rules.hind_foot_length import HindFootLength
+from ranges.rules.lactation_state import LactationState
+from ranges.rules.length_shorthand import LengthShorthand
+from ranges.rules.life_stage import LifeStage
+from ranges.rules.mammary import Mammary
+from ranges.rules.nipple import Nipple
+from ranges.rules.ovary import Ovary
+from ranges.rules.placenta_scar_count import PlacentalScarCount
+from ranges.rules.pregnancy_state import PregnancyState
+from ranges.rules.sex import Sex
+from ranges.rules.tail_length import TailLength
+from ranges.rules.testicle import Testicle
+from ranges.rules.total_length import TotalLength
+from ranges.rules.tragus_length import TragusLength
+from ranges.rules.vagina_state import VaginaState
 
 
 def build():
@@ -85,6 +86,6 @@ def build():
     LifeStage.pipe(nlp)
     Sex.pipe(nlp)
 
-    delete.pipe(nlp)
+    # delete.pipe(nlp)
 
     return nlp

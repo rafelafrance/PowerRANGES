@@ -11,7 +11,7 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
-from ranges.pylib.rules.base import Base
+from ranges.rules.base import Base
 
 
 @dataclass(eq=False)

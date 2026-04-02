@@ -23,7 +23,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
 
-from spacy import Language, registry
+from spacy.language import Language
+from spacy.tokens import Span
+from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
@@ -32,13 +34,13 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
-from ranges.pylib.rules.base import Base
+from ranges.rules.base import Base
 
 
 @dataclass
 class Bat:
-    length: float
-    estimated: bool
+    length: float | None
+    estimated: bool | None
 
 
 @dataclass(eq=False)
@@ -53,11 +55,11 @@ class LengthShorthand(Base):
     inner_re: ClassVar[str] = r"((\d{1,4}(\.\d{,3})?)|[?x]{1,2})"
 
     # This separates fields within the shorthand notation
-    sep: ClassVar[str] = t_const.DASH + t_const.SLASH
+    sep: ClassVar[list[str]] = t_const.DASH + t_const.SLASH
 
     # This separates the last field from the rest
-    last: ClassVar[str] = sep + t_const.EQ + t_const.COLON
-    skip: ClassVar[str] = last + t_const.COLON + t_const.QUOTE
+    last: ClassVar[list[str]] = sep + t_const.EQ + t_const.COLON
+    skip: ClassVar[list[str]] = last + t_const.COLON + t_const.QUOTE
 
     # Expected order of cells
     order: ClassVar[list[str]] = [
@@ -68,26 +70,26 @@ class LengthShorthand(Base):
     ]
     # ---------------------
 
-    total_length: float = None
-    total_length_estimated: bool = None
+    total_length: float | None = None
+    total_length_estimated: bool | None = None
 
-    tail_length: float = None
-    tail_length_estimated: bool = None
+    tail_length: float | None = None
+    tail_length_estimated: bool | None = None
 
-    hind_foot_length: float = None
-    hind_foot_length_estimated: bool = None
+    hind_foot_length: float | None = None
+    hind_foot_length_estimated: bool | None = None
 
-    ear_length: float = None
-    ear_length_estimated: bool = None
+    ear_length: float | None = None
+    ear_length_estimated: bool | None = None
 
-    body_mass: float = None
-    body_mass_estimated: bool = None
+    body_mass: float | None = None
+    body_mass_estimated: bool | None = None
 
-    forearm_length: float = None
-    forearm_length_estimated: bool = None
+    forearm_length: float | None = None
+    forearm_length_estimated: bool | None = None
 
-    tragus_length: float = None
-    tragus_length_estimated: bool = None
+    tragus_length: float | None = None
+    tragus_length_estimated: bool | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901 PLR0912
         value = defaultdict(dict)
@@ -136,7 +138,7 @@ class LengthShorthand(Base):
 
         return value
 
-    def to_dwc(self, dwc) -> DarwinCore:  # noqa: C901 PLR0912
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:  # noqa: C901 PLR0912
         value = {}
 
         if self.total_length is not None:
@@ -177,7 +179,7 @@ class LengthShorthand(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language, _overwrite: list[str] | None = None) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="shorthand_length_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -212,7 +214,7 @@ class LengthShorthand(Base):
         add.cleanup_pipe(nlp, name="shorthand_length_cleanup")
 
     @classmethod
-    def missing_patterns(cls):
+    def missing_patterns(cls) -> list[Compiler]:
         decoder = {
             "missing": {"LOWER": {"REGEX": r"^(x|\?){1,2}$"}},
         }
@@ -229,7 +231,7 @@ class LengthShorthand(Base):
         ]
 
     @classmethod
-    def cell_patterns(cls):
+    def cell_patterns(cls) -> list[Compiler]:
         decoder = {
             "(": {"TEXT": "("},
             ")": {"TEXT": ")"},
@@ -256,7 +258,7 @@ class LengthShorthand(Base):
         ]
 
     @classmethod
-    def shorthand_patterns(cls):
+    def shorthand_patterns(cls) -> list[Compiler]:
         decoder = {
             "-": {"TEXT": {"IN": cls.sep}},
             "=": {"TEXT": {"IN": cls.last}},
@@ -282,7 +284,7 @@ class LengthShorthand(Base):
         ]
 
     @classmethod
-    def shorthand_triple_patterns(cls):
+    def shorthand_triple_patterns(cls) -> list[Compiler]:
         decoder = {
             "-": {"TEXT": {"IN": cls.sep}},
             ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}},
@@ -307,7 +309,7 @@ class LengthShorthand(Base):
         ]
 
     @classmethod
-    def shorthand_match(cls, ent):
+    def shorthand_match(cls, ent: Span) -> "LengthShorthand":
         kwargs = {}
 
         # How may length fields are expected
@@ -372,21 +374,21 @@ class LengthShorthand(Base):
         return cls.from_ent(ent, **kwargs)
 
     @staticmethod
-    def get_values(text):
+    def get_values(text: str) -> tuple[float | None, bool | None]:
         value = t_util.to_positive_float(text)
         estimated = True if value and text.find("[") > -1 else None
         return value, estimated
 
     @classmethod
-    def cell_match(cls, ent):
+    def cell_match(cls, ent: Span) -> "LengthShorthand":
         return cls.from_ent(ent)
 
 
 @registry.misc("cell_match")
-def cell_match(ent):
+def cell_match(ent: Span) -> LengthShorthand:
     return LengthShorthand.cell_match(ent)
 
 
 @registry.misc("shorthand_match")
-def shorthand_match(ent):
+def shorthand_match(ent: Span) -> LengthShorthand:
     return LengthShorthand.shorthand_match(ent)

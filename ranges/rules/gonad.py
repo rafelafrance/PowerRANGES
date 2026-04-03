@@ -50,10 +50,10 @@ class Gonad(Base):
     }
     # ---------------------
 
-    description: str = None
-    length: float = None
-    width: float = None
-    units_inferred: bool = None
+    description: str | None = None
+    length: float | None = None
+    width: float | None = None
+    units_inferred: bool | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
@@ -94,7 +94,7 @@ class Gonad(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language, _overwrite: list[str] | None = None) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="gonad_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -141,25 +141,32 @@ class Gonad(Base):
         ]
 
     @classmethod
-    def in_millimeters(cls, number: Span, units: Span | str | None) -> float:
-        if hasattr(units, "text"):
-            units = units.text.lower()
-        elif isinstance(units, str):
-            units = units.lower()
+    def in_millimeters(cls, number: Span, units: Span | str) -> float:
+        match units:
+            case str():
+                units_ = units.lower()
+            case units if hasattr(units, "text"):
+                units_ = units.text.lower()
+            case _:
+                units_ = ""
 
-        factor = cls.factor_mm.get(units, 1.0)
+        factor = cls.factor_mm.get(units_, 1.0)
         value = factor * number._.trait.number
         return round(value, 2)
 
     @classmethod
     def get_units(cls, ent: Span, key: str) -> str:
-        units = next((e for e in ent.ents if e.label_ in cls.units), None)
-        if not units and key in ("gonad_len_mm", "gonad_width_mm"):
+        units_ent = next((e for e in ent.ents if e.label_ in cls.units), None)
+        if units_ent is None:
+            units = ""
+        elif not units_ent and key in ("gonad_len_mm", "gonad_width_mm"):
             units = "mm"
+        else:
+            units = units_ent.text.lower()
         return units
 
     @classmethod
-    def get_key(cls, ent: Span) -> Span | None:
+    def get_key(cls, ent: Span) -> str | None:
         return next((e.label_ for e in ent.ents if e.label_ in cls.keys), None)
 
     @classmethod
@@ -168,14 +175,14 @@ class Gonad(Base):
 
     @classmethod
     def gonad_numbered_size_match(cls, ent: Span) -> "Gonad":
-        key = cls.get_key(ent)
+        key = cls.get_key(ent) or ""
         units = cls.get_units(ent, key)
         nums = cls.get_numbers(ent, units)
         return cls.gonad_labeled_size_match(ent, nums[1:], units, key)
 
     @classmethod
     def gonad_keyed_size_match(cls, ent: Span) -> "Gonad":
-        key = cls.get_key(ent)
+        key = cls.get_key(ent) or ""
         units = cls.get_units(ent, key)
         nums = cls.get_numbers(ent, units)
         return cls.gonad_labeled_size_match(ent, nums, units, key)

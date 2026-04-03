@@ -62,12 +62,12 @@ class Testicle(Base):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    description: str = None
-    length: float = None
-    width: float = None
-    length2: float = None
-    width2: float = None
-    units_inferred: bool = None
+    description: str | None = None
+    length: float | None = None
+    width: float | None = None
+    length2: float | None = None
+    width2: float | None = None
+    units_inferred: bool | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
@@ -282,12 +282,15 @@ class Testicle(Base):
 
     @classmethod
     def in_millimeters(cls, number: Span, units: Span | str | None) -> float:
-        if hasattr(units, "text"):
+        units_ = ""
+        if isinstance(units, str):
+            units_ = units.lower()
+        elif units is None:
+            units_ = ""
+        elif hasattr(units, "text"):
             units = units.text.lower()
-        elif isinstance(units, str):
-            units = units.lower()
 
-        factor = cls.factor_mm.get(units, 1.0)
+        factor = cls.factor_mm.get(units_, 1.0)
         value = factor * number._.trait.number
         return round(value, 2)
 

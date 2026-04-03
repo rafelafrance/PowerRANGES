@@ -22,7 +22,7 @@ class PregnancyState(Base):
     not_preg: ClassVar[list[str]] = [*nots, "not_pregnant"]
     # ---------------------
 
-    state: str = None
+    state: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         return {

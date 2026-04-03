@@ -105,18 +105,18 @@ class Ovary(Base):
     }
     # ---------------------
 
-    description: str = None
-    left_side: str = None
-    right_side: str = None
-    both_sides: str = None
+    description: str | None = None
+    left_side: str | None = None
+    right_side: str | None = None
+    both_sides: str | None = None
 
-    length: float = None
-    length2: float = None
+    length: float | None = None
+    length2: float | None = None
 
-    width: float = None
-    width2: float = None
+    width: float | None = None
+    width2: float | None = None
 
-    units_inferred: bool = None
+    units_inferred: bool | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901
         value = defaultdict(dict)
@@ -195,7 +195,7 @@ class Ovary(Base):
         return dwc.add_dyn(**value)
 
     @classmethod
-    def pipe(cls, nlp: Language, _overwrite: list[str] | None = None) -> None:
+    def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="ovary_terms", path=cls.csvs)
 
         add.trait_pipe(
@@ -333,12 +333,15 @@ class Ovary(Base):
 
     @classmethod
     def in_millimeters(cls, number: Span, units: Span | str | None) -> float:
-        if hasattr(units, "text"):
-            units = units.text.lower()
-        elif isinstance(units, str):
-            units = units.lower()
+        units_ = ""
+        if isinstance(units, str):
+            units_ = units.lower()
+        elif units is None:
+            units_ = ""
+        elif hasattr(units, "text"):
+            units_ = units.text.lower()
 
-        factor = cls.factor_mm.get(units, 1.0)
+        factor = cls.factor_mm.get(units_, 1.0)
         value = factor * number._.trait.number
         return round(value, 2)
 

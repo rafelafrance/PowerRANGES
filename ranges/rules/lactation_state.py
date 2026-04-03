@@ -22,7 +22,7 @@ class LactationState(Base):
     lac_labels: ClassVar[list[str]] = ["lac", "not_lac", "post", "not"]
     # ---------------------
 
-    state: str = None
+    state: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         return {

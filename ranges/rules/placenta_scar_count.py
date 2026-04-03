@@ -46,15 +46,15 @@ class PlacentalScarCount(Base):
     }
     # ---------------------
 
-    present: bool = None
+    present: bool | None = None
 
     # Count fields
-    count: int = None
-    left: int = None
-    right: int = None
-    side1: int = None
-    side2: int = None
-    both: int = None
+    count: int | None = None
+    left: int | None = None
+    right: int | None = None
+    side1: int | None = None
+    side2: int | None = None
+    both: int | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)

@@ -14,9 +14,9 @@ from ranges.rules.base import Base
 
 @dataclass(eq=False)
 class FemaleStateShorthand(Base):
-    vagina_state: str = None
-    nipple_state: str = None
-    lactation_state: str = None
+    vagina_state: str | None = None
+    nipple_state: str | None = None
+    lactation_state: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)

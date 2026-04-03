@@ -20,14 +20,14 @@ class Sex(Base):
     csvs: ClassVar[list[Path]] = [
         Path(__file__).parent / "terms" / "sex_terms.csv",
     ]
-    colon: ClassVar[list[str]] = t_const.COLON + t_const.DASH + t_const.EQ
+    colon: ClassVar[list] = t_const.COLON + t_const.DASH + t_const.EQ
 
     sex_labels: ClassVar[list[str]] = ["sex", "sex_unknown", "sex_abbrev"]
 
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    sex: str = None
+    sex: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         return {

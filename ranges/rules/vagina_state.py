@@ -21,7 +21,7 @@ class VaginaState(Base):
     states: ClassVar[list[str]] = ["open", "closed", "plugged", "swollen"]
     # ---------------------
 
-    state: str = None
+    state: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         return {

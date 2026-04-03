@@ -20,7 +20,7 @@ from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
-from ranges.rules.base_length import SEP, BaseLength
+from ranges.rules.base_length import SEP, BaseLength, DictFunc
 
 DECODER = {
     "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
@@ -63,16 +63,16 @@ class Embryo(BaseLength):
     # ---------------------
 
     # Length fields are in the parent class
-    width: float = None
+    width: float | None = None
 
     # Count fields
-    count: int = None
-    left: int = None
-    right: int = None
-    female: int = None
-    male: int = None
-    side1: int = None
-    side2: int = None
+    count: int | None = None
+    left: int | None = None
+    right: int | None = None
+    female: int | None = None
+    male: int | None = None
+    side1: int | None = None
+    side2: int | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
         value = defaultdict(dict)
@@ -461,8 +461,9 @@ class Embryo(BaseLength):
     def get_sides(cls, ent: Span, counts: list[int]) -> list[str]:
         needs_sides = 3
         sides = [e for e in ent.ents if e.label_ == "side"]
-        sides = [cls.side.get(s.text.lower()) for s in sides]
-        sides = sides if sides or len(counts) != needs_sides else ["side1", "side2"]
+        sides = [cls.side.get(s.text.lower(), "") for s in sides]
+        if len(counts) != needs_sides:
+            sides = ["side1", "side2"]
         return sides
 
     @classmethod
@@ -485,8 +486,8 @@ class Embryo(BaseLength):
 
     @classmethod
     def embryo_present_match(cls, ent: Span) -> "Embryo":
-        side = [e for e in ent.ents if e.label_ == "side"]
-        side = [cls.side.get(s.text.lower()) for s in side]
+        side_ents = [e for e in ent.ents if e.label_ == "side"]
+        side = [cls.side.get(s.text.lower(), "") for s in side_ents]
 
         count = 1 if any(e.label_ == "yes" for e in ent.ents) or side else 0
         count = 1 if side else count
@@ -556,6 +557,11 @@ class Embryo(BaseLength):
     def bad_embryo_match(cls, ent: Span) -> "Embryo":
         return cls.from_ent(ent)
 
+    @classmethod
+    def upcast(cls, ent: Span, dict_func: DictFunc) -> "Embryo":
+        base = cls.class_dict(ent, dict_func)
+        return cls(**base)
+
 
 @registry.misc("embryo_count_match")
 def embryo_count_match(ent: Span) -> Embryo:
@@ -569,7 +575,7 @@ def embryo_present_match(ent: Span) -> Embryo:
 
 @registry.misc("embryo_length_match")
 def embryo_length_match(ent: Span) -> Embryo:
-    return Embryo.length_match(ent)
+    return Embryo.upcast(ent, DictFunc.LENGTH)
 
 
 @registry.misc("embryo_mix_0_match")
@@ -603,7 +609,7 @@ def embryo_mix_3_match(ent: Span) -> Embryo:
 
 
 @registry.misc("embryo_length_bad_match")
-def embryo_length_bad_match(ent: Span) -> Embryo:
+def embryo_length_bad_match(ent: Span) -> BaseLength:
     return Embryo.bad_match(ent)
 
 

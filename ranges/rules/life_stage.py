@@ -24,7 +24,7 @@ class LifeStage(Base):
         Path(t_terms.__file__).parent / "numeric_terms.csv",
         Path(__file__).parent / "terms" / "life_stage_terms.csv",
     ]
-    eq: ClassVar[list[str]] = t_const.COLON + t_const.DASH + t_const.EQ
+    eq: ClassVar[list] = t_const.COLON + t_const.DASH + t_const.EQ
     dash: ClassVar[list[str]] = t_const.DASH + t_const.SLASH
 
     eq_re: ClassVar[re.Pattern] = re.compile(rf"^\s*({'|'.join(eq)})\s*")
@@ -33,7 +33,7 @@ class LifeStage(Base):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    life_stage: str = None
+    life_stage: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         return {

@@ -23,7 +23,7 @@ class Nipple(Base):
 
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csv, "replace")
 
-    sep: ClassVar[list[str]] = t_const.PLUS + t_const.COLON + t_const.COMMA + ["&"]
+    sep: ClassVar[list] = t_const.PLUS + t_const.COLON + t_const.COMMA + ["&"]
 
     decoder: ClassVar[dict[str, Any]] = {
         "%": {"LOWER": {"IN": ["%"]}},
@@ -41,8 +41,8 @@ class Nipple(Base):
     }
     # ---------------------
 
-    count: int = None
-    state: str = None
+    count: int | None = None
+    state: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)

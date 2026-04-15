@@ -57,24 +57,24 @@ class TailLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def upcast(cls, ent: Span, dict_func: DictFunc) -> "TailLength":
+    def to_obj(cls, ent: Span, dict_func: DictFunc) -> "TailLength":
         base = cls.class_dict(ent, dict_func)
         return cls(**base)
 
 
 @registry.misc("tail_length_match")
 def tail_length_match(ent: Span) -> TailLength:
-    return TailLength.upcast(ent, DictFunc.LENGTH)
+    return TailLength.to_obj(ent, DictFunc.LENGTH)
 
 
 @registry.misc("tail_length_range_match")
 def tail_length_range_match(ent: Span) -> TailLength:
-    return TailLength.upcast(ent, DictFunc.RANGE)
+    return TailLength.to_obj(ent, DictFunc.RANGE)
 
 
 @registry.misc("tail_length_tic_match")
 def tail_length_tic_match(ent: Span) -> TailLength:
-    return TailLength.upcast(ent, DictFunc.TIC)
+    return TailLength.to_obj(ent, DictFunc.TIC)
 
 
 @registry.misc("tail_length_bad_match")

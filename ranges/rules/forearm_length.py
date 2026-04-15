@@ -53,21 +53,21 @@ class ForearmLength(BaseLength):
         return value
 
     @classmethod
-    def upcast(cls, ent: Span, dict_func: DictFunc) -> "ForearmLength":
+    def to_obj(cls, ent: Span, dict_func: DictFunc) -> "ForearmLength":
         base = cls.class_dict(ent, dict_func)
         return cls(**base)
 
 
 @registry.misc("forearm_length_match")
 def forearm_length_match(ent: Span) -> ForearmLength:
-    return ForearmLength.upcast(ent, DictFunc.LENGTH)
+    return ForearmLength.to_obj(ent, DictFunc.LENGTH)
 
 
 @registry.misc("forearm_length_range_match")
 def forearm_length_range_match(ent: Span) -> ForearmLength:
-    return ForearmLength.upcast(ent, DictFunc.RANGE)
+    return ForearmLength.to_obj(ent, DictFunc.RANGE)
 
 
 @registry.misc("forearm_length_tic_match")
 def forearm_length_tic_match(ent: Span) -> ForearmLength:
-    return ForearmLength.upcast(ent, DictFunc.TIC)
+    return ForearmLength.to_obj(ent, DictFunc.TIC)

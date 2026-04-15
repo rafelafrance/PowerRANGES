@@ -80,24 +80,24 @@ class HindFootLength(BaseLength):
 
     @classmethod
     def hind_foot_length_match(cls, ent: Span) -> "HindFootLength":
-        trait = cls.upcast(ent, DictFunc.LENGTH)
+        trait = cls.to_obj(ent, DictFunc.LENGTH)
         cls.get_includes(ent, trait)
         return trait
 
     @classmethod
     def hind_foot_length_range_match(cls, ent: Span) -> "HindFootLength":
-        trait = cls.upcast(ent, DictFunc.RANGE)
+        trait = cls.to_obj(ent, DictFunc.RANGE)
         cls.get_includes(ent, trait)
         return trait
 
     @classmethod
     def hind_foot_length_tic_match(cls, ent: Span) -> "HindFootLength":
-        trait = cls.upcast(ent, DictFunc.TIC)
+        trait = cls.to_obj(ent, DictFunc.TIC)
         cls.get_includes(ent, trait)
         return trait
 
     @classmethod
-    def upcast(cls, ent: Span, dict_func: DictFunc) -> "HindFootLength":
+    def to_obj(cls, ent: Span, dict_func: DictFunc) -> "HindFootLength":
         base = cls.class_dict(ent, dict_func)
         return cls(**base)
 

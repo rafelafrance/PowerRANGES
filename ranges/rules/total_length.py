@@ -57,29 +57,29 @@ class TotalLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def upcast(cls, ent: Span, dict_func: DictFunc) -> "TotalLength":
+    def to_obj(cls, ent: Span, dict_func: DictFunc) -> "TotalLength":
         base = cls.class_dict(ent, dict_func)
         return cls(**base)
 
 
 @registry.misc("total_length_match")
 def total_length_match(ent: Span) -> TotalLength:
-    return TotalLength.upcast(ent, DictFunc.LENGTH)
+    return TotalLength.to_obj(ent, DictFunc.LENGTH)
 
 
 @registry.misc("total_length_compound_match")
 def total_length_compound_match(ent: Span) -> TotalLength:
-    return TotalLength.upcast(ent, DictFunc.COMPUND)
+    return TotalLength.to_obj(ent, DictFunc.COMPUND)
 
 
 @registry.misc("total_length_tic_match")
 def total_length_tic_match(ent: Span) -> TotalLength:
-    return TotalLength.upcast(ent, DictFunc.TIC)
+    return TotalLength.to_obj(ent, DictFunc.TIC)
 
 
 @registry.misc("total_length_range_match")
 def total_length_range_match(ent: Span) -> TotalLength:
-    return TotalLength.upcast(ent, DictFunc.RANGE)
+    return TotalLength.to_obj(ent, DictFunc.RANGE)
 
 
 @registry.misc("total_length_bad_match")

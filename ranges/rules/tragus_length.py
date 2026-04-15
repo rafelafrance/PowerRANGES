@@ -53,21 +53,21 @@ class TragusLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def upcast(cls, ent: Span, dict_func: DictFunc) -> "TragusLength":
+    def to_obj(cls, ent: Span, dict_func: DictFunc) -> "TragusLength":
         base = cls.class_dict(ent, dict_func)
         return cls(**base)
 
 
 @registry.misc("tragus_length_match")
 def tragus_length_match(ent: Span) -> TragusLength:
-    return TragusLength.upcast(ent, DictFunc.LENGTH)
+    return TragusLength.to_obj(ent, DictFunc.LENGTH)
 
 
 @registry.misc("tragus_length_range_match")
 def tragus_length_range_match(ent: Span) -> TragusLength:
-    return TragusLength.upcast(ent, DictFunc.RANGE)
+    return TragusLength.to_obj(ent, DictFunc.RANGE)
 
 
 @registry.misc("tragus_length_tic_match")
 def tragus_length_tic_match(ent: Span) -> TragusLength:
-    return TragusLength.upcast(ent, DictFunc.TIC)
+    return TragusLength.to_obj(ent, DictFunc.TIC)

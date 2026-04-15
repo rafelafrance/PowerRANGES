@@ -558,7 +558,7 @@ class Embryo(BaseLength):
         return cls.from_ent(ent)
 
     @classmethod
-    def upcast(cls, ent: Span, dict_func: DictFunc) -> "Embryo":
+    def to_obj(cls, ent: Span, dict_func: DictFunc) -> "Embryo":
         base = cls.class_dict(ent, dict_func)
         return cls(**base)
 
@@ -575,7 +575,7 @@ def embryo_present_match(ent: Span) -> Embryo:
 
 @registry.misc("embryo_length_match")
 def embryo_length_match(ent: Span) -> Embryo:
-    return Embryo.upcast(ent, DictFunc.LENGTH)
+    return Embryo.to_obj(ent, DictFunc.LENGTH)
 
 
 @registry.misc("embryo_mix_0_match")

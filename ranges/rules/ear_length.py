@@ -12,8 +12,6 @@ from traiter.rules import terms as t_terms
 
 from ranges.rules.base_length import BaseLength, DictFunc
 
-# from traiter.pipes import add
-
 
 @dataclass(eq=False)
 class EarLength(BaseLength):
@@ -91,27 +89,27 @@ class EarLength(BaseLength):
 
     @classmethod
     def ear_length_match(cls, ent: Span) -> "EarLength":
-        trait = cls.upcast(ent, DictFunc.LENGTH)
+        trait = cls.to_obj(ent, DictFunc.LENGTH)
         # cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
     def ear_length_range_match(cls, ent: Span) -> "EarLength":
-        trait = cls.upcast(ent, DictFunc.RANGE)
+        trait = cls.to_obj(ent, DictFunc.RANGE)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
     def ear_length_tic_match(cls, ent: Span) -> "EarLength":
-        trait = cls.upcast(ent, DictFunc.TIC)
+        trait = cls.to_obj(ent, DictFunc.TIC)
         cls.check_ambiguous_key(trait)
         cls.get_measured_from(ent, trait)
         return trait
 
     @classmethod
-    def upcast(cls, ent: Span, dict_func: DictFunc) -> "EarLength":
+    def to_obj(cls, ent: Span, dict_func: DictFunc) -> "EarLength":
         base = cls.class_dict(ent, dict_func)
         return cls(**base)
 

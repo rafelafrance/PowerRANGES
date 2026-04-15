@@ -53,21 +53,21 @@ class TibiaLength(BaseLength):
         cls.cleanup_pipe(nlp)
 
     @classmethod
-    def upcast(cls, ent: Span, dict_func: DictFunc) -> "TibiaLength":
+    def to_obj(cls, ent: Span, dict_func: DictFunc) -> "TibiaLength":
         base = cls.class_dict(ent, dict_func)
         return cls(**base)
 
 
 @registry.misc("tibia_length_match")
 def tibia_length_match(ent: Span) -> TibiaLength:
-    return TibiaLength.upcast(ent, DictFunc.LENGTH)
+    return TibiaLength.to_obj(ent, DictFunc.LENGTH)
 
 
 @registry.misc("tibia_length_range_match")
 def tibia_length_range_match(ent: Span) -> TibiaLength:
-    return TibiaLength.upcast(ent, DictFunc.RANGE)
+    return TibiaLength.to_obj(ent, DictFunc.RANGE)
 
 
 @registry.misc("tibia_length_tic_match")
 def tibia_length_tic_match(ent: Span) -> TibiaLength:
-    return TibiaLength.upcast(ent, DictFunc.TIC)
+    return TibiaLength.to_obj(ent, DictFunc.TIC)

@@ -136,6 +136,7 @@ class PlacentalScarCount(Base):
             overwrite=["number"],
         )
 
+        # add.debug_tokens(nlp)  # #############################################
         add.trait_pipe(
             nlp,
             name="placental_scar_total_missing_patterns",
@@ -164,8 +165,6 @@ class PlacentalScarCount(Base):
             overwrite=["number"],
         )
 
-        # add.debug_tokens(nlp)  # #############################################
-
         add.cleanup_pipe(nlp, name="placental_scar_cleanup")
 
     @classmethod
@@ -174,6 +173,7 @@ class PlacentalScarCount(Base):
             Compiler(
                 label="bad_placental_scar_count",
                 on_match="placental_scar_bad_match",
+                is_temp=True,
                 decoder=cls.decoder,
                 patterns=[
                     " 9 % ",
@@ -281,7 +281,7 @@ class PlacentalScarCount(Base):
     def get_counts(cls, ent: Span) -> list[int]:
         if any(e._.trait.is_fraction for e in ent.ents if e.label_ == "number"):
             raise reject_match.RejectMatch
-        nums = [int(t._.trait.number) for t in ent if t._.flag == "number"]
+        nums = [int(e._.trait.number) for e in ent.ents if e.label_ == "number"]
         return nums
 
     @classmethod

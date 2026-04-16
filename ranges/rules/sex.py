@@ -43,6 +43,7 @@ class Sex(Base):
     @classmethod
     def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="sex_terms", path=cls.csvs)
+        # add.debug_tokens(nlp)  # ##################################################
         add.trait_pipe(
             nlp,
             name="sex_patterns",
@@ -74,7 +75,7 @@ class Sex(Base):
 
     @classmethod
     def sex_match(cls, ent: Span) -> "Sex":
-        sex = " ".join(t.lower_ for t in ent if t._.term in cls.sex_labels)
+        sex = " ".join(t.lower_ for t in ent if t.ent_type_ in cls.sex_labels)
         sex = cls.replace.get(sex, sex)
         q_mark = "?" if "?" in ent.text else ""
         return cls.from_ent(ent, sex=sex + q_mark)

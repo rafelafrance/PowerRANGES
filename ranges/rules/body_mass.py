@@ -92,13 +92,13 @@ class BodyMass(Base):
             overwrite=["number"],
         )
 
+        # add.debug_tokens(nlp)  # ###########################################
         add.trait_pipe(
             nlp,
             name="body_mass_patterns",
             compiler=cls.body_mass_patterns(),
             overwrite=["number"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.cleanup_pipe(nlp, name="body_mass_cleanup")
 
@@ -123,6 +123,7 @@ class BodyMass(Base):
             Compiler(
                 label="not_body_mass",
                 on_match="not_body_mass_match",
+                is_temp=True,
                 decoder=decoder,
                 patterns=[
                     ' other key_g       " : " [ 99 ] ',

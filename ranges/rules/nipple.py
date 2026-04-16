@@ -77,6 +77,7 @@ class Nipple(Base):
             overwrite=["number"],
         )
 
+        # add.debug_tokens(nlp)  # #############################################
         add.trait_pipe(
             nlp,
             name="nipple_count_state_patterns",
@@ -96,7 +97,6 @@ class Nipple(Base):
             name="nipple_state_patterns",
             compiler=cls.nipple_state_patterns(),
         )
-        # add.debug_tokens(nlp)  # #############################################
 
         add.cleanup_pipe(nlp, name="nipple_cleanup")
 
@@ -106,6 +106,7 @@ class Nipple(Base):
             Compiler(
                 label="bad_nipple_count",
                 on_match="nipple_bad_match",
+                is_temp=True,
                 decoder=cls.decoder,
                 patterns=[
                     " 9 % ",
@@ -166,7 +167,7 @@ class Nipple(Base):
 
     @classmethod
     def get_count(cls, ent: Span) -> int:
-        nums = [t._.trait.number for t in ent if t._.flag == "number"]
+        nums = [e._.trait.number for e in ent.ents if e.label_ == "number"]
 
         if len(nums) == 0:
             raise RejectMatch

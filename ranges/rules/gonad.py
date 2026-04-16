@@ -104,6 +104,7 @@ class Gonad(Base):
             overwrite=["number"],
         )
 
+        # add.debug_tokens(nlp)  # ###########################################
         add.trait_pipe(
             nlp,
             name="gonad_keyed_size_patterns",
@@ -111,7 +112,6 @@ class Gonad(Base):
             overwrite=["number"],
         )
 
-        # add.debug_tokens(nlp)  # ###########################################
         add.cleanup_pipe(nlp, name="gonad_cleanup")
 
     @classmethod
@@ -157,10 +157,10 @@ class Gonad(Base):
     @classmethod
     def get_units(cls, ent: Span, key: str) -> str:
         units_ent = next((e for e in ent.ents if e.label_ in cls.units), None)
-        if units_ent is None:
-            units = ""
-        elif not units_ent and key in ("gonad_len_mm", "gonad_width_mm"):
+        if units_ent is None and key in ("gonad_len_mm", "gonad_width_mm"):
             units = "mm"
+        elif units_ent is None:
+            units = ""
         else:
             units = units_ent.text.lower()
         return units

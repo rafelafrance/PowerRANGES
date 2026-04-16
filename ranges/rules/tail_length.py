@@ -11,6 +11,8 @@ from traiter.rules import terms as t_terms
 
 from ranges.rules.base_length import BaseLength, DictFunc
 
+# from traiter.pipes import add
+
 
 @dataclass(eq=False)
 class TailLength(BaseLength):
@@ -54,6 +56,7 @@ class TailLength(BaseLength):
         cls.range_length_pipe(nlp)
         cls.tic_pipe(nlp)
         cls.length_pipe(nlp)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.cleanup_pipe(nlp)
 
     @classmethod

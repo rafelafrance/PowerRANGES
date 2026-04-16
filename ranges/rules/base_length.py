@@ -15,7 +15,7 @@ from ranges.rules.base import Base
 
 class DictFunc(Enum):
     LENGTH = auto()
-    COMPUND = auto()
+    COMPOUND = auto()
     RANGE = auto()
     TIC = auto()
 
@@ -31,6 +31,7 @@ DECODER = {
     "=": {"TEXT": {"IN": SEP}},
     ":": {"TEXT": {"IN": SEP}, "OP": "?"},
     "[": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
+    "/": {"TEXT": {"IN": t_const.SLASH}},
     "]": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
     "ambig": {"ENT_TYPE": "ambiguous_key", "OP": "+"},
     "any": {},
@@ -109,7 +110,11 @@ class BaseLength(Base):
 
     @classmethod
     def length_pipe(
-        cls, nlp: Language, *, allow_no_key: bool = False, label: str | None = None
+        cls,
+        nlp: Language,
+        *,
+        allow_no_key: bool = False,
+        label: str | None = None,
     ) -> None:
         add.trait_pipe(
             nlp,
@@ -158,11 +163,14 @@ class BaseLength(Base):
     def cleanup_pipe(cls, nlp: Language, delete: list[str] | None = None) -> None:
         delete = delete or []
         delete = ["bad_length", *delete]
-        add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup")
+        add.cleanup_pipe(nlp, name=f"{cls.name}_length_cleanup", delete=delete)
 
     @classmethod
     def length_patterns(
-        cls, *, allow_no_key: bool = False, label: str | None = None
+        cls,
+        *,
+        allow_no_key: bool = False,
+        label: str | None = None,
     ) -> list[Compiler]:
         label = label or f"{cls.name}_length"
         patterns = [
@@ -267,6 +275,7 @@ class BaseLength(Base):
             Compiler(
                 label="bad_length",
                 on_match=f"{cls.name}_length_bad_match",
+                is_temp=True,
                 decoder=DECODER,
                 patterns=[
                     " bad ",
@@ -323,6 +332,8 @@ class BaseLength(Base):
             "ambiguous": ambiguous,
             "estimated": estimated,
             "units_inferred": units_inferred,
+            "start": ent.start_char,
+            "end": ent.end_char,
         }
 
     @classmethod
@@ -346,7 +357,13 @@ class BaseLength(Base):
                 round(length + cls.in_millimeters(numbers[2], units[1]), 2),
             ]
 
-        return {"length": length, "ambiguous": ambiguous, "_prefix": prefix}
+        return {
+            "length": length,
+            "ambiguous": ambiguous,
+            "_prefix": prefix,
+            "start": ent.start_char,
+            "end": ent.end_char,
+        }
 
     @classmethod
     def range_match(cls, ent: Span) -> dict[str, Any]:
@@ -367,6 +384,8 @@ class BaseLength(Base):
             "_prefix": prefix,
             "ambiguous": ambiguous,
             "units_inferred": units_inferred,
+            "start": ent.start_char,
+            "end": ent.end_char,
         }
 
     @classmethod
@@ -374,7 +393,7 @@ class BaseLength(Base):
         match dict_func:
             case DictFunc.LENGTH:
                 return cls.length_match(ent)
-            case DictFunc.COMPUND:
+            case DictFunc.COMPOUND:
                 return cls.compound_match(ent)
             case DictFunc.RANGE:
                 return cls.range_match(ent)
@@ -390,7 +409,13 @@ class BaseLength(Base):
         units = cls.replace.get(units.text, "inches") if units else "inches"
         length = cls.in_millimeters(number, units)
 
-        return cls.from_ent(ent, length=length, ambiguous=ambiguous, _prefix=prefix)
+        return {
+            "length": length,
+            "ambiguous": ambiguous,
+            "_prefix": prefix,
+            "start": ent.start_char,
+            "end": ent.end_char,
+        }
 
     @classmethod
     def bad_match(cls, ent: Span) -> "BaseLength":

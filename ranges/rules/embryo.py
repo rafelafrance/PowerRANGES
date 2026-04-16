@@ -164,9 +164,9 @@ class Embryo(BaseLength):
         cls.embryo_mix_2_pipe(nlp)
         cls.embryo_mix_1_pipe(nlp)
         cls.embryo_mix_0_pipe(nlp)
-        # add.debug_tokens(nlp)  # ###########################################
         cls.embryo_width_pipe(nlp)
         cls.length_pipe(nlp, label=cls.name)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.embryo_count_pipe(nlp)
         cls.embryo_present_pipe(nlp)
         cls.cleanup_pipe(nlp)
@@ -273,6 +273,7 @@ class Embryo(BaseLength):
             Compiler(
                 label="bad_embryo",
                 on_match="bad_embryo_match",
+                is_temp=True,
                 decoder=DECODER,
                 patterns=[
                     " 9 / 9",
@@ -459,17 +460,16 @@ class Embryo(BaseLength):
 
     @classmethod
     def get_sides(cls, ent: Span, counts: list[int]) -> list[str]:
-        needs_sides = 3
         sides = [e for e in ent.ents if e.label_ == "side"]
         sides = [cls.side.get(s.text.lower(), "") for s in sides]
-        if len(counts) != needs_sides:
+        if len(counts) >= 2 and len(sides) == 0:
             sides = ["side1", "side2"]
         return sides
 
     @classmethod
     def embryo_count_match(cls, ent: Span) -> "Embryo":
         counts = [e for e in ent.ents if e.label_ == "number"]
-        counts = [int(c._.trait.number) for c in counts]
+        counts = [int(c._.trait.number) for c in counts if not c._.trait.is_fraction]
 
         sides = cls.get_sides(ent, counts)
 

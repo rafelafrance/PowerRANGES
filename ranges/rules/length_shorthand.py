@@ -27,7 +27,6 @@ from spacy.language import Language
 from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes import add
-from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib import util as t_util
@@ -187,30 +186,29 @@ class LengthShorthand(Base):
             nlp,
             name="shorthand_missing_patterns",
             compiler=cls.missing_patterns(),
-            overwrite=["number"],
         )
 
         add.trait_pipe(
             nlp,
             name="shorthand_cell_patterns",
             compiler=cls.cell_patterns(),
-            overwrite=["number"],
+            overwrite=["number", "cell", "missing"],
         )
 
+        # add.debug_tokens(nlp)  # ###########################################
         add.trait_pipe(
             nlp,
             name="shorthand_length_patterns",
             compiler=cls.shorthand_patterns(),
-            overwrite=["number"],
+            overwrite=["number", "cell", "missing", "body_mass"],
         )
 
         add.trait_pipe(
             nlp,
             name="shorthand_length_triple_patterns",
             compiler=cls.shorthand_triple_patterns(),
-            overwrite=["number"],
+            overwrite=["number", "cell", "missing", "body_mass"],
         )
-        # add.debug_tokens(nlp)  # ###########################################
 
         add.cleanup_pipe(nlp, name="shorthand_length_cleanup")
 
@@ -220,8 +218,9 @@ class LengthShorthand(Base):
             Compiler(
                 label="missing",
                 on_match="cell_match",
+                is_temp=True,
                 decoder={
-                    "missing": {"LOWER": {"REGEX": r"^(x|\?){1,2}$"}},
+                    "missing": {"LOWER": {"IN": ["?", "??", "x", "xx"]}},
                 },
                 patterns=[
                     " missing ",
@@ -246,6 +245,7 @@ class LengthShorthand(Base):
                 label="cell",
                 on_match="cell_match",
                 decoder=decoder,
+                is_temp=True,
                 patterns=[
                     " 99 (? fa )? ",
                     " [ 99 g? ] ",
@@ -380,8 +380,6 @@ class LengthShorthand(Base):
 
     @classmethod
     def cell_match(cls, ent: Span) -> "LengthShorthand":
-        if ent.label_ == "missing":
-            raise RejectMatch
         return cls.from_ent(ent)
 
 

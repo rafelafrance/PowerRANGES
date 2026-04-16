@@ -44,24 +44,27 @@ def build() -> Language:
     LatLong.pipe(nlp)
 
     Number.pipe(nlp)
+    LengthShorthand.pipe(nlp)
 
+    Number.pipe(nlp)
     BodyMass.pipe(nlp)
 
-    LengthShorthand.pipe(nlp)
     Number.pipe(nlp)
-
     PlacentalScarCount.pipe(nlp)
-    Number.pipe(nlp)
 
+    Number.pipe(nlp)
     Embryo.pipe(nlp)
-    Number.pipe(nlp)
 
+    Number.pipe(nlp)
     EarLength.pipe(nlp)
 
+    Number.pipe(nlp)
     ForearmLength.pipe(nlp)
 
+    Number.pipe(nlp)
     TragusLength.pipe(nlp)
 
+    Number.pipe(nlp)
     HindFootLength.pipe(nlp)
 
     FemaleStateShorthand.pipe(nlp)

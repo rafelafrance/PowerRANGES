@@ -242,6 +242,7 @@ class Ovary(Base):
             Compiler(
                 label="ovaries",
                 on_match="ovary_grouper_match",
+                is_temp=True,
                 decoder=cls.decoder,
                 patterns=[
                     " ovary ",
@@ -257,6 +258,7 @@ class Ovary(Base):
             Compiler(
                 label="description",
                 on_match="ovary_description_match",
+                is_temp=True,
                 decoder=cls.decoder,
                 patterns=[
                     " 9? adp descriptors ",

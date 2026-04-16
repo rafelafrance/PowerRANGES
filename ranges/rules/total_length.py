@@ -47,13 +47,13 @@ class TotalLength(BaseLength):
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:
+        # add.debug_tokens(nlp)  # ###########################################
         cls.term_pipe(nlp)
         cls.bad_length_pipe(nlp)
         cls.compound_length_pipe(nlp, allow_no_key=True)
         cls.range_length_pipe(nlp, allow_no_key=True)
         cls.tic_pipe(nlp, allow_no_key=True)
         cls.length_pipe(nlp)
-        # add.debug_tokens(nlp)  # ###########################################
         cls.cleanup_pipe(nlp)
 
     @classmethod
@@ -69,7 +69,7 @@ def total_length_match(ent: Span) -> TotalLength:
 
 @registry.misc("total_length_compound_match")
 def total_length_compound_match(ent: Span) -> TotalLength:
-    return TotalLength.to_obj(ent, DictFunc.COMPUND)
+    return TotalLength.to_obj(ent, DictFunc.COMPOUND)
 
 
 @registry.misc("total_length_tic_match")

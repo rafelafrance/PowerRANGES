@@ -113,7 +113,7 @@ class TestTesticleState(unittest.TestCase):
     def test_testicle_description_22(self) -> None:
         self.assertEqual(
             parse("Deciduous woods // TESTES DESCENDED, AND ENLARGED"),
-            [Testicle(description="descended enlarged", start=19, end=49)],
+            [Testicle(description="descended, and enlarged", start=19, end=49)],
         )
 
     def test_testicle_description_23(self) -> None:

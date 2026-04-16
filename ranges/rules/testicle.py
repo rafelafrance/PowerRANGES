@@ -56,7 +56,7 @@ class Testicle(Base):
         "scrotal": {"ENT_TYPE": "scrotal", "OP": "+"},
         "side": {"ENT_TYPE": {"IN": sides}, "OP": "*"},
         "size": {"ENT_TYPE": "size", "OP": "+"},
-        "testes": {"ENT_TYPE": {"IN": ["testes", "abbrev"]}, "OP": "+"},
+        "testes": {"ENT_TYPE": {"IN": ["testes", "abbrev"]}},
         "x": {"LOWER": {"IN": t_const.CROSS + t_const.DASH}},
     }
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
@@ -141,35 +141,35 @@ class Testicle(Base):
             overwrite=["number"],
         )
 
+        # add.debug_tokens(nlp)  # ############################################
         add.trait_pipe(
             nlp,
             name="testicle_descr_alone_patterns",
             compiler=cls.testicle_descr_alone_patterns(),
-            overwrite=["number"],
+            overwrite=["number", "description"],
         )
 
         add.trait_pipe(
             nlp,
             name="testicle_double_patterns",
             compiler=cls.testicle_double_patterns(),
-            overwrite=["number"],
+            overwrite=["number", "description"],
         )
 
         add.trait_pipe(
             nlp,
             name="testicle_size_patterns",
             compiler=cls.testicle_size_patterns(),
-            overwrite=["number"],
+            overwrite=["number", "description"],
         )
 
         add.trait_pipe(
             nlp,
             name="testicle_state_patterns",
             compiler=cls.testicle_state_patterns(),
-            overwrite=["number"],
+            overwrite=["number", "description"],
         )
 
-        # add.debug_tokens(nlp)  # ############################################
         add.cleanup_pipe(nlp, name="testicle_description_cleanup")
 
     @classmethod
@@ -177,6 +177,7 @@ class Testicle(Base):
         return [
             Compiler(
                 label="not_length",
+                is_temp=True,
                 on_match="not_testicle_size_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -190,6 +191,7 @@ class Testicle(Base):
         return [
             Compiler(
                 label="description",
+                is_temp=True,
                 on_match="testicle_description_match",
                 decoder=cls.decoder,
                 patterns=[
@@ -204,6 +206,7 @@ class Testicle(Base):
                     " size , non - descended ",
                     " size , descended ",
                     " descended ",
+                    " descended , and size ",
                 ],
             ),
         ]
@@ -214,6 +217,7 @@ class Testicle(Base):
             Compiler(
                 label="descr_alone",
                 on_match="descr_alone_match",
+                is_temp=True,
                 decoder=cls.decoder,
                 patterns=[
                     " scrotal ",

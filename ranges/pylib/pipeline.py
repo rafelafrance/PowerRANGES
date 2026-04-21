@@ -33,10 +33,7 @@ from ranges.rules.vagina_state import VaginaState
 
 
 def build() -> Language:
-    extensions.add_extensions()
-    nlp = spacy.load("en_core_web_md", exclude=["ner"])
-
-    tokenizer.setup(nlp)
+    nlp = init_pipe()
 
     Uuid.pipe(nlp)
     Date.pipe(nlp)
@@ -91,4 +88,45 @@ def build() -> Language:
 
     delete.pipe(nlp)
 
+    return nlp
+
+
+def init_pipe() -> Language:
+    extensions.add_extensions()
+    nlp = spacy.load("en_core_web_md", exclude=["ner"])
+    tokenizer.setup(nlp)
+    return nlp
+
+
+def female_repro() -> Language:
+    nlp = init_pipe()
+    FemaleStateShorthand.pipe(nlp)
+    Mammary.pipe(nlp)
+    Nipple.pipe(nlp)
+    LactationState.pipe(nlp)
+    PregnancyState.pipe(nlp)
+    Ovary.pipe(nlp)
+    Gonad.pipe(nlp)
+    VaginaState.pipe(nlp)
+    return nlp
+
+
+def male_repro() -> Language:
+    nlp = init_pipe()
+    Testicle.pipe(nlp)
+    Gonad.pipe(nlp)
+    return nlp
+
+
+def shorthand() -> Language:
+    nlp = init_pipe()
+    Number.pipe(nlp)
+    LengthShorthand.pipe(nlp)
+    return nlp
+
+
+def body_wt() -> Language:
+    nlp = init_pipe()
+    Number.pipe(nlp)
+    BodyMass.pipe(nlp)
     return nlp

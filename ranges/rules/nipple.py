@@ -57,6 +57,17 @@ class Nipple(Base):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value = {}
+
+        if self.count is not None:
+            value["nipple_count"] = self.count
+
+        if self.state:
+            value["nipple_state"] = self.state
+
+        return value
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         if self.count is not None:
             dwc.add_dyn(nippleCount=self.count)

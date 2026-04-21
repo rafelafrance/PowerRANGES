@@ -44,6 +44,9 @@ class TibiaLength(BaseLength):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        return {"tibia_length": self.length}
+
     @classmethod
     def pipe(cls, nlp: Language) -> None:
         cls.term_pipe(nlp)

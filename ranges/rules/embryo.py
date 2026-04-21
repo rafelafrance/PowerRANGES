@@ -121,6 +121,35 @@ class Embryo(BaseLength):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value = {}
+
+        if self.length is not None:
+            value["embryo_size"] = self.length
+
+        if self.count is not None:
+            value["embryo_count"] = self.count
+
+        if self.left is not None:
+            value["embryo_count_left"] = self.left
+
+        if self.right is not None:
+            value["embryo_count_right"] = self.right
+
+        if self.female is not None:
+            value["embryo_count_females"] = self.female
+
+        if self.male is not None:
+            value["embryo_count_males"] = self.male
+
+        if self.side1 is not None:
+            value["embryo_count_side_1"] = self.side1
+
+        if self.side2 is not None:
+            value["embryo_count_side_2"] = self.side2
+
+        return value
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         super().to_dwc(dwc)  # Get length fields
 

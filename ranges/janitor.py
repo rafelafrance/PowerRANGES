@@ -5,10 +5,11 @@ import re
 import textwrap
 from glob import glob
 from pathlib import Path
+from pprint import pp
 
 import pandas as pd
 
-from ranges.pylib import log
+from ranges.pylib import log, pipeline
 
 INT = re.compile(r"\d+")
 FLOAT = re.compile(r" \d+ (?: \.\d* )? | \.\d+", flags=re.VERBOSE)
@@ -58,6 +59,12 @@ UNITS = {
     "pounds": 453.5924,
 }
 
+PIPELINE = pipeline.build()
+FEMALE_REPRO = pipeline.female_repro()
+MALE_REPRO = pipeline.male_repro()
+LEN_SHORTHAND = pipeline.shorthand()
+BODY_MASS = pipeline.body_wt()
+
 
 def main(args: argparse.Namespace) -> None:
     log.started()
@@ -65,10 +72,38 @@ def main(args: argparse.Namespace) -> None:
     # args.output_dir.mkdir(parents=True, exist_ok=True)
     # to_csv(args)
 
-    anourosorex_yamashinai_mod(args)
-    antrozous_pallidus_mod(args)
+    # anourosorex_yamashinai_mod(args)
+    # antrozous_pallidus_mod(args)
+    cas_y1_y2_trait_data_only(args)
 
     log.finished()
+
+
+def cas_y1_y2_trait_data_only(args: argparse.Namespace) -> None:
+    name = "CAS Y1&Y2 Trait Data Only (1).csv"
+    in_name = args.csv_dir / name
+    out_data = []
+    with in_name.open() as in_csv:
+        reader = csv.DictReader(in_csv)
+        for in_row in reader:
+            out_row = {
+                "occuranceID": in_row["occuranceID"],
+                "catalogNumber": in_row["catalog#"],
+                "scientificName": in_row["scientific name"],
+                "countryCode": in_row["country code"],
+                "institutionCode": in_row["institution code"],
+                "sex": in_row["sex"],
+                "LifeStage": in_row["age class"],
+            }
+            out_row |= parse_body_mass(in_row["weight"])
+            out_row |= parse_shorthand(in_row["trait data (SL-Tail-Hind Foot-Ear)"])
+            # in_row["reproductive condition"]
+            # in_row["other trait remarks"]
+            out_data.append(out_row)
+
+    df = pd.DataFrame(out_data)
+    path = args.output_dir / name
+    df.to_csv(path, index=False)
 
 
 def antrozous_pallidus_mod(args: argparse.Namespace) -> None:
@@ -86,40 +121,29 @@ def antrozous_pallidus_mod(args: argparse.Namespace) -> None:
                 "county": in_row["COUNTY"],
                 "locality": in_row["SPEC_LOCALITY"],
                 "preservedSpecimen": in_row["PARTS"],
-                "sex": in_row["sex"],
-                "totalLengthInMillimeters": to_mm(
-                    in_row["total length"], in_row["unit"]
-                ),
-                "earLengthInMillimeters": to_mm(in_row["ear"], in_row["unit"]),
-                "earLengthFromNotchInMillimeters": to_mm(
-                    in_row["ear from notch"], in_row["unit"]
-                ),
-                "earLengthFromCrownInMillimeters": to_mm(
-                    in_row["ear from crown"], in_row["unit"]
-                ),
-                "forearmLengthInMillimeters": to_mm(in_row["forearm"], in_row["unit"]),
-                "bodyMassInGrams": to_grams(in_row["weight"], in_row["units"]),
-                "lifeStage": in_row["life stage"],
-                "reproductiveCondition": in_row["reproductive data"],
-                "unformattedMeasurements": in_row["unformatted measurements"],
-                "testisSizeLeftInMillimeters": to_mm(
-                    in_row["testes L"], in_row["unit"]
-                ),
-                "testisSizeRightInMillimeters": to_mm(
-                    in_row["testes W"], in_row["unit"]
-                ),
-                "embryoCount": to_int(in_row["emb count"]),
-                "embryoCountLeft": to_int(in_row["embs L"]),
-                "embryoCountRight": to_int(in_row["embs R"]),
-                "embryoCrownRumpLengthInMillimeters": to_mm(
-                    in_row["emb CR"], in_row["unit"]
-                ),
-                "tagChecked": in_row[
-                    "tag checked? (or no tag available), initial here"
-                ],
                 "day": to_int(in_row["Day"]),
                 "month": to_int(in_row["Month"]),
                 "year": to_int(in_row["Year"]),
+                "sex": in_row["sex"],
+                "body_mass_grams": to_grams(in_row["weight"], in_row["units"]),
+                "ear_length_measured_from": ear_length_from(
+                    in_row["ear from notch"], in_row["ear from crown"]
+                ),
+                "ear_length": to_mm(in_row["ear"], in_row["unit"]),
+                "embryo_count": to_int(in_row["emb count"]),
+                "embryo_count_left": to_int(in_row["embs L"]),
+                "embryo_count_right": to_int(in_row["embs R"]),
+                "embryo_size_length": to_mm(in_row["emb CR"], in_row["unit"]),
+                "forearm_length": to_mm(in_row["forearm"], in_row["unit"]),
+                "life_stage": in_row["life stage"],
+                "reproductiveCondition": in_row["reproductive data"],
+                "testicle_length": to_mm(in_row["testes L"], in_row["unit"]),
+                "testicle_width": to_mm(in_row["testes W"], in_row["unit"]),
+                "total_length": to_mm(in_row["total length"], in_row["unit"]),
+                "tag_checked": in_row[
+                    "tag checked? (or no tag available), initial here"
+                ],
+                "unformatted_measurements": in_row["unformatted measurements"],
             }
             out_data.append(out_row)
 
@@ -147,49 +171,66 @@ def anourosorex_yamashinai_mod(args: argparse.Namespace) -> None:
                 "recordedBy": in_row["collector"],
                 "recordedByID": in_row["coll #"],
                 "eventDate": in_row["date"],
-                "sex": in_row["sex"],
+                "reproductiveCondition": in_row["repro comments"],
                 "preservedSpecimen": in_row["parts"],
                 "occurrenceRemarks": in_row[
                     "remarks (data discrepancy, need to revisit specimen, etc.)"
                 ],
-                "totalLengthInMillimeters": to_mm(in_row["total"], in_row["unit"]),
-                "tailLengthInMillimeters": to_mm(in_row["tail"], in_row["unit"]),
-                "hindFootLengthInMillimeters": to_mm(in_row["hf"], in_row["unit"]),
-                "earLengthInMillimeters": to_mm(in_row["ear"], in_row["unit"]),
-                "earLengthFromNotchInMillimeters": to_mm(
-                    in_row["Notch"], in_row["unit"]
+                "sex": in_row["sex"],
+                "body_mass_grams": to_grams(in_row["wt"], in_row["units"]),
+                "ear_length_measured_from": ear_length_from(
+                    in_row["Notch"], in_row["Crown"]
                 ),
-                "earLengthFromCrownInMillimeters": to_mm(
-                    in_row["Crown"], in_row["unit"]
-                ),
-                "bodyMassInGrams": to_grams(in_row["wt"], in_row["units"]),
-                "reproductiveCondition": in_row["repro comments"],
-                "testisSizeLeftInMillimeters": to_mm(
-                    in_row["testis L"], in_row["unit"]
-                ),
-                "testisSizeRightInMillimeters": to_mm(
-                    in_row["testis R"], in_row["unit"]
-                ),
-                "embryoCount": to_int(in_row["emb count"]),
-                "embryoCountLeft": to_int(in_row["embs L"]),
-                "embryoCountRight": to_int(in_row["embs R"]),
-                "embryoCrownRumpLengthInMillimeters": to_mm(
-                    in_row["emb CR"], in_row["unit"]
-                ),
-                "placentalScarCount": to_int(in_row["scars"]),
-                "attributeSource": in_row["source and date for most attributes"],
-                "skinTagChecked": in_row[
+                "ear_length": to_mm(in_row["ear"], in_row["unit"]),
+                "embryo_count": to_int(in_row["emb count"]),
+                "embryo_count_left": to_int(in_row["embs L"]),
+                "embryo_count_right": to_int(in_row["embs R"]),
+                "embryo_size_length": to_mm(in_row["emb CR"], in_row["unit"]),
+                "hind_foot_length": to_mm(in_row["hf"], in_row["unit"]),
+                "placental_scar_count": to_int(in_row["scars"]),
+                "tail_length": to_mm(in_row["tail"], in_row["unit"]),
+                "testicle_length_2nd": to_mm(in_row["testis R"], in_row["unit"]),
+                "testicle_length": to_mm(in_row["testis L"], in_row["unit"]),
+                "total_length": to_mm(in_row["total"], in_row["unit"]),
+                "arctos_upload_date": in_row["data uploaded to Arctos?"],
+                "attribute_source": in_row["source and date for most attributes"],
+                "catalog_checked": in_row["catalog checked? (or no catalog available)"],
+                "date_scanned": in_row["Unnamed: 33"],
+                "skin_tag_checked": in_row[
                     "skin tag checked? (or no skin tag available)"
                 ],
-                "catalogChecked": in_row["catalog checked? (or no catalog available)"],
-                "dateScanned": in_row["Unnamed: 33"],
-                "arctosUploadDate": in_row["data uploaded to Arctos?"],
             }
             out_data.append(out_row)
 
     df = pd.DataFrame(out_data)
     path = args.output_dir / name
     df.to_csv(path, index=False)
+
+
+def parse_shorthand(text: str) -> dict:
+    doc = LEN_SHORTHAND(text)
+    traits = [e._.trait for e in doc.ents]
+    shorts = {}
+    shorts = traits[0].for_csv() if traits and hasattr(traits[0], "for_csv") else {}
+    print(text)
+    pp(shorts)
+    print()
+    return shorts
+
+
+def parse_body_mass(text: str) -> dict:
+    doc = BODY_MASS(text)
+    traits = [e._.trait.to_dict() for e in doc.ents]
+    body = {}
+    if traits and traits[0].get("mass"):
+        body = {"body_mass_grams": traits[0]["mass"]}
+    return body
+
+
+def ear_length_from(notch: str, crown: str) -> str:
+    if notch:
+        return "notch"
+    return "crown" if crown else ""
 
 
 def to_sci_name(value: str) -> str:

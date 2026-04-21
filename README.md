@@ -1,3 +1,3 @@
-# PowerRANGES ![Python application](https://github.com/rafelafrance/PowerRANGES/workflows/CI/badge.svg)
+# PowerRANGES
 
 Rule-based trait parsers supporting the RANGES project

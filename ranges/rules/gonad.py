@@ -76,6 +76,20 @@ class Gonad(Base):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value = {}
+
+        if self.description is not None:
+            value["gonad_description"] = self.description
+
+        if self.length is not None:
+            value["gonad_length"] = self.length
+
+        if self.width is not None:
+            value["gonad_width"] = self.width
+
+        return value
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 

@@ -85,6 +85,32 @@ class PlacentalScarCount(Base):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value = {}
+
+        if self.present is not None:
+            value["placental_scars_present"] = self.present
+
+        if self.count is not None:
+            value["placental_scar_count"] = self.count
+
+        if self.left is not None:
+            value["placental_scars_left_side"] = self.left
+
+        if self.right is not None:
+            value["placental_scars_right_side"] = self.right
+
+        if self.side1 is not None:
+            value["placental_scars_side_1"] = self.side1
+
+        if self.side2 is not None:
+            value["placental_scars_side_2"] = self.side2
+
+        if self.side2 is not None:
+            value["placental_scars_both_sides"] = self.side2
+
+        return value
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 

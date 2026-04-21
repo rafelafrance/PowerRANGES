@@ -55,6 +55,16 @@ class HindFootLength(BaseLength):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value = {}
+
+        value["hind_foot_length"] = self.length
+
+        if self.includes:
+            value["hind_foot_length_includes"] = self.includes
+
+        return value
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         super().to_dwc(dwc)
 

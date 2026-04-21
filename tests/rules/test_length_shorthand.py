@@ -262,3 +262,34 @@ class TestLengthShorthand(unittest.TestCase):
                 )
             ],
         )
+
+    def test_length_shorthand_16(self) -> None:
+        """It handles 3-form shorthand notation without key."""
+        self.assertEqual(
+            parse("210-92-30"),
+            [
+                LengthShorthand(
+                    total_length=210,
+                    tail_length=92,
+                    hind_foot_length=30,
+                    start=0,
+                    end=9,
+                )
+            ],
+        )
+
+    def test_length_shorthand_17(self) -> None:
+        """It handles missing cells."""
+        self.assertEqual(
+            parse("987-408-139--75"),
+            [
+                LengthShorthand(
+                    total_length=987,
+                    tail_length=408,
+                    hind_foot_length=139,
+                    ear_length=75,
+                    start=0,
+                    end=15,
+                )
+            ],
+        )

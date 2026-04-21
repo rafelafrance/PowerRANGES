@@ -10,10 +10,15 @@ from traiter.rules.base_rule import BaseRule as TraiterBase
 class Base(TraiterBase):
     @classmethod
     def pipe(cls, nlp: Language) -> None:
+        del nlp
         raise NotImplementedError
 
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
+        del dwc
         raise NotImplementedError
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
+        raise NotImplementedError
+
+    def for_csv(self) -> dict[str, Any]:
         raise NotImplementedError

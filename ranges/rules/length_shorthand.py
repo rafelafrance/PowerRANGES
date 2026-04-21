@@ -138,6 +138,32 @@ class LengthShorthand(Base):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value = {}
+
+        if self.total_length is not None:
+            value["total_length"] = self.total_length
+
+        if self.tail_length is not None:
+            value["tail_length"] = self.tail_length
+
+        if self.hind_foot_length is not None:
+            value["hind_foot_length"] = self.hind_foot_length
+
+        if self.ear_length is not None:
+            value["ear_length"] = self.ear_length
+
+        if self.body_mass is not None:
+            value["body_mass"] = self.body_mass
+
+        if self.forearm_length is not None:
+            value["forearm_length"] = self.forearm_length
+
+        if self.tragus_length is not None:
+            value["tragus_length"] = self.tragus_length
+
+        return value
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:  # noqa: C901 PLR0912
         value = {}
 
@@ -259,7 +285,7 @@ class LengthShorthand(Base):
     @classmethod
     def shorthand_patterns(cls) -> list[Compiler]:
         decoder = {
-            "-": {"TEXT": {"IN": cls.sep}},
+            "-": {"TEXT": {"IN": cls.sep}, "OP": "+"},
             "=": {"TEXT": {"IN": cls.last}},
             "99": {"ENT_TYPE": {"IN": ["number", "cell", "missing"]}, "OP": "+"},
             "99.0": {"ENT_TYPE": {"IN": ["number", "cell"]}, "OP": "+"},
@@ -285,7 +311,7 @@ class LengthShorthand(Base):
     @classmethod
     def shorthand_triple_patterns(cls) -> list[Compiler]:
         decoder = {
-            "-": {"TEXT": {"IN": cls.sep}},
+            "-": {"TEXT": {"IN": cls.sep}, "OP": "+"},
             ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}},
             "99": {"TEXT": {"REGEX": cls.inner_re}},
             "key": {"ENT_TYPE": "triple_key"},
@@ -301,7 +327,7 @@ class LengthShorthand(Base):
                 on_match="shorthand_match",
                 decoder=decoder,
                 patterns=[
-                    ' "? key length*     "? :* "? 99 - 99 - 99 "? ',
+                    ' "? key* length*    "? :* "? 99 - 99 - 99 "? ',
                     ' "? tag 99* :* sex? "? :* "? 99 - 99 - 99 "? ',
                 ],
             ),

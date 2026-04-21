@@ -35,6 +35,20 @@ class FemaleStateShorthand(Base):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value = {}
+
+        if self.vagina_state:
+            value["vagina_state"] = self.vagina_state
+
+        if self.nipple_state:
+            value["nipple_state"] = self.nipple_state
+
+        if self.lactation_state:
+            value["lactation_state"] = self.lactation_state
+
+        return value
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 

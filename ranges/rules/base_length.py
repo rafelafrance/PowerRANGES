@@ -79,6 +79,9 @@ class BaseLength(Base):
     def as_dict(self) -> dict[str, dict[str, Any]]:
         raise NotImplementedError
 
+    def for_csv(self) -> dict[str, dict[str, Any]]:
+        raise NotImplementedError
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 

@@ -52,6 +52,10 @@ class ForearmLength(BaseLength):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value: dict[str, Any] = {"forearm_length": self.length}
+        return value
+
     @classmethod
     def to_obj(cls, ent: Span, dict_func: DictFunc) -> "ForearmLength":
         base = cls.class_dict(ent, dict_func)

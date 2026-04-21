@@ -23,8 +23,8 @@ class BodyMass(Base):
         Path(__file__).parent / "terms" / "body_mass_terms.csv",
     ]
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
-    factor: ClassVar[dict[str, float]] = term_util.look_up_table(csvs, "factor_g")
-    factor: ClassVar[dict[str, float]] = {k: float(v) for k, v in factor.items()}
+    factor_: ClassVar[dict[str, float]] = term_util.look_up_table(csvs, "factor_g")
+    factor: ClassVar[dict[str, float]] = {k: float(v) for k, v in factor_.items()}
     keys: ClassVar[list[str]] = ["key_with_units", "key_leader", "wt_key"]
     units: ClassVar[list[str]] = ["key_with_units", "metric_mass", "imperial_mass"]
     # ---------------------
@@ -51,6 +51,10 @@ class BodyMass(Base):
         if self.estimated:
             value["body_mass"] |= {"body_mass_estimated": True}
 
+        return value
+
+    def for_csv(self) -> dict[str, Any]:
+        value = {"body_mass": self.mass}
         return value
 
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:

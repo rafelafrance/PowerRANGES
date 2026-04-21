@@ -37,6 +37,9 @@ class Sex(Base):
             }
         }
 
+    def for_csv(self) -> dict[str, Any]:
+        return {"sex": self.sex}
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         return dwc.add(sex=self.sex)
 

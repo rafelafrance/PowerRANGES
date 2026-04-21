@@ -43,6 +43,9 @@ class LifeStage(Base):
             }
         }
 
+    def for_csv(self) -> dict[str, Any]:
+        return {"life_stage": self.life_stage}
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         return dwc.add(lifeStage=self.life_stage)
 

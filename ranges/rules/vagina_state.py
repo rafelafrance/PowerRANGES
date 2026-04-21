@@ -31,6 +31,9 @@ class VaginaState(Base):
             }
         }
 
+    def for_csv(self) -> dict[str, Any]:
+        return {"vagina_state": self.state}
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         return dwc.add_dyn(vaginaState=self.state)
 

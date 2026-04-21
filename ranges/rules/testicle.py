@@ -100,6 +100,26 @@ class Testicle(Base):
 
         return value
 
+    def for_csv(self) -> dict[str, Any]:
+        value = {}
+
+        if self.description is not None:
+            value["testis_description"] = self.description
+
+        if self.length is not None:
+            value["testis_length"] = self.length
+
+        if self.length2 is not None:
+            value["testis_length_2"] = self.length2
+
+        if self.width is not None:
+            value["testicle_width_mm"] = self.width
+
+        if self.width2 is not None:
+            value["testicle_width_2nd_mm"] = self.width2
+
+        return value
+
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 

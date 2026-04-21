@@ -66,6 +66,12 @@ class EarLength(BaseLength):
 
         return dwc
 
+    def for_csv(self) -> dict[str, Any]:
+        value: dict[str, Any] = {"ear_length": self.length}
+        if self.measured_from:
+            value["ear_length_measured_from"] = self.measured_from
+        return value
+
     @classmethod
     def pipe(cls, nlp: Language) -> None:
         cls.term_pipe(nlp)

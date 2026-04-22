@@ -114,7 +114,6 @@ class TestLengthShorthand(unittest.TestCase):
 
     def test_length_shorthand_07(self) -> None:
         """It handles an estimated body mass with units."""
-        self.maxDiff = None
         self.assertEqual(
             parse("Note in catalog: Mus. SW Biol. NK 30009; 91-0-17-22-[62g]"),
             [
@@ -167,7 +166,6 @@ class TestLengthShorthand(unittest.TestCase):
 
     def test_length_shorthand_10(self) -> None:
         """It handles other units."""
-        self.maxDiff = None
         self.assertEqual(
             parse('{"measurements":"90-30-16-7=6.9GMS" }'),
             [
@@ -279,7 +277,7 @@ class TestLengthShorthand(unittest.TestCase):
         )
 
     def test_length_shorthand_17(self) -> None:
-        """It handles missing cells."""
+        """It handles doubled separators."""
         self.assertEqual(
             parse("987-408-139--75"),
             [
@@ -287,9 +285,39 @@ class TestLengthShorthand(unittest.TestCase):
                     total_length=987,
                     tail_length=408,
                     hind_foot_length=139,
-                    ear_length=75,
+                    forearm_length=75,
                     start=0,
                     end=15,
+                )
+            ],
+        )
+
+    def test_length_shorthand_18(self) -> None:
+        """It handles a missing total length."""
+        self.assertEqual(
+            parse("-0-12-16"),
+            [
+                LengthShorthand(
+                    tail_length=0,
+                    hind_foot_length=12,
+                    ear_length=16,
+                    start=0,
+                    end=8,
+                )
+            ],
+        )
+
+    def test_length_shorthand_19(self) -> None:
+        """It handles a missing inner cell."""
+        self.assertEqual(
+            parse("59--8-15"),
+            [
+                LengthShorthand(
+                    total_length=59,
+                    hind_foot_length=8,
+                    ear_length=15,
+                    start=0,
+                    end=8,
                 )
             ],
         )

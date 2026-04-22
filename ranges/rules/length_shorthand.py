@@ -67,6 +67,7 @@ class LengthShorthand(Base):
         "tail_length",
         "hind_foot_length",
         "ear_length",
+        "forearm_length",
     ]
     # ---------------------
 
@@ -216,6 +217,12 @@ class LengthShorthand(Base):
 
         add.trait_pipe(
             nlp,
+            name="shorthand_dash",
+            compiler=cls.dash_patterns(),
+        )
+
+        add.trait_pipe(
+            nlp,
             name="shorthand_cell_patterns",
             compiler=cls.cell_patterns(),
             overwrite=["number", "cell", "missing"],
@@ -231,12 +238,35 @@ class LengthShorthand(Base):
 
         add.trait_pipe(
             nlp,
+            name="shorthand_skip_patterns",
+            compiler=cls.shorthand_skip_patterns(),
+            overwrite=["number", "cell", "missing", "body_mass"],
+        )
+
+        add.trait_pipe(
+            nlp,
             name="shorthand_length_triple_patterns",
             compiler=cls.shorthand_triple_patterns(),
             overwrite=["number", "cell", "missing", "body_mass"],
         )
 
         add.cleanup_pipe(nlp, name="shorthand_length_cleanup")
+
+    @classmethod
+    def dash_patterns(cls) -> list[Compiler]:
+        return [
+            Compiler(
+                label="dash",
+                on_match="cell_match",
+                is_temp=True,
+                decoder={
+                    "-": {"TEXT": {"IN": cls.sep}},
+                },
+                patterns=[
+                    " - ",
+                ],
+            ),
+        ]
 
     @classmethod
     def missing_patterns(cls) -> list[Compiler]:
@@ -283,9 +313,33 @@ class LengthShorthand(Base):
         ]
 
     @classmethod
+    def shorthand_skip_patterns(cls) -> list[Compiler]:
+        decoder = {
+            "-": {"ENT_TYPE": "dash"},
+            "99": {"ENT_TYPE": {"IN": ["number", "cell", "missing"]}, "OP": "+"},
+        }
+
+        return [
+            Compiler(
+                label="shorthand",
+                on_match="shorthand_skip_match",
+                decoder=decoder,
+                patterns=[
+                    "    - 99 - 99 - 99 ",
+                    " 99 -    - 99 - 99 ",
+                    " 99 - 99 -    - 99 ",
+                    "    - 99 - 99 - 99 - 99 ",
+                    " 99 -    - 99 - 99 - 99 ",
+                    " 99 - 99 -    - 99 - 99 ",
+                    " 99 - 99 - 99 -    - 99 ",
+                ],
+            ),
+        ]
+
+    @classmethod
     def shorthand_patterns(cls) -> list[Compiler]:
         decoder = {
-            "-": {"TEXT": {"IN": cls.sep}, "OP": "+"},
+            "-": {"ENT_TYPE": "dash"},
             "=": {"TEXT": {"IN": cls.last}},
             "99": {"ENT_TYPE": {"IN": ["number", "cell", "missing"]}, "OP": "+"},
             "99.0": {"ENT_TYPE": {"IN": ["number", "cell"]}, "OP": "+"},
@@ -311,7 +365,7 @@ class LengthShorthand(Base):
     @classmethod
     def shorthand_triple_patterns(cls) -> list[Compiler]:
         decoder = {
-            "-": {"TEXT": {"IN": cls.sep}, "OP": "+"},
+            "-": {"ENT_TYPE": "dash"},
             ":": {"TEXT": {"IN": t_const.COLON + t_const.COMMA + t_const.EQ}},
             "99": {"TEXT": {"REGEX": cls.inner_re}},
             "key": {"ENT_TYPE": "triple_key"},
@@ -398,6 +452,31 @@ class LengthShorthand(Base):
 
         return cls.from_ent(ent, **kwargs)
 
+    @classmethod
+    def shorthand_skip_match(cls, ent: Span) -> "LengthShorthand":
+        kwargs = {}
+
+        prev_ent = "dash"
+        i = 0
+        for sub_ent in ent.ents:
+            if sub_ent.label_ == "dash" and prev_ent == "dash":
+                i += 1
+                continue
+
+            prev_ent = sub_ent.label_
+
+            if sub_ent.label_ == "dash":
+                continue
+
+            length, estimated = cls.get_values(sub_ent.text.lower())
+            field = cls.order[i]
+            kwargs[field] = length
+            kwargs[f"{field}_estimated"] = estimated
+
+            i += 1
+
+        return cls.from_ent(ent, **kwargs)
+
     @staticmethod
     def get_values(text: str) -> tuple[float | None, bool | None]:
         value = t_util.to_positive_float(text)
@@ -417,3 +496,8 @@ def cell_match(ent: Span) -> LengthShorthand:
 @registry.misc("shorthand_match")
 def shorthand_match(ent: Span) -> LengthShorthand:
     return LengthShorthand.shorthand_match(ent)
+
+
+@registry.misc("shorthand_skip_match")
+def shorthand_skip_match(ent: Span) -> LengthShorthand:
+    return LengthShorthand.shorthand_skip_match(ent)

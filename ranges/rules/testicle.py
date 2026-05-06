@@ -48,6 +48,7 @@ class Testicle(Base):
         "descr": {"ENT_TYPE": "description", "OP": "+"},
         "fully": {"ENT_TYPE": "fully", "OP": "+"},
         "g": {"ENT_TYPE": {"IN": ["metric_mass", "imperial_mass"]}},
+        "ing": {"ENT_TYPE": "inguinal"},
         "left": {"ENT_TYPE": {"IN": sides}, "OP": "+"},
         "mm": {"ENT_TYPE": {"IN": units}, "OP": "*"},
         "non": {"ENT_TYPE": "non", "OP": "+"},
@@ -73,30 +74,28 @@ class Testicle(Base):
         value = defaultdict(dict)
 
         if self.description is not None:
-            value["testicle_description"] |= {"testicle_description": self.description}
+            value["testis_description"] |= {"testis_description": self.description}
 
         if self.length is not None:
-            value["testicle_size"] |= {"testicle_length_mm": self.length}
+            value["testis_size"] |= {"testis_length_mm": self.length}
 
         if self.length2 is not None:
-            value["testicle_size"] |= {"testicle_length_2nd_mm": self.length2}
+            value["testis_size"] |= {"testis_length_2nd_mm": self.length2}
 
         if self.width is not None:
-            value["testicle_size"] |= {"testicle_width_mm": self.width}
+            value["testis_size"] |= {"testis_width_mm": self.width}
 
         if self.width2 is not None:
-            value["testicle_size"] |= {"testicle_width_2nd_mm": self.width2}
+            value["testis_size"] |= {"testis_width_2nd_mm": self.width2}
 
         if self.units_inferred is not None:
-            value["testicle_size"] |= {
-                "testicle_size_units_inferred": self.units_inferred
-            }
+            value["testis_size"] |= {"testis_size_units_inferred": self.units_inferred}
 
-        if "testicle_description" in value:
-            value["testicle_description"]["_parser"] = self.__class__.__name__
+        if "testis_description" in value:
+            value["testis_description"]["_parser"] = self.__class__.__name__
 
-        if "testicle_size" in value:
-            value["testicle_size"]["_parser"] = self.__class__.__name__
+        if "testis_size" in value:
+            value["testis_size"]["_parser"] = self.__class__.__name__
 
         return value
 
@@ -113,10 +112,10 @@ class Testicle(Base):
             value["testis_length_2"] = self.length2
 
         if self.width is not None:
-            value["testicle_width_mm"] = self.width
+            value["testis_width"] = self.width
 
         if self.width2 is not None:
-            value["testicle_width_2nd_mm"] = self.width2
+            value["testis_width_2"] = self.width2
 
         return value
 
@@ -124,22 +123,22 @@ class Testicle(Base):
         value = {}
 
         if self.description is not None:
-            value |= {"testicleDescription": self.description}
+            value |= {"testisDescription": self.description}
 
         if self.length is not None:
-            value |= {"testicleLength": self.length}
+            value |= {"testisLength": self.length}
 
         if self.length2 is not None:
-            value |= {"testicleLength2": self.length2}
+            value |= {"testisLength2": self.length2}
 
         if self.width is not None:
-            value |= {"testicleWidth": self.width}
+            value |= {"testisWidth": self.width}
 
         if self.width2 is not None:
-            value |= {"testicleWidth2": self.width2}
+            value |= {"testisWidth2": self.width2}
 
         if self.units_inferred is not None:
-            value |= {"testicleUnitsInferred": self.units_inferred}
+            value |= {"testisUnitsInferred": self.units_inferred}
 
         return dwc.add_dyn(**value)
 
@@ -219,6 +218,7 @@ class Testicle(Base):
                     " abdominal ",
                     " abdominal , non - descended ",
                     " abdominal descended ",
+                    " ing ",
                     " non - descended ",
                     " fully - descended ",
                     " partially descended ",

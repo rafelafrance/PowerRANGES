@@ -263,3 +263,16 @@ class TestTesticleSize(unittest.TestCase):
 
     def test_testicle_length_35(self) -> None:
         self.assertEqual(parse("; reproductive data=t=233mg ;"), [])
+
+    def test_testicle_length_36(self) -> None:
+        self.assertEqual(
+            parse("test ing. 4mm"),
+            [
+                Testicle(
+                    length=4.0,
+                    start=0,
+                    end=13,
+                    description="inguinal",
+                )
+            ],
+        )

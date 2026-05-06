@@ -40,6 +40,8 @@ fully,completely,completely
 fully,fully,
 fully,incomplete,incompletely
 fully,incompletely,incompletely
+inguinal,ing,inguinal
+inguinal,inguinal,inguinal
 left,l,left
 left,l side,left
 left,l x,left
@@ -87,6 +89,7 @@ partially,pt,partially
 partially,slight,slightly
 partially,slightly,slightly
 scrotal,scr,scrotal
+scrotal,scro,scrotal
 scrotal,scrot,scrotal
 scrotal,scrotal,scrotal
 scrotal,scrotum,scrotal

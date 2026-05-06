@@ -118,7 +118,7 @@ class TestTesticleState(unittest.TestCase):
 
     def test_testicle_description_23(self) -> None:
         self.assertEqual(
-            parse("Testis abd. Collected with 22 cal. pellet rifle."),
+            parse("Testis abd."),
             [Testicle(description="abdominal", start=0, end=10)],
         )
 

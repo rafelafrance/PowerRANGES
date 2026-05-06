@@ -1,5 +1,6 @@
 label,pattern,factor_cm
 len_key,c.r,
+len_key,c-r,
 len_key,c.r len,
 len_key,c.r length,
 len_key,c.r.,

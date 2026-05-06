@@ -538,8 +538,17 @@ class TestEmbryo(unittest.TestCase):
             [Embryo(count=6, start=0, end=9)],
         )
 
-    # def test_embryo_53(self) -> None:
-    #     self.assertEqual(
-    #         parse("5 EMBRYOS: 2 IN LEFT HORN 43, 32, 3 IN RIGHT HORN 40,41,41"),
-    #         [Embryo(count=5, left=2, right=3, start=0, end=9)],
-    #     )
+    def test_embryo_53(self) -> None:
+        self.assertEqual(
+            parse("no embryos"),
+            [Embryo(count=0, start=0, end=10)],
+        )
+
+    def test_embryo_54(self) -> None:
+        self.assertEqual(
+            parse("One embryo. C-R: 32 mm"),
+            [
+                Embryo(count=1, start=0, end=10),
+                Embryo(length=32, start=12, end=22),
+            ],
+        )

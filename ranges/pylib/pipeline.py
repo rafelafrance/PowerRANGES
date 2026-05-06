@@ -10,6 +10,7 @@ from traiter.rules.uuid import Uuid
 from ranges.pylib import tokenizer
 from ranges.rules import delete
 from ranges.rules.body_mass import BodyMass
+from ranges.rules.calcar_length import CalcarLength
 from ranges.rules.ear_length import EarLength
 from ranges.rules.embryo import Embryo
 from ranges.rules.female_state_shorthand import FemaleStateShorthand
@@ -27,6 +28,7 @@ from ranges.rules.pregnancy_state import PregnancyState
 from ranges.rules.sex import Sex
 from ranges.rules.tail_length import TailLength
 from ranges.rules.testicle import Testicle
+from ranges.rules.thumb_length import ThumbLength
 from ranges.rules.total_length import TotalLength
 from ranges.rules.tragus_length import TragusLength
 from ranges.rules.vagina_state import VaginaState
@@ -59,21 +61,36 @@ def build() -> Language:
     ForearmLength.pipe(nlp)
 
     Number.pipe(nlp)
+    ThumbLength.pipe(nlp)
+
+    Number.pipe(nlp)
+    CalcarLength.pipe(nlp)
+
+    Number.pipe(nlp)
     TragusLength.pipe(nlp)
 
     Number.pipe(nlp)
     HindFootLength.pipe(nlp)
 
+    Number.pipe(nlp)
     FemaleStateShorthand.pipe(nlp)
+
+    Number.pipe(nlp)
     Mammary.pipe(nlp)
+
+    Number.pipe(nlp)
     Nipple.pipe(nlp)
+
     LactationState.pipe(nlp)
     PregnancyState.pipe(nlp)
 
+    Number.pipe(nlp)
     Testicle.pipe(nlp)
 
+    Number.pipe(nlp)
     Ovary.pipe(nlp)
 
+    Number.pipe(nlp)
     Gonad.pipe(nlp)
 
     VaginaState.pipe(nlp)
@@ -100,21 +117,42 @@ def init_pipe() -> Language:
 
 def female_repro() -> Language:
     nlp = init_pipe()
+
+    Number.pipe(nlp)
     FemaleStateShorthand.pipe(nlp)
+
+    Number.pipe(nlp)
+    Embryo.pipe(nlp)
+
+    Number.pipe(nlp)
     Mammary.pipe(nlp)
+
+    Number.pipe(nlp)
     Nipple.pipe(nlp)
+
     LactationState.pipe(nlp)
     PregnancyState.pipe(nlp)
+
+    Number.pipe(nlp)
     Ovary.pipe(nlp)
+
+    Number.pipe(nlp)
     Gonad.pipe(nlp)
+
     VaginaState.pipe(nlp)
+
     return nlp
 
 
 def male_repro() -> Language:
     nlp = init_pipe()
+
+    Number.pipe(nlp)
     Testicle.pipe(nlp)
+
+    Number.pipe(nlp)
     Gonad.pipe(nlp)
+
     return nlp
 
 

@@ -189,9 +189,6 @@ def myosorex_varius_mod(args: argparse.Namespace) -> None:
                 "total_length": to_mm(in_row["total"], in_row["unit"]),
                 "tail_length": to_mm(in_row["tail"], in_row["unit"]),
                 "hindfoot_length": to_mm(in_row["hf"], in_row["unit"]),
-                "ear_length": to_mm(in_row["ear"], in_row["unit"]),
-                "ear_length_from_notch": to_mm(in_row["Notch"], in_row["unit"]),
-                "ear_length_from_crown": to_mm(in_row["Crown"], in_row["unit"]),
                 "body_mass": to_grams(in_row["wt"], in_row["units"]),
                 "testis_length": to_mm(in_row["testis L"], ""),
                 "testis_length_2": to_mm(in_row["testis R"], ""),
@@ -263,12 +260,6 @@ def mustela_mod(args: argparse.Namespace) -> None:
                 "hind_foot_with_claw": to_mm(
                     in_row["hind_foot_with_claw"], in_row["length_units"]
                 ),
-                "ear_length_from_notch": to_mm(
-                    in_row["ear_from_notch"], in_row["length_units"]
-                ),
-                "ear_length_from_crown": to_mm(
-                    in_row["ear_from_crown"], in_row["length_units"]
-                ),
                 "weight": to_grams(in_row["weight"], in_row["weight_units"]),
                 "lifeStage": in_row["lifestage"],
                 "reproductiveCondition": in_row["reproductive_data"],
@@ -278,7 +269,6 @@ def mustela_mod(args: argparse.Namespace) -> None:
                 "embryo_count_side_1": in_row["embryo_count_left"],
                 "embryo_count_side_2": in_row["embryo_count_right"],
                 "embryo_length": in_row["crown_rump_length"],
-                "embryo_length_measured_from": "crown-rump",
                 "placental_scar_count": in_row["scars"],
                 "unformatted_measurements": in_row["unformatted_measurements"],
                 "initials": in_row["initials"],
@@ -287,6 +277,16 @@ def mustela_mod(args: argparse.Namespace) -> None:
                 "year": in_row["year"],
                 "review_needed": in_row["review_needed"],
             }
+            if in_row["ear_length_from_crown"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_crown"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "crown"
+            elif in_row["ear_from_notch"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_notch"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "notch"
             out_row |= parse_all(in_row["reproductive_data"], out_row)
             out_row |= parse_all(in_row["unformatted_measurements"], out_row)
 
@@ -344,9 +344,8 @@ def msb_y1_y2_traits_mod(args: argparse.Namespace) -> None:
                     case "detected":
                         out_row["detected"] = in_row[meas]
                     case "ear length from notch" | "ear from notch":
-                        out_row["ear_length_from_notch"] = to_mm(
-                            in_row[meas], in_row[units]
-                        )
+                        out_row["ear_length"] = to_mm(in_row[meas], in_row[units])
+                        out_row["ear_length_measured_from"] = "notch"
                     case "forearm length":
                         out_row["forearm_length"] = to_mm(in_row[meas], in_row[units])
                     case "hind foot with claw":
@@ -362,9 +361,8 @@ def msb_y1_y2_traits_mod(args: argparse.Namespace) -> None:
                     case "tail length":
                         out_row["tail_length"] = to_mm(in_row[meas], in_row[units])
                     case "thumb length with claw":
-                        out_row["thumb_length_with_claw"] = to_mm(
-                            in_row[meas], in_row[units]
-                        )
+                        out_row["thumb_length"] = to_mm(in_row[meas], in_row[units])
+                        out_row["thumb_length_measured_from"] = "claw"
                     case "total length":
                         out_row["total_length"] = to_mm(in_row[meas], in_row[units])
                     case "tragus length":
@@ -418,13 +416,6 @@ def microtus_mod(args: argparse.Namespace) -> None:
                     in_row["hind foot with claw"], in_row["unit"]
                 ),
                 "hind_foot_length_includes": "claw",
-                "ear_length": to_mm(in_row["ear"], in_row["unit"]),
-                "ear_length_from_notch": to_mm(
-                    in_row["ear from notch"], in_row["unit"]
-                ),
-                "ear_length_from_crown": to_mm(
-                    in_row["ear from crown"], in_row["unit"]
-                ),
                 "body_mass": to_grams(in_row["weight"], in_row["units"]),
                 "lifeStage": in_row["life stage"],
                 "reproductiveCondition": in_row["reproductive data"],
@@ -445,6 +436,19 @@ def microtus_mod(args: argparse.Namespace) -> None:
                 "year": in_row["Year"],
                 "review_needed": in_row["REVIEW NEEDED"],
             }
+            if in_row["ear_length"]:
+                out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
+                out_row["ear_length_measured_from"] = ""
+            elif in_row["ear_length_from_crown"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_crown"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "crown"
+            elif in_row["ear_from_notch"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_notch"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "notch"
 
             out_data.append(out_row)
 
@@ -659,6 +663,20 @@ def eptesicus_mod(args: argparse.Namespace) -> None:
                 "month": in_row["Month"],
                 "year": in_row["Year"],
             }
+            if in_row["ear_length"]:
+                out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
+                out_row["ear_length_measured_from"] = ""
+            elif in_row["ear_length_from_crown"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_crown"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "crown"
+            elif in_row["ear_from_notch"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_notch"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "notch"
+
             out_data.append(out_row)
 
     df = pd.DataFrame(out_data)
@@ -714,9 +732,8 @@ def dmns_ranges_traits_dmns(args: argparse.Namespace, name: str) -> None:
                     case "calcar length":
                         out_row["calcar_length"] = to_mm(in_row[meas], in_row[units])
                     case "ear length from notch" | "ear from notch":
-                        out_row["ear_length_from_notch"] = to_mm(
-                            in_row[meas], in_row[units]
-                        )
+                        out_row["ear_length"] = to_mm(in_row[meas], in_row[units])
+                        out_row["ear_length_measured_from"] = "notch"
                     case "hind foot with claw":
                         out_row["hind_foot_length"] = to_mm(in_row[meas], in_row[units])
                         out_row["hind_foot_length_includes"] = "claw"
@@ -730,9 +747,8 @@ def dmns_ranges_traits_dmns(args: argparse.Namespace, name: str) -> None:
                     case "tail length":
                         out_row["tail_length"] = to_mm(in_row[meas], in_row[units])
                     case "thumb with claw":
-                        out_row["thumb_length_with_claw"] = to_mm(
-                            in_row[meas], in_row[units]
-                        )
+                        out_row["thumb_length"] = to_mm(in_row[meas], in_row[units])
+                        out_row["thumb_length_measured_from"] = "claw"
                     case "total length":
                         out_row["total_length"] = to_mm(in_row[meas], in_row[units])
                     case "tragus length":
@@ -859,16 +875,9 @@ def antrozous_pallidus_mod(args: argparse.Namespace) -> None:
                 "year": to_int(in_row["Year"]),
                 "sex": in_row["sex"],
                 "body_mass_grams": to_grams(in_row["weight"], in_row["units"]),
-                "ear_length": to_mm(in_row["ear"], in_row["unit"]),
-                "ear_length_from_notch": to_mm(
-                    in_row["ear from notch"], in_row["unit"]
-                ),
-                "ear_length_from_crown": to_mm(
-                    in_row["ear from crown"], in_row["unit"]
-                ),
                 "embryo_count": to_int(in_row["emb count"]),
                 "embryo_count_side_1": to_int(in_row["embs L"]),
-                "embryo_count_right": to_int(in_row["embs R"]),
+                "embryo_count_side_2": to_int(in_row["embs R"]),
                 "embryo_length": to_mm(in_row["emb CR"], in_row["unit"]),
                 "embryo_length_measured_from": "crown-rump",
                 "forearm_length": to_mm(in_row["forearm"], in_row["unit"]),
@@ -882,6 +891,21 @@ def antrozous_pallidus_mod(args: argparse.Namespace) -> None:
                 ],
                 "unformatted_measurements": in_row["unformatted measurements"],
             }
+
+            if in_row["ear_length"]:
+                out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
+                out_row["ear_length_measured_from"] = ""
+            elif in_row["ear_length_from_crown"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_crown"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "crown"
+            elif in_row["ear_from_notch"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_notch"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "notch"
+
             out_data.append(out_row)
 
     df = pd.DataFrame(out_data)

@@ -36,12 +36,12 @@ class ThumbLength(BaseLength):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    measured_from: str | None = None
+    includes: str | None = None
 
     def for_csv(self) -> dict[str, Any]:
         value: dict[str, Any] = {"thumb_length": self.length}
-        if self.measured_from:
-            value["thumb_length_measured_from"] = self.measured_from
+        if self.includes:
+            value["thumb_length_includes"] = self.includes
         return value
 
     @classmethod
@@ -64,7 +64,7 @@ class ThumbLength(BaseLength):
         keys = [e for e in ent.ents if e.label_ in cls.keys]
         for key in keys:
             if value := cls.measured_keys.get(key.text.lower()):
-                trait.measured_from = value
+                trait.includes = value
 
     @classmethod
     def thumb_length_match(cls, ent: Span) -> "ThumbLength":

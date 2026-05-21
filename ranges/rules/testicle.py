@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -10,7 +9,6 @@ from traiter.pipes import add
 from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
@@ -70,35 +68,6 @@ class Testicle(Base):
     width2: float | None = None
     units_inferred: bool | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        if self.description is not None:
-            value["testis_description"] |= {"testis_description": self.description}
-
-        if self.length is not None:
-            value["testis_size"] |= {"testis_length_mm": self.length}
-
-        if self.length2 is not None:
-            value["testis_size"] |= {"testis_length_2nd_mm": self.length2}
-
-        if self.width is not None:
-            value["testis_size"] |= {"testis_width_mm": self.width}
-
-        if self.width2 is not None:
-            value["testis_size"] |= {"testis_width_2nd_mm": self.width2}
-
-        if self.units_inferred is not None:
-            value["testis_size"] |= {"testis_size_units_inferred": self.units_inferred}
-
-        if "testis_description" in value:
-            value["testis_description"]["_parser"] = self.__class__.__name__
-
-        if "testis_size" in value:
-            value["testis_size"]["_parser"] = self.__class__.__name__
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value = {}
 
@@ -118,29 +87,6 @@ class Testicle(Base):
             value["testis_width_2"] = self.width2
 
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        value = {}
-
-        if self.description is not None:
-            value |= {"testisDescription": self.description}
-
-        if self.length is not None:
-            value |= {"testisLength": self.length}
-
-        if self.length2 is not None:
-            value |= {"testisLength2": self.length2}
-
-        if self.width is not None:
-            value |= {"testisWidth": self.width}
-
-        if self.width2 is not None:
-            value |= {"testisWidth2": self.width2}
-
-        if self.units_inferred is not None:
-            value |= {"testisUnitsInferred": self.units_inferred}
-
-        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

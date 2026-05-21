@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
@@ -6,7 +5,6 @@ from spacy.language import Language
 from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes import add
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
 from ranges.rules.base import Base
@@ -17,23 +15,6 @@ class FemaleStateShorthand(Base):
     vagina_state: str | None = None
     nipple_state: str | None = None
     lactation_state: str | None = None
-
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        if self.vagina_state:
-            value["vagina_state"] |= {"vagina_state": self.vagina_state}
-            value["vagina_state"]["_parser"] = self.__class__.__name__
-
-        if self.nipple_state:
-            value["nipple_state"] |= {"nipple_state": self.nipple_state}
-            value["nipple_state"]["_parser"] = self.__class__.__name__
-
-        if self.lactation_state:
-            value["lactation_state"] |= {"lactation_state": self.lactation_state}
-            value["lactation_state"]["_parser"] = self.__class__.__name__
-
-        return value
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
@@ -48,20 +29,6 @@ class FemaleStateShorthand(Base):
             value["lactation_state"] = self.lactation_state
 
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        value = {}
-
-        if self.vagina_state:
-            value |= {"vaginaState": self.vagina_state}
-
-        if self.nipple_state:
-            value |= {"nippleState": self.nipple_state}
-
-        if self.lactation_state:
-            value |= {"lactationState": self.lactation_state}
-
-        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

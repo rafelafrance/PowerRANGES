@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -7,7 +6,6 @@ from spacy.language import Language
 from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.rules import terms as t_terms
 
 from ranges.rules.base_length import BaseLength, DictFunc
@@ -35,26 +33,6 @@ class HindFootLength(BaseLength):
 
     includes: str | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        value["hind_foot_length"] = {"hind_foot_length_mm": self.length}
-        value["hind_foot_length"]["_parser"] = self.__class__.__name__
-
-        if self.includes:
-            value["hind_foot_length"] |= {"hind_foot_length_includes": self.includes}
-
-        if self.units_inferred:
-            value["hind_foot_length"] |= {"hind_foot_length_units_inferred": True}
-
-        if self.ambiguous:
-            value["hind_foot_length"] |= {"hind_foot_length_ambiguous": True}
-
-        if self.estimated:
-            value["hind_foot_length"] |= {"hind_foot_length_estimated": True}
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value = {}
 
@@ -64,14 +42,6 @@ class HindFootLength(BaseLength):
             value["hind_foot_length_includes"] = self.includes
 
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        super().to_dwc(dwc)
-
-        if self.includes:
-            dwc.add_dyn(hindFootLengthIncludes=self.includes)
-
-        return dwc
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

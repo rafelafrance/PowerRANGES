@@ -9,7 +9,6 @@ from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
@@ -35,19 +34,8 @@ class LifeStage(Base):
 
     life_stage: str | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        return {
-            "life_stage": {
-                "life_stage": self.life_stage,
-                "_parser": self.__class__.__name__,
-            }
-        }
-
     def for_csv(self) -> dict[str, Any]:
         return {"life_stage": self.life_stage}
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        return dwc.add(lifeStage=self.life_stage)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

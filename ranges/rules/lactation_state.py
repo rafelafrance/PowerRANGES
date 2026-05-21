@@ -7,7 +7,6 @@ from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
 from ranges.rules.base import Base
@@ -25,22 +24,11 @@ class LactationState(Base):
     lactation: bool | None = None
     description: str | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        return {
-            "lactation_state": {
-                "lactation": self.lactation,
-                "_parser": self.__class__.__name__,
-            }
-        }
-
     def for_csv(self) -> dict[str, Any]:
         return {
             "lactation": self.lactation,
             "lactation_description": self.description,
         }
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        return dwc.add_dyn(lactation=self.lactation)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

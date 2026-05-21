@@ -18,7 +18,6 @@ Ambiguous measurements are enclosed in brackets.
   E.g.: 11-[22]-33-[44]:99g
 """
 
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -30,7 +29,6 @@ from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib import util as t_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
@@ -92,53 +90,6 @@ class LengthShorthand(Base):
     tragus_length: float | None = None
     tragus_length_estimated: bool | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        if self.total_length is not None:
-            value["total_length"] |= {"total_length_mm": self.total_length}
-            value["total_length"]["_parser"] = self.__class__.__name__
-            if self.total_length_estimated:
-                value["total_length"] |= {"total_length_estimated": True}
-
-        if self.tail_length is not None:
-            value["tail_length"] |= {"tail_length_mm": self.tail_length}
-            value["tail_length"]["_parser"] = self.__class__.__name__
-            if self.tail_length_estimated:
-                value["tail_length"] |= {"tail_length_estimated": True}
-
-        if self.hind_foot_length is not None:
-            value["hind_foot_length"] |= {"hind_foot_length_mm": self.hind_foot_length}
-            value["hind_foot_length"]["_parser"] = self.__class__.__name__
-            if self.hind_foot_length_estimated:
-                value["hind_foot_length"] |= {"hind_foot_length_estimated": True}
-
-        if self.ear_length is not None:
-            value["ear_length"] |= {"ear_length_mm": self.ear_length}
-            value["ear_length"]["_parser"] = self.__class__.__name__
-            if self.ear_length_estimated:
-                value["ear_length"] |= {"ear_length_estimated": True}
-
-        if self.body_mass is not None:
-            value["body_mass"] |= {"body_mass_grams": self.body_mass}
-            value["body_mass"]["_parser"] = self.__class__.__name__
-            if self.body_mass_estimated:
-                value["body_mass"] |= {"body_mass_estimated": True}
-
-        if self.forearm_length is not None:
-            value["forearm_length"] |= {"forearm_length_mm": self.forearm_length}
-            value["forearm_length"]["_parser"] = self.__class__.__name__
-            if self.forearm_length_estimated:
-                value["forearm_length"] |= {"forearm_length_estimated": True}
-
-        if self.tragus_length is not None:
-            value["tragus_length"] |= {"tragus_length_mm": self.tragus_length}
-            value["tragus_length"]["_parser"] = self.__class__.__name__
-            if self.tragus_length_estimated:
-                value["tragus_length"] |= {"tragus_length_estimated": True}
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value = {}
 
@@ -164,46 +115,6 @@ class LengthShorthand(Base):
             value["tragus_length"] = self.tragus_length
 
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        value = {}
-
-        if self.total_length is not None:
-            value |= {"totalLengthInMillimeters": self.total_length}
-            if self.total_length_estimated:
-                value |= {"totalLengthEstimated": True}
-
-        if self.tail_length is not None:
-            value |= {"tailLengthInMillimeters": self.tail_length}
-            if self.tail_length_estimated:
-                value |= {"tailLengthEstimated": True}
-
-        if self.hind_foot_length is not None:
-            value |= {"hindFootLengthInMillimeters": self.hind_foot_length}
-            if self.hind_foot_length_estimated:
-                value |= {"hindFootLengthEstimated": True}
-
-        if self.ear_length is not None:
-            value |= {"earLengthInMillimeters": self.ear_length}
-            if self.ear_length_estimated:
-                value |= {"earLengthEstimated": True}
-
-        if self.forearm_length is not None:
-            value |= {"forearmLengthInMillimeters": self.forearm_length}
-            if self.forearm_length_estimated:
-                value |= {"forearmLengthEstimated": True}
-
-        if self.tragus_length is not None:
-            value |= {"tragusLengthInMillimeters": self.tragus_length}
-            if self.tragus_length_estimated:
-                value |= {"tragusLengthEstimated": True}
-
-        if self.body_mass is not None:
-            value |= {"bodyMassInGrams": self.body_mass}
-            if self.body_mass_estimated:
-                value |= {"bodyMassEstimated": True}
-
-        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

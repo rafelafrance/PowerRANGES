@@ -6,7 +6,6 @@ from spacy.language import Language
 from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes import add
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
 from ranges.rules.base import Base
@@ -23,19 +22,8 @@ class VaginaState(Base):
 
     state: str | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        return {
-            "vagina_state": {
-                "vagina_state": self.state,
-                "_parser": self.__class__.__name__,
-            }
-        }
-
     def for_csv(self) -> dict[str, Any]:
         return {"vagina_state": self.state}
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        return dwc.add_dyn(vaginaState=self.state)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

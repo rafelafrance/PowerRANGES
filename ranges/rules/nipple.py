@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -10,7 +9,6 @@ from traiter.pipes import add
 from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
 from ranges.rules.base import Base
@@ -44,19 +42,6 @@ class Nipple(Base):
     count: int | None = None
     state: str | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        if self.count is not None:
-            value["nipple_count"] |= {"nipple_count": self.count}
-            value["nipple_count"]["_parser"] = self.__class__.__name__
-
-        if self.state:
-            value["nipple_state"] |= {"nipple_state": self.state}
-            value["nipple_state"]["_parser"] = self.__class__.__name__
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value = {}
 
@@ -67,15 +52,6 @@ class Nipple(Base):
             value["nipple_state"] = self.state
 
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        if self.count is not None:
-            dwc.add_dyn(nippleCount=self.count)
-
-        if self.state is not None:
-            dwc.add_dyn(nippleState=self.state)
-
-        return dwc
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -31,23 +30,6 @@ class TailLength(BaseLength):
     }
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
-
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        value["tail_length"] = {"tail_length_mm": self.length}
-        value["tail_length"]["_parser"] = self.__class__.__name__
-
-        if self.units_inferred:
-            value["tail_length"] |= {"tail_length_units_inferred": True}
-
-        if self.ambiguous:
-            value["tail_length"] |= {"tail_length_ambiguous": True}
-
-        if self.estimated:
-            value["tail_length"] |= {"tail_length_estimated": True}
-
-        return value
 
     def for_csv(self) -> dict[str, Any]:
         return {"tail_length": self.length}

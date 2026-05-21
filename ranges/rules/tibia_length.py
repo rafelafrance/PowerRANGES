@@ -29,21 +29,6 @@ class TibiaLength(BaseLength):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value: dict[str, Any] = {"tibia_length": {"tibia_length_mm": self.length}}
-        value["tibia_length"]["_parser"] = self.__class__.__name__
-
-        if self.units_inferred:
-            value["tibia_length"] |= {"tibia_length_units_inferred": True}
-
-        if self.ambiguous:
-            value["tibia_length"] |= {"tibia_length_ambiguous": True}
-
-        if self.estimated:
-            value["tibia_length"] |= {"tibia_length_estimated": True}
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         return {"tibia_length": self.length}
 

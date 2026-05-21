@@ -5,7 +5,6 @@ These traits are intermixed in text, and Currently, traiter isn't equipped to de
 with this easily.
 """
 
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -16,7 +15,6 @@ from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
@@ -118,50 +116,6 @@ class Ovary(Base):
 
     units_inferred: bool | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        if self.description is not None:
-            value["ovary_description"] |= {"ovary_description": self.description}
-
-        if self.left_side is not None:
-            value["ovary_description"] |= {
-                "ovary_description_left_side": self.left_side
-            }
-
-        if self.right_side is not None:
-            value["ovary_description"] |= {
-                "ovary_description_right_side": self.right_side
-            }
-
-        if self.both_sides is not None:
-            value["ovary_description"] |= {
-                "ovary_description_both_sides": self.both_sides
-            }
-
-        if self.length is not None:
-            value["ovary_size"] |= {"ovary_length_mm": self.length}
-
-        if self.length2 is not None:
-            value["ovary_size"] |= {"ovary_length_2nd_mm": self.length2}
-
-        if self.width is not None:
-            value["ovary_size"] |= {"ovary_width_mm": self.width}
-
-        if self.width2 is not None:
-            value["ovary_size"] |= {"ovary_width_2nd_mm": self.width2}
-
-        if self.units_inferred is not None:
-            value["ovary_size"] |= {"ovary_size_units_inferred": self.units_inferred}
-
-        if "ovary_description" in value:
-            value["ovary_description"]["_parser"] = self.__class__.__name__
-
-        if "ovary_size" in value:
-            value["ovary_size"]["_parser"] = self.__class__.__name__
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value = {}
 
@@ -181,38 +135,6 @@ class Ovary(Base):
             value["ovary_width_2"] = self.width2
 
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        value = {}
-
-        if self.description is not None:
-            value |= {"ovaryDescription": self.description}
-
-        if self.left_side is not None:
-            value |= {"ovaryDescriptionLeft": self.left_side}
-
-        if self.right_side is not None:
-            value |= {"ovaryDescriptionRight": self.right_side}
-
-        if self.both_sides is not None:
-            value |= {"ovaryDescriptionBothSides": self.both_sides}
-
-        if self.length is not None:
-            value |= {"ovaryLength": self.length}
-
-        if self.length2 is not None:
-            value |= {"ovaryLength2": self.length2}
-
-        if self.width is not None:
-            value |= {"ovaryWidth": self.width}
-
-        if self.width2 is not None:
-            value |= {"ovaryWidth2": self.width2}
-
-        if self.units_inferred is not None:
-            value |= {"ovaryUnitsInferred": self.units_inferred}
-
-        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

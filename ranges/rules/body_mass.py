@@ -8,7 +8,6 @@ from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
@@ -34,42 +33,9 @@ class BodyMass(Base):
     ambiguous: bool | None = None
     estimated: bool | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = {
-            "body_mass": {
-                "body_mass_grams": self.mass,
-                "_parser": self.__class__.__name__,
-            }
-        }
-
-        if self.units_inferred:
-            value["body_mass"] |= {"body_mass_units_inferred": True}
-
-        if self.ambiguous:
-            value["body_mass"] |= {"body_mass_ambiguous": True}
-
-        if self.estimated:
-            value["body_mass"] |= {"body_mass_estimated": True}
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value = {"body_mass": self.mass}
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        value = {"bodyMassInGrams": self.mass}
-
-        if self.units_inferred:
-            value |= {"bodyMassUnitsInferred": True}
-
-        if self.ambiguous:
-            value |= {"bodyMassAmbiguous": True}
-
-        if self.estimated:
-            value |= {"bodyMassEstimated": True}
-
-        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

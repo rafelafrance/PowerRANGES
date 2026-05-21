@@ -30,21 +30,6 @@ class TotalLength(BaseLength):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value: dict[str, Any] = {"total_length": {"total_length_mm": self.length}}
-        value["total_length"]["_parser"] = self.__class__.__name__
-
-        if self.units_inferred:
-            value["total_length"] |= {"total_length_units_inferred": True}
-
-        if self.ambiguous:
-            value["total_length"] |= {"total_length_ambiguous": True}
-
-        if self.estimated:
-            value["total_length"] |= {"total_length_estimated": True}
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         return {"total_length": self.length}
 

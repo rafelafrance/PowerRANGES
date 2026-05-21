@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -8,7 +7,6 @@ from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes import add, reject_match
 from traiter.pylib import const as t_const
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
 from ranges.rules.base import Base
@@ -56,35 +54,6 @@ class PlacentalScarCount(Base):
     side2: int | None = None
     both: int | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        if self.present is not None:
-            value["placental_scars"] |= {"placental_scars_present": self.present}
-
-        if self.count is not None:
-            value["placental_scars"] |= {"placental_scar_count": self.count}
-
-        if self.left is not None:
-            value["placental_scars"] |= {"placental_scars_left_side": self.left}
-
-        if self.right is not None:
-            value["placental_scars"] |= {"placental_scars_right_side": self.right}
-
-        if self.side1 is not None:
-            value["placental_scars"] |= {"placental_scars_side_1": self.side1}
-
-        if self.side2 is not None:
-            value["placental_scars"] |= {"placental_scars_side_2": self.side2}
-
-        if self.side2 is not None:
-            value["placental_scars"] |= {"placental_scars_both_sides": self.side2}
-
-        if "placental_scars" in value:
-            value["placental_scars"]["_parser"] = self.__class__.__name__
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value = {}
 
@@ -110,32 +79,6 @@ class PlacentalScarCount(Base):
             value["placental_scars_both_sides"] = self.side2
 
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        value = {}
-
-        if self.present is not None:
-            value |= {"placentalScarsPresent": self.present}
-
-        if self.count is not None:
-            value |= {"placentalScarCount": self.count}
-
-        if self.left is not None:
-            value |= {"placentalScarCountLeft": self.left}
-
-        if self.right is not None:
-            value |= {"placentalScarCountRight": self.right}
-
-        if self.side1 is not None:
-            value |= {"placentalScarCountSide1": self.side1}
-
-        if self.side2 is not None:
-            value |= {"placentalScarCountSide2": self.side2}
-
-        if self.both is not None:
-            value |= {"placentalScarCountBothSides": self.both}
-
-        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -9,7 +8,6 @@ from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
@@ -55,27 +53,6 @@ class Gonad(Base):
     width: float | None = None
     units_inferred: bool | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value = defaultdict(dict)
-
-        if self.description is not None:
-            value["gonad_description"] |= {"gonad_description": self.description}
-            value["gonad_description"]["_parser"] = self.__class__.__name__
-
-        if self.length is not None:
-            value["gonad_size"] |= {"gonad_length_mm": self.length}
-
-        if self.width is not None:
-            value["gonad_size"] |= {"gonad_width_mm": self.width}
-
-        if self.units_inferred is not None:
-            value["gonad_size"] |= {"gonad_size_units_inferred": self.units_inferred}
-
-        if "gonad_size" in value:
-            value["gonad_size"]["_parser"] = self.__class__.__name__
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value = {}
 
@@ -89,23 +66,6 @@ class Gonad(Base):
             value["gonad_width"] = self.width
 
         return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        value = {}
-
-        if self.description is not None:
-            value |= {"gonadDescription": self.description}
-
-        if self.length is not None:
-            value |= {"gonadLength": self.length}
-
-        if self.width is not None:
-            value |= {"gonadWidth": self.width}
-
-        if self.units_inferred is not None:
-            value |= {"gonadUnitsInferred": self.units_inferred}
-
-        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:

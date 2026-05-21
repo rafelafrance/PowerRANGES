@@ -92,7 +92,7 @@ class LengthShorthand(Base):
     tragus_length: float | None = None
     tragus_length_estimated: bool | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901 PLR0912
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.total_length is not None:
@@ -165,7 +165,7 @@ class LengthShorthand(Base):
 
         return value
 
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:  # noqa: C901 PLR0912
+    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
         value = {}
 
         if self.total_length is not None:

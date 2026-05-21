@@ -37,21 +37,6 @@ class CalcarLength(BaseLength):
         cls.length_pipe(nlp)
         cls.cleanup_pipe(nlp)
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value: dict[str, Any] = {"calcar_length": {"calcar_length_mm": self.length}}
-        value["calcar_length"]["_parser"] = self.__class__.__name__
-
-        if self.units_inferred:
-            value["calcar_length"] |= {"calcar_length_units_inferred": True}
-
-        if self.ambiguous:
-            value["calcar_length"] |= {"calcar_length_ambiguous": True}
-
-        if self.estimated:
-            value["calcar_length"] |= {"calcar_length_estimated": True}
-
-        return value
-
     def for_csv(self) -> dict[str, Any]:
         value: dict[str, Any] = {"calcar_length": self.length}
         return value

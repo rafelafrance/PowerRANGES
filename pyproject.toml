@@ -12,7 +12,6 @@ authors = [{ name = "Raphael LaFrance", email = "raphael.lafrance@gmail.com" }]
 requires-python = "==3.13.*"
 dependencies = [
     "Jinja2",
-    "jupyter",
     "openpyxl>=3.1.5",
     "pandas",
     "regex",

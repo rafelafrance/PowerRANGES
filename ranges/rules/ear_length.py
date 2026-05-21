@@ -7,12 +7,9 @@ from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.rules import terms as t_terms
 
 from ranges.rules.base_length import BaseLength, DictFunc
-
-# from traiter.pipes import add
 
 
 @dataclass(eq=False)
@@ -38,33 +35,6 @@ class EarLength(BaseLength):
     # ---------------------
 
     measured_from: str | None = None
-
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        value: dict[str, Any] = {"ear_length": {"_parser": self.__class__.__name__}}
-
-        if self.measured_from:
-            value["ear_length"] |= {"ear_length_measured_from": self.measured_from}
-
-        value["ear_length"] |= {"ear_length_mm": self.length}
-
-        if self.units_inferred:
-            value["ear_length"] |= {"ear_length_units_inferred": True}
-
-        if self.ambiguous:
-            value["ear_length"] |= {"ear_length_ambiguous": True}
-
-        if self.estimated:
-            value["ear_length"] |= {"ear_length_estimated": True}
-
-        return value
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        super().to_dwc(dwc)
-
-        if self.measured_from:
-            dwc.add_dyn(earLengthMeasuredFrom=self.measured_from)
-
-        return dwc
 
     def for_csv(self) -> dict[str, Any]:
         value: dict[str, Any] = {"ear_length": self.length}

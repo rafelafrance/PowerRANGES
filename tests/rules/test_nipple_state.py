@@ -90,7 +90,9 @@ class TestNippleState(unittest.TestCase):
             parse("4 teats post lac."),
             [
                 Nipple(count=4, start=0, end=7),
-                LactationState(state="not lactating", start=8, end=16),
+                LactationState(
+                    lactation=False, description="post lac", start=8, end=16
+                ),
             ],
         )
 

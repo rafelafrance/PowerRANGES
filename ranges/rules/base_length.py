@@ -7,7 +7,6 @@ from spacy.language import Language
 from spacy.tokens import Span
 from traiter.pipes import add
 from traiter.pylib import const as t_const
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 
 from ranges.rules.base import Base
@@ -23,12 +22,15 @@ class DictFunc(Enum):
 SEP = t_const.COLON + t_const.COMMA + t_const.DASH + t_const.EQ + t_const.SLASH
 SEP += [r"&", r"!", r"+", r"~"]
 
+DOT = SEP + t_const.DOT + ["+", "x", "X"]
+
 BAD = ["tag"]
 
 DECODER = {
     ",": {"TEXT": {"IN": t_const.COMMA}, "OP": "?"},
     "99": {"ENT_TYPE": "number", "OP": "+"},
     "=": {"TEXT": {"IN": SEP}},
+    ".": {"TEXT": {"IN": DOT}},
     ":": {"TEXT": {"IN": SEP}, "OP": "?"},
     "[": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
     "/": {"TEXT": {"IN": t_const.SLASH}},
@@ -76,28 +78,8 @@ class BaseLength(Base):
     estimated: bool | None = None
     _prefix: str | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:
-        raise NotImplementedError
-
     def for_csv(self) -> dict[str, dict[str, Any]]:
         raise NotImplementedError
-
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        value = {}
-
-        if self.length is not None:
-            value |= {f"{self._prefix}LengthInMillimeters": self.length}
-
-        if self.units_inferred:
-            value |= {f"{self._prefix}LengthUnitsInferred": True}
-
-        if self.ambiguous:
-            value |= {f"{self._prefix}LengthAmbiguous": True}
-
-        if self.estimated:
-            value |= {f"{self._prefix}LengthEstimated": True}
-
-        return dwc.add_dyn(**value)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:
@@ -184,6 +166,8 @@ class BaseLength(Base):
             ' key  ambig      "? : "? [ 99 ] mm* ] ',
             "                         [ 99 ] mm* ] [ key ] ",
             " key : word :              99   mm+ ",
+            " key+   99 ",
+            " key+ . 99 mm+ ",
         ]
         if allow_no_key:
             patterns += [
@@ -329,7 +313,7 @@ class BaseLength(Base):
         number = next(e for e in ent.ents if e.label_ == "number")
         length = cls.in_millimeters(number, units)
 
-        return {
+        trait = {
             "length": length,
             "_prefix": prefix,
             "ambiguous": ambiguous,
@@ -338,6 +322,7 @@ class BaseLength(Base):
             "start": ent.start_char,
             "end": ent.end_char,
         }
+        return trait
 
     @classmethod
     def compound_match(cls, ent: Span) -> dict[str, Any]:

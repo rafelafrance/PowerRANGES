@@ -22,21 +22,25 @@ class LactationState(Base):
     lac_labels: ClassVar[list[str]] = ["lac", "not_lac", "post", "not"]
     # ---------------------
 
-    state: str | None = None
+    lactation: bool | None = None
+    description: str | None = None
 
     def as_dict(self) -> dict[str, dict[str, Any]]:
         return {
             "lactation_state": {
-                "lactation_state": self.state,
+                "lactation": self.lactation,
                 "_parser": self.__class__.__name__,
             }
         }
 
     def for_csv(self) -> dict[str, Any]:
-        return {"lactation_state": self.state}
+        return {
+            "lactation": self.lactation,
+            "lactation_description": self.description,
+        }
 
     def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        return dwc.add_dyn(lactationState=self.state)
+        return dwc.add_dyn(lactation=self.lactation)
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:
@@ -80,12 +84,12 @@ class LactationState(Base):
 
     @classmethod
     def lactating_match(cls, ent: Span) -> "LactationState":
-        return cls.from_ent(ent, state="lactating")
+        return cls.from_ent(ent, lactation=True, description=ent.text)
 
     @classmethod
     def not_lactating_match(cls, ent: Span) -> "LactationState":
         ent._.relabel = "lactation_state"
-        return cls.from_ent(ent, state="not lactating")
+        return cls.from_ent(ent, lactation=False, description=ent.text)
 
 
 @registry.misc("lactating_match")

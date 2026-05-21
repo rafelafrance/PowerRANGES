@@ -18,7 +18,7 @@ from tqdm import tqdm
 from ranges.writers import csv_writer, html_writer, json_writer
 
 
-def main(args: argparse.Namespace) -> None:  # noqa: C901 PLR0912
+def main(args: argparse.Namespace) -> None:
     log.started()
 
     if args.json_dir:

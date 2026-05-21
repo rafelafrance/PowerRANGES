@@ -118,7 +118,7 @@ class Ovary(Base):
 
     units_inferred: bool | None = None
 
-    def as_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901
+    def as_dict(self) -> dict[str, dict[str, Any]]:
         value = defaultdict(dict)
 
         if self.description is not None:

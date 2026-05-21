@@ -5,7 +5,6 @@ These traits are intermixed in text, and Currently, traiter isn't equipped to de
 with this easily.
 """
 
-from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, ClassVar
@@ -16,17 +15,18 @@ from spacy.util import registry
 from traiter.pipes import add
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
-from traiter.pylib.darwin_core import DarwinCore
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
-from ranges.rules.base_length import SEP, BaseLength, DictFunc
+from ranges.rules.base_length import DOT, SEP, BaseLength, DictFunc
 
 DECODER = {
     "(": {"TEXT": {"IN": t_const.OPEN}, "OP": "?"},
     ")": {"TEXT": {"IN": t_const.CLOSE}, "OP": "?"},
     "/": {"TEXT": {"IN": t_const.SLASH}},
     ",": {"TEXT": {"IN": SEP}, "OP": "{,2}"},
+    ".": {"TEXT": {"IN": DOT}, "OP": "{,2}"},
+    "1or2": {"TEXT": {"REGEX": r"^[12]$"}},
     "9": {"ENT_TYPE": "number"},
     ":": {"TEXT": {"IN": SEP}, "OP": "{,2}"},
     "=": {"TEXT": {"IN": t_const.EQ}},
@@ -37,6 +37,7 @@ DECODER = {
     "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
     "present": {"ENT_TYPE": {"IN": ["no", "yes"]}, "OP": "+"},
     "side": {"ENT_TYPE": "side", "OP": "+"},
+    "side_word": {"LOWER": "side"},
     "word": {"IS_ALPHA": True, "OP": "{,2}"},
     "x": {"LOWER": {"IN": t_const.CROSS}, "OP": "?"},
     "xx": {"LOWER": {"IN": t_const.CROSS}},
@@ -64,83 +65,24 @@ class Embryo(BaseLength):
 
     # Length fields are in the parent class
     width: float | None = None
+    measured_from: str | None = None
 
     # Count fields
     count: int | None = None
-    left: int | None = None
-    right: int | None = None
-    female: int | None = None
-    male: int | None = None
     side1: int | None = None
     side2: int | None = None
-
-    def as_dict(self) -> dict[str, dict[str, Any]]:  # noqa: C901, PLR0912
-        value = defaultdict(dict)
-
-        if self.length is not None:
-            value["embryo_size"] |= {"embryo_size_length_mm": self.length}
-
-        if self.width is not None:
-            value["embryo_size"] |= {"embryo_size_width_mm": self.width}
-
-        if self.units_inferred is not None:
-            value["embryo_size"] |= {"embryo_size_units_inferred": self.units_inferred}
-
-        if self.ambiguous is not None:
-            value["embryo_size"] |= {"embryo_size_ambiguous": self.ambiguous}
-
-        if self.estimated is not None:
-            value["embryo_size"] |= {"embryo_size_estimated": self.estimated}
-
-        if self.count is not None:
-            value["embryo_count"] |= {"embryo_count": self.count}
-
-        if self.left is not None:
-            value["embryo_count"] |= {"embryo_count_left": self.left}
-
-        if self.right is not None:
-            value["embryo_count"] |= {"embryo_count_right": self.right}
-
-        if self.female is not None:
-            value["embryo_count"] |= {"embryo_count_females": self.female}
-
-        if self.male is not None:
-            value["embryo_count"] |= {"embryo_count_males": self.male}
-
-        if self.side1 is not None:
-            value["embryo_count"] |= {"embryo_count_side_1": self.side1}
-
-        if self.side2 is not None:
-            value["embryo_count"] |= {"embryo_count_side_2": self.side2}
-
-        if "embryo_size" in value:
-            value["embryo_size"]["_parser"] = self.__class__.__name__
-
-        if "embryo_count" in value:
-            value["embryo_count"]["_parser"] = self.__class__.__name__
-
-        return value
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
 
         if self.length is not None:
-            value["embryo_size"] = self.length
+            value["embryo_length"] = self.length
+
+        if self.measured_from is not None:
+            value["embryo_length_measured_from"] = self.measured_from
 
         if self.count is not None:
             value["embryo_count"] = self.count
-
-        if self.left is not None:
-            value["embryo_count_left"] = self.left
-
-        if self.right is not None:
-            value["embryo_count_right"] = self.right
-
-        if self.female is not None:
-            value["embryo_count_females"] = self.female
-
-        if self.male is not None:
-            value["embryo_count_males"] = self.male
 
         if self.side1 is not None:
             value["embryo_count_side_1"] = self.side1
@@ -150,43 +92,13 @@ class Embryo(BaseLength):
 
         return value
 
-    def to_dwc(self, dwc: DarwinCore) -> DarwinCore:
-        super().to_dwc(dwc)  # Get length fields
-
-        value = {}
-
-        if self.width is not None:
-            value |= {"embryoWidthInMillimeters": self.width}
-
-        if self.count is not None:
-            value |= {"embryoCount": self.count}
-
-        if self.left is not None:
-            value |= {"embryoCountLeft": self.left}
-
-        if self.right is not None:
-            value |= {"embryoCountRight": self.right}
-
-        if self.female is not None:
-            value |= {"embryoCountFemale": self.female}
-
-        if self.male is not None:
-            value |= {"embryoCountMale": self.male}
-
-        if self.side1 is not None:
-            value |= {"embryoCountSide1": self.side1}
-
-        if self.side2 is not None:
-            value |= {"embryoCountSide2": self.side2}
-
-        return dwc.add_dyn(**value)
-
     @classmethod
     def pipe(cls, nlp: Language) -> None:
         add.term_pipe(nlp, name="embryo_terms", path=cls.csvs)
 
         cls.bad_embryo_pipe(nlp)
         cls.bad_length_pipe(nlp)
+        cls.embryo_side_pipe(nlp)
         cls.embryo_mix_2_3_pipe(nlp)
         cls.embryo_mix_1_2_pipe(nlp)
         cls.embryo_mix_3_pipe(nlp)
@@ -194,8 +106,8 @@ class Embryo(BaseLength):
         cls.embryo_mix_1_pipe(nlp)
         cls.embryo_mix_0_pipe(nlp)
         cls.embryo_width_pipe(nlp)
-        cls.length_pipe(nlp, label=cls.name)
         # add.debug_tokens(nlp)  # ###########################################
+        cls.length_pipe(nlp, label=cls.name)
         cls.embryo_count_pipe(nlp)
         cls.embryo_present_pipe(nlp)
         cls.cleanup_pipe(nlp)
@@ -215,6 +127,15 @@ class Embryo(BaseLength):
             nlp,
             name="embryo_count_patterns",
             compiler=cls.embryo_count_patterns(),
+            overwrite=["number"],
+        )
+
+    @classmethod
+    def embryo_side_pipe(cls, nlp: Language) -> None:
+        add.trait_pipe(
+            nlp,
+            name="embryo_side_patterns",
+            compiler=cls.embryo_side_patterns(),
             overwrite=["number"],
         )
 
@@ -297,6 +218,21 @@ class Embryo(BaseLength):
         )
 
     @classmethod
+    def embryo_side_patterns(cls) -> list[Compiler]:
+        return [
+            Compiler(
+                label="side",
+                on_match="embryo_side_match",
+                is_temp=True,
+                decoder=DECODER,
+                patterns=[
+                    " side ",
+                    " side_word 1or2 ",
+                ],
+            ),
+        ]
+
+    @classmethod
     def bad_embryo_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
@@ -364,6 +300,7 @@ class Embryo(BaseLength):
                     " 9 mm+ , key+ , 9 ( side ) ",
                     " 9 mm+ , key+ , 9 ( side ) , 9 ( side ) ",
                     " 9 mm+ , key+ , 9",
+                    " emb_key word side , 9 mm+ len_key ",
                 ],
             ),
         ]
@@ -391,6 +328,7 @@ class Embryo(BaseLength):
                     " emb_key+ , 9 , len_key+ , 9 mm* , 9 ( side ) x 9 ( side ) ",
                     " emb_key+ 9 x 9 ( side ) , 9 , ( side ) 9 ) ",
                     " emb_key+ 9 x 9 ( side ) , 9 , word ( side ) ",
+                    " 9 emb_key+ . len_key+ , 9 mm+ ",
                 ],
             ),
         ]
@@ -460,6 +398,7 @@ class Embryo(BaseLength):
                     " 9      :   9 ( side ) word , 9 , word ( side ) , : 9 mm* , key+ ",
                     " key+ : ( 9 side   word , 9 ,   side   word , 9 , : key* 9 mm* ) ",
                     " key+ :   9 ( side ) word , 9 , ( side ) word , 9 , : key* 9 mm* ",
+                    " 9 emb_key+ . 9 side . 9 side . key . 9 mm+ ",
                 ],
             ),
         ]
@@ -481,19 +420,28 @@ class Embryo(BaseLength):
     def add_sides(cls, data: dict, counts: list[int], sides: list[str]) -> None:
         for count, side in zip(counts, sides, strict=False):
             if side == "both":
-                data["left"] = count
-                data["right"] = count
+                data["side1"] = count
+                data["side2"] = count
                 data["count"] = count + count
-            else:
-                data[side] = count
+            elif side in ("left", "side1"):
+                data["side1"] = count
+            elif side in ("right", "side2"):
+                data["side2"] = count
 
     @classmethod
     def get_sides(cls, ent: Span, counts: list[int]) -> list[str]:
         sides = [e for e in ent.ents if e.label_ == "side"]
-        sides = [cls.side.get(s.text.lower(), "") for s in sides]
+        new = []
+        for side in sides:
+            if side.text.endswith("1"):
+                new.append("side1")
+            elif side.text.endswith("2"):
+                new.append("side2")
+            else:
+                new.append(cls.side.get(side.text.lower(), ""))
         if len(counts) >= 2 and len(sides) == 0:
-            sides = ["side1", "side2"]
-        return sides
+            new = ["side1", "side2"]
+        return new
 
     @classmethod
     def embryo_count_match(cls, ent: Span) -> "Embryo":
@@ -552,11 +500,14 @@ class Embryo(BaseLength):
         else:
             total = sum(counts)
 
+        meas_from = "crown" if any(e.label_ == "len_key" for e in ent.ents) else None
+
         data = {
             "_prefix": "embryo",
             "length": length,
             "width": width,
             "count": total,
+            "measured_from": meas_from,
         }
 
         cls.add_sides(data, counts, sides)
@@ -567,6 +518,7 @@ class Embryo(BaseLength):
     def embryo_width_match(cls, ent: Span) -> "Embryo":
         length, width = (e for e in ent.ents if e.label_ == "number")
 
+        meas_from = "crown" if any(e.label_ == "len_key" for e in ent.ents) else None
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         units_inferred = True if units is None else None
 
@@ -578,6 +530,7 @@ class Embryo(BaseLength):
             "length": length,
             "width": width,
             "units_inferred": units_inferred,
+            "measured_from": meas_from,
         }
 
         return cls.from_ent(ent, **data)
@@ -587,9 +540,21 @@ class Embryo(BaseLength):
         return cls.from_ent(ent)
 
     @classmethod
+    def embryo_side_match(cls, ent: Span) -> "Embryo":
+        return cls.from_ent(ent)
+
+    @classmethod
     def to_obj(cls, ent: Span, dict_func: DictFunc) -> "Embryo":
         base = cls.class_dict(ent, dict_func)
+        meas_from = "crown" if any(e.label_ == "len_key" for e in ent.ents) else None
+        if meas_from:
+            base["measured_from"] = "crown"
         return cls(**base)
+
+
+@registry.misc("embryo_side_match")
+def embryo_side_match(ent: Span) -> Embryo:
+    return Embryo.embryo_side_match(ent)
 
 
 @registry.misc("embryo_count_match")

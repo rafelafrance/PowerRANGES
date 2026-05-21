@@ -21,10 +21,10 @@ class PregnancyState(Base):
     not_preg: ClassVar[list[str]] = [*nots, "not_pregnant"]
     # ---------------------
 
-    state: str | None = None
+    pregnancy: bool | None = None
 
     def for_csv(self) -> dict[str, Any]:
-        return {"pregnancy_state": self.state}
+        return {"pregnancy_state": self.pregnancy}
 
     @classmethod
     def pipe(cls, nlp: Language) -> None:
@@ -61,10 +61,10 @@ class PregnancyState(Base):
 
     @classmethod
     def pregnancy_state_match(cls, ent: Span) -> "PregnancyState":
-        state = "pregnant"
+        state = True
         if next((e for e in ent.ents if e.label_ in cls.not_preg), None):
-            state = "not pregnant"
-        return cls.from_ent(ent, state=state)
+            state = False
+        return cls.from_ent(ent, pregnancy=state)
 
 
 @registry.misc("pregnancy_state_match")

@@ -126,41 +126,43 @@ plac_scar,uterusscars
 plac_scar,utscar
 plac_scar,utscarring
 plac_scar,utscars
-left,l
-left,l side
-left,l side
-left,l x
-left,l.
-left,l. side
-left,l. x
-left,left
-left,left side
-left,lf
-left,lf side
-left,lf.
-left,lf. side
-left,lft
-left,lft side
-left,lft.
-left,lft. side
-left,lt
-left,lt.
-left,lx
-left,of left
-left,on left
-right,of right
-right,on right
-right,r
-right,r side
-right,r x
-right,r.
-right,r. side
-right,r. x
-right,right
-right,right side
-right,rt
-right,rt side
-right,rt.
-right,rt. side
-right,rx
-right,rx.
+side,l
+side,l side
+side,l side
+side,l x
+side,l.
+side,l. side
+side,l. x
+side,left
+side,left side
+side,lf
+side,lf side
+side,lf.
+side,lf. side
+side,lft
+side,lft side
+side,lft.
+side,lft. side
+side,lt
+side,lt.
+side,lx
+side,of left
+side,on left
+side,of right
+side,on right
+side,r
+side,r side
+side,r x
+side,r.
+side,r. side
+side,r. x
+side,right
+side,right side
+side,rt
+side,rt side
+side,rt.
+side,rt. side
+side,rx
+side,rx.
+side,on side
+side,of side

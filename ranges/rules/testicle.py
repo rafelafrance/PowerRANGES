@@ -32,6 +32,8 @@ class Testicle(Base):
     units: ClassVar[list[str]] = ["metric_length", "imperial_length"]
     sides: ClassVar[list[str]] = ["left", "right", "both"]
 
+    pos_terms: ClassVar[list[str]] = ["abdominal", "descended", "inguinal"]
+
     overwrite: ClassVar[list[str]] = ["number"]
 
     decoder: ClassVar[dict[str, dict]] = {
@@ -40,7 +42,7 @@ class Testicle(Base):
         "9": {"ENT_TYPE": "number"},
         "abbrev": {"ENT_TYPE": "abbrev", "OP": "*"},
         "abdominal": {"ENT_TYPE": "abdominal", "OP": "+"},
-        "alone": {"ENT_TYPE": "descr_alone", "OP": "+"},
+        "alone": {"ENT_TYPE": "pos_alone", "OP": "+"},
         "and": {"ENT_TYPE": "and", "OP": "+"},
         "descended": {"ENT_TYPE": "descended", "OP": "+"},
         "descr": {"ENT_TYPE": "description", "OP": "+"},
@@ -51,6 +53,7 @@ class Testicle(Base):
         "mm": {"ENT_TYPE": {"IN": units}, "OP": "*"},
         "non": {"ENT_TYPE": "non", "OP": "+"},
         "partially": {"ENT_TYPE": "partially", "OP": "+"},
+        "pos": {"ENT_TYPE": "position", "OP": "+"},
         "right": {"ENT_TYPE": {"IN": sides}, "OP": "+"},
         "scrotal": {"ENT_TYPE": "scrotal", "OP": "+"},
         "side": {"ENT_TYPE": {"IN": sides}, "OP": "*"},
@@ -61,6 +64,7 @@ class Testicle(Base):
     replace: ClassVar[dict[str, str]] = term_util.look_up_table(csvs, "replace")
     # ---------------------
 
+    position: str | None = None
     description: str | None = None
     length: float | None = None
     width: float | None = None
@@ -73,6 +77,9 @@ class Testicle(Base):
 
         if self.description is not None:
             value["testis_description"] = self.description
+
+        if self.position is not None:
+            value["testis_position"] = self.position
 
         if self.length is not None:
             value["testis_length"] = self.length
@@ -101,6 +108,13 @@ class Testicle(Base):
 
         add.trait_pipe(
             nlp,
+            name="testicle_position_patterns",
+            compiler=cls.testicle_position_patterns(),
+            overwrite=["number"],
+        )
+
+        add.trait_pipe(
+            nlp,
             name="testicle_description_patterns",
             compiler=cls.testicle_description_patterns(),
             overwrite=["number"],
@@ -109,8 +123,8 @@ class Testicle(Base):
         # add.debug_tokens(nlp)  # ############################################
         add.trait_pipe(
             nlp,
-            name="testicle_descr_alone_patterns",
-            compiler=cls.testicle_descr_alone_patterns(),
+            name="testicle_pos_alone_patterns",
+            compiler=cls.testicle_pos_alone_patterns(),
             overwrite=["number", "description"],
         )
 
@@ -152,12 +166,12 @@ class Testicle(Base):
         ]
 
     @classmethod
-    def testicle_description_patterns(cls) -> list[Compiler]:
+    def testicle_position_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
-                label="description",
+                label="position",
                 is_temp=True,
-                on_match="testicle_description_match",
+                on_match="testicle_position_match",
                 decoder=cls.decoder,
                 patterns=[
                     " non - fully descended ",
@@ -168,21 +182,33 @@ class Testicle(Base):
                     " non - descended ",
                     " fully - descended ",
                     " partially descended ",
-                    " size ",
-                    " size , non - descended ",
-                    " size , descended ",
                     " descended ",
-                    " descended , and size ",
                 ],
             ),
         ]
 
     @classmethod
-    def testicle_descr_alone_patterns(cls) -> list[Compiler]:
+    def testicle_description_patterns(cls) -> list[Compiler]:
         return [
             Compiler(
-                label="descr_alone",
-                on_match="descr_alone_match",
+                label="description",
+                is_temp=True,
+                on_match="testicle_description_match",
+                decoder=cls.decoder,
+                patterns=[
+                    " size ",
+                    " size , non - descended ",
+                    " size , descended ",
+                ],
+            ),
+        ]
+
+    @classmethod
+    def testicle_pos_alone_patterns(cls) -> list[Compiler]:
+        return [
+            Compiler(
+                label="pos_alone",
+                on_match="pos_alone_match",
                 is_temp=True,
                 decoder=cls.decoder,
                 patterns=[
@@ -204,7 +230,13 @@ class Testicle(Base):
                     "            alone ",
                     "     testes alone ",
                     "     testes descr ",
+                    "     testes pos ",
                     "     testes descr , and , descr ",
+                    "     testes descr , and , pos ",
+                    "     testes pos   , and , descr ",
+                    "     testes descr ,       descr ",
+                    "     testes descr ,       pos ",
+                    "     testes pos   ,       descr ",
                 ],
             ),
         ]
@@ -219,17 +251,22 @@ class Testicle(Base):
                 patterns=[
                     " testes , side , 9 mm ",
                     " testes , side , 9 mm , descr ",
+                    " testes , side , 9 mm , pos ",
                     " testes , side , 9 mm , alone ",
                     " testes , side , 9 mm x 9 mm ",
                     " testes , side , 9 mm x 9 mm and 9 mm x 9 mm ",
                     " testes , side , 9 mm x 9 mm , alone ",
                     " testes , side , 9 mm x 9 mm , descr ",
+                    " testes , side , 9 mm x 9 mm , pos ",
                     " testes , descr , abbrev , 9 mm ",
+                    " testes , pos   , abbrev , 9 mm ",
                     " testes , descr , abbrev , 9 mm x 9 mm ",
+                    " testes , pos   , abbrev , 9 mm x 9 mm ",
                     " testes , alone , abbrev , 9 mm ",
                     " testes , alone , abbrev , 9 mm x 9 mm ",
                     " alone , abbrev , 9 mm x 9 mm ",
                     " testes , x 9 mm ",
+                    " testes ,   9 mm , pos ",
                     " testes ,   9 mm , descr ",
                     " testes ,   9 mm , alone ",
                 ],
@@ -258,7 +295,7 @@ class Testicle(Base):
         elif units is None:
             units_ = ""
         elif hasattr(units, "text"):
-            units = units.text.lower()
+            units_ = units.text.lower()
 
         factor = cls.factor_mm.get(units_, 1.0)
         value = factor * number._.trait.number
@@ -269,33 +306,31 @@ class Testicle(Base):
         return cls.from_ent(ent)
 
     @classmethod
+    def testicle_position_match(cls, ent: Span) -> "Testicle":
+        return cls.from_ent(ent)
+
+    @classmethod
     def testicle_description_match(cls, ent: Span) -> "Testicle":
         return cls.from_ent(ent)
 
     @classmethod
-    def descr_alone_match(cls, ent: Span) -> "Testicle":
+    def pos_alone_match(cls, ent: Span) -> "Testicle":
         return cls.from_ent(ent)
 
     @classmethod
     def testicle_state_match(cls, ent: Span) -> "Testicle":
         data = {}
-        descr = [
-            cls.replace.get(e.text.lower(), e.text.lower())
-            for e in ent.ents
-            if e.label_ in ("description", "descr_alone")
-        ]
-        data["description"] = " ".join(descr) if descr else ent.text.lower()
+        pos, descr = cls.get_pos_and_descr(ent, fill=True)
+        data["position"] = pos
+        data["description"] = descr
         return cls.from_ent(ent, **data)
 
     @classmethod
     def testicle_size_match(cls, ent: Span) -> "Testicle":
         data = {}
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
-        descr = [
-            cls.replace.get(e.text.lower(), e.text.lower())
-            for e in ent.ents
-            if e.label_ in ("description", "descr_alone")
-        ]
+        pos, descr = cls.get_pos_and_descr(ent)
+
         nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
         if not nums:
             raise RejectMatch
@@ -308,8 +343,8 @@ class Testicle(Base):
         data["length2"] = nums[2] if len(nums) > one_pair else None
         data["width2"] = nums[3] if len(nums) >= two_pairs else None
 
-        if descr:
-            data["description"] = " ".join(descr)
+        data["position"] = pos
+        data["description"] = descr
 
         data["units_inferred"] = True if units is None else None
 
@@ -319,22 +354,45 @@ class Testicle(Base):
     def testicle_double_match(cls, ent: Span) -> "Testicle":
         data = {}
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
-        descr = [
-            cls.replace.get(e.text.lower(), e.text.lower())
-            for e in ent.ents
-            if e.label_ in ("description", "descr_alone")
-        ]
+        pos, descr = cls.get_pos_and_descr(ent)
+
         nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
 
         data["length"] = nums[0]
         data["length2"] = nums[1] if len(nums) > 1 else None
 
-        if descr:
-            data["description"] = " ".join(descr)
+        data["position"] = pos
+        data["description"] = descr
 
         data["units_inferred"] = True if units is None else None
 
         return cls.from_ent(ent, **data)
+
+    @classmethod
+    def get_pos_and_descr(
+        cls, ent: Span, *, fill: bool = False
+    ) -> tuple[str | None, str | None]:
+        pos = [
+            cls.replace.get(e.text.lower(), e.text.lower())
+            for e in ent.ents
+            if e.label_ in ("position", "pos_alone")
+        ]
+        pos = " ".join(pos) if pos else None
+        descr = [
+            cls.replace.get(e.text.lower(), e.text.lower())
+            for e in ent.ents
+            if e.label_ in ("description", "descr_alone")
+        ]
+        descr = " ".join(descr) if descr else None
+        if fill and pos is None and descr is None:
+            descr = ent.text.lower()
+
+        return pos, descr
+
+
+@registry.misc("testicle_position_match")
+def testicle_position_match(ent: Span) -> Testicle:
+    return Testicle.testicle_position_match(ent)
 
 
 @registry.misc("testicle_description_match")
@@ -342,9 +400,9 @@ def testicle_description_match(ent: Span) -> Testicle:
     return Testicle.testicle_description_match(ent)
 
 
-@registry.misc("descr_alone_match")
-def descr_alone_match(ent: Span) -> Testicle:
-    return Testicle.descr_alone_match(ent)
+@registry.misc("pos_alone_match")
+def pos_alone_match(ent: Span) -> Testicle:
+    return Testicle.pos_alone_match(ent)
 
 
 @registry.misc("testicle_state_match")

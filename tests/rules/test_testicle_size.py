@@ -28,7 +28,7 @@ class TestTesticleSize(unittest.TestCase):
             parse("reproductive data=NS; T=9x4 ; endoparasite "),
             [
                 Testicle(
-                    description="non-scrotal",
+                    position="non-scrotal",
                     length=9,
                     width=4,
                     units_inferred=True,
@@ -41,7 +41,7 @@ class TestTesticleSize(unittest.TestCase):
     def test_testicle_length_05(self) -> None:
         self.assertEqual(
             parse("reproductive data=testes: 18x8 mm; scrotal ;"),
-            [Testicle(length=18, width=8, description="scrotal", start=18, end=42)],
+            [Testicle(length=18, width=8, position="scrotal", start=18, end=42)],
         )
 
     def test_testicle_length_06(self) -> None:
@@ -53,7 +53,7 @@ class TestTesticleSize(unittest.TestCase):
     def test_testicle_length_07(self) -> None:
         self.assertEqual(
             parse("; reproductive data=testes scrotal; T = 9mm in length"),
-            [Testicle(length=9, description="scrotal", start=20, end=43)],
+            [Testicle(length=9, position="scrotal", start=20, end=43)],
         )
 
     def test_testicle_length_08(self) -> None:
@@ -63,7 +63,7 @@ class TestTesticleSize(unittest.TestCase):
                 Testicle(
                     length=9,
                     width=5,
-                    description="scrotal",
+                    position="scrotal",
                     start=0,
                     end=19,
                 )
@@ -77,7 +77,7 @@ class TestTesticleSize(unittest.TestCase):
                 Testicle(
                     length=3,
                     width=1.8,
-                    description="abdominal",
+                    position="abdominal",
                     units_inferred=True,
                     start=18,
                     end=47,
@@ -104,7 +104,7 @@ class TestTesticleSize(unittest.TestCase):
         self.assertEqual(
             parse("testes scrotal, L testis 13x5mm"),
             [
-                Testicle(description="scrotal", start=0, end=14),
+                Testicle(position="scrotal", start=0, end=14),
                 Testicle(length=13, width=5, start=18, end=31),
             ],
         )
@@ -206,7 +206,7 @@ class TestTesticleSize(unittest.TestCase):
             parse("; reproductive data=Testes .5' , scrotal"),
             [
                 Testicle(
-                    description="scrotal",
+                    position="scrotal",
                     length=0.5,
                     units_inferred=True,
                     start=20,
@@ -218,7 +218,7 @@ class TestTesticleSize(unittest.TestCase):
     def test_testicle_length_29(self) -> None:
         self.assertEqual(
             parse("; reproductive data=TESTES NOT DESCENDED - 6 MM age"),
-            [Testicle(description="not descended", length=6, start=20, end=47)],
+            [Testicle(position="not descended", length=6, start=20, end=47)],
         )
 
     def test_testicle_length_31(self) -> None:
@@ -240,7 +240,7 @@ class TestTesticleSize(unittest.TestCase):
             [
                 Testicle(
                     length=32,
-                    description="scrotal",
+                    position="scrotal",
                     width=11,
                     units_inferred=True,
                     start=20,
@@ -272,7 +272,7 @@ class TestTesticleSize(unittest.TestCase):
                     length=4.0,
                     start=0,
                     end=13,
-                    description="inguinal",
+                    position="inguinal",
                 )
             ],
         )

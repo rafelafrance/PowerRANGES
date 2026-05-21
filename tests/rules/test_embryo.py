@@ -21,7 +21,7 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("not pregnant; no embs"),
             [
-                PregnancyState(state="not pregnant", start=0, end=12),
+                PregnancyState(pregnancy=False, start=0, end=12),
                 Embryo(count=0, start=14, end=21),
             ],
         )
@@ -132,7 +132,7 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("pregnant; 1 emb; CR-74; emb W-25; emb WT-4.8"),
             [
-                PregnancyState(state="pregnant", start=0, end=8),
+                PregnancyState(pregnancy=True, start=0, end=8),
                 Embryo(count=1, start=10, end=15),
                 Embryo(
                     length=74,
@@ -475,7 +475,7 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("Pregnant with 4 embryos (rt = 1, lt = 3;"),
             [
-                PregnancyState(state="pregnant", start=0, end=8),
+                PregnancyState(pregnancy=True, start=0, end=8),
                 Embryo(
                     start=14,
                     end=39,

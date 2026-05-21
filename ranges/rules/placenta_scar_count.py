@@ -19,7 +19,7 @@ class PlacentalScarCount(Base):
         Path(__file__).parent / "terms" / "placental_scar_count_terms.csv"
     )
 
-    sides: ClassVar[list[str]] = ["both", "left", "right"]
+    sides: ClassVar[list[str]] = ["both", "left", "right", "side1", "side2"]
     sep: ClassVar[list[str]] = (
         t_const.DASH
         + t_const.PLUS
@@ -34,13 +34,16 @@ class PlacentalScarCount(Base):
         ")": {"LOWER": {"IN": t_const.CLOSE}, "OP": "?"},
         "%": {"LOWER": {"IN": ["%"]}},
         ",": {"LOWER": {"IN": sep}, "OP": "?"},
+        "1or2": {"TEXT": {"REGEX": r"^[12]$"}},
         "9": {"ENT_TYPE": {"IN": ["number"]}},
         "=": {"ENT_TYPE": "eq", "OP": "?"},
         "absent": {"ENT_TYPE": "absent", "OP": "+"},
         "adj": {"ENT_TYPE": "adj", "OP": "*"},
         "bad": {"ENT_TYPE": "bad", "OP": "+"},
         "plac_scar": {"ENT_TYPE": "plac_scar", "OP": "+"},
-        "side": {"ENT_TYPE": {"IN": sides}, "OP": "+"},
+        "side": {"ENT_TYPE": "side", "OP": "+"},
+        "side_word": {"LOWER": "side"},
+        "on": {"LOWER": {"IN": ["on", "of"]}},
     }
     # ---------------------
 
@@ -48,11 +51,8 @@ class PlacentalScarCount(Base):
 
     # Count fields
     count: int | None = None
-    left: int | None = None
-    right: int | None = None
     side1: int | None = None
     side2: int | None = None
-    both: int | None = None
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
@@ -63,20 +63,11 @@ class PlacentalScarCount(Base):
         if self.count is not None:
             value["placental_scar_count"] = self.count
 
-        if self.left is not None:
-            value["placental_scars_left_side"] = self.left
-
-        if self.right is not None:
-            value["placental_scars_right_side"] = self.right
-
         if self.side1 is not None:
             value["placental_scars_side_1"] = self.side1
 
         if self.side2 is not None:
             value["placental_scars_side_2"] = self.side2
-
-        if self.side2 is not None:
-            value["placental_scars_both_sides"] = self.side2
 
         return value
 
@@ -88,6 +79,13 @@ class PlacentalScarCount(Base):
             nlp,
             name="placental_scar_bad_patterns",
             compiler=cls.placental_scar_bad_patterns(),
+            overwrite=["number"],
+        )
+
+        add.trait_pipe(
+            nlp,
+            name="placental_scar_side_patterns",
+            compiler=cls.placental_scar_side_patterns(),
             overwrite=["number"],
         )
 
@@ -135,6 +133,22 @@ class PlacentalScarCount(Base):
         )
 
         add.cleanup_pipe(nlp, name="placental_scar_cleanup")
+
+    @classmethod
+    def placental_scar_side_patterns(cls) -> list[Compiler]:
+        return [
+            Compiler(
+                label="side",
+                on_match="placental_scar_side_match",
+                is_temp=True,
+                decoder=cls.decoder,
+                patterns=[
+                    "    side ",
+                    "    side_word 1or2 ",
+                    " on side_word 1or2 ",
+                ],
+            ),
+        ]
 
     @classmethod
     def placental_scar_bad_patterns(cls) -> list[Compiler]:
@@ -254,9 +268,9 @@ class PlacentalScarCount(Base):
         return nums
 
     @classmethod
-    def get_sides(cls, ent: Span) -> list[str]:
-        sides = [e.label_ for e in ent.ents if e.label_ in cls.sides]
-        sides += ["side1", "side2"]
+    def get_sides(cls) -> list[str]:
+        # sides = [e.label_ for e in ent.ents if e.label_ in cls.sides]
+        sides = ["side1", "side2"]
         return sides
 
     @classmethod
@@ -268,7 +282,7 @@ class PlacentalScarCount(Base):
         cls, ent: Span, total_at: int | None = None
     ) -> "PlacentalScarCount":
         counts = cls.get_counts(ent)
-        sides = cls.get_sides(ent)
+        sides = cls.get_sides()
 
         total = sum(counts) if total_at is None else counts.pop(total_at)
 
@@ -283,6 +297,15 @@ class PlacentalScarCount(Base):
         cls, ent: Span, *, present: bool
     ) -> "PlacentalScarCount":
         return cls.from_ent(ent, present=present)
+
+    @classmethod
+    def placental_scar_side_match(cls, ent: Span) -> "PlacentalScarCount":
+        return cls.from_ent(ent)
+
+
+@registry.misc("placental_scar_side_match")
+def placental_scar_side_match(ent: Span) -> PlacentalScarCount:
+    return PlacentalScarCount.placental_scar_side_match(ent)
 
 
 @registry.misc("placental_scar_total_at_0_match")

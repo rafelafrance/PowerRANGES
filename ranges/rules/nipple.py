@@ -32,15 +32,16 @@ class Nipple(Base):
         "any": {},
         "dev": {"ENT_TYPE": "dev", "OP": "+"},
         "mod": {"ENT_TYPE": "modifier"},
-        "nipple": {"ENT_TYPE": "nip", "OP": "+"},
+        "nipple": {"ENT_TYPE": {"IN": ["nip", "mammaries"]}, "OP": "+"},
         "none": {"ENT_TYPE": "none"},
         "side": {"ENT_TYPE": "side"},
-        "state": {"ENT_TYPE": "state", "OP": "+"},
+        "state": {"ENT_TYPE": {"IN": ["state", "nipple_size"]}, "OP": "+"},
     }
     # ---------------------
 
     count: int | None = None
-    state: str | None = None
+    size: str | None = None
+    description: str | None = None
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
@@ -48,8 +49,11 @@ class Nipple(Base):
         if self.count is not None:
             value["nipple_count"] = self.count
 
-        if self.state:
-            value["nipple_state"] = self.state
+        if self.size is not None:
+            value["nipple_size"] = self.size
+
+        if self.description:
+            value["nipple_state"] = self.description
 
         return value
 
@@ -172,7 +176,7 @@ class Nipple(Base):
         return int(count)
 
     @classmethod
-    def get_state(cls, ent: Span) -> str | None:
+    def get_description(cls, ent: Span) -> str | None:
         states = [e.text.lower() for e in ent.ents if e.label_ == "state"]
         states = [cls.replace.get(s, s) for s in states]
         neg = next((e.text.lower() for e in ent.ents if e.label_ == "none"), None)
@@ -184,6 +188,12 @@ class Nipple(Base):
         return " ".join(states) if states else None
 
     @classmethod
+    def get_size(cls, ent: Span) -> str | None:
+        sizes = [e.text.lower() for e in ent.ents if e.label_ == "nipple_size"]
+        sizes = [cls.replace.get(s, s) for s in sizes]
+        return " ".join(sizes) if sizes else None
+
+    @classmethod
     def nipple_count_match(cls, ent: Span) -> "Nipple":
         return cls.from_ent(ent, count=cls.get_count(ent))
 
@@ -193,14 +203,17 @@ class Nipple(Base):
 
     @classmethod
     def nipple_state_match(cls, ent: Span) -> "Nipple":
-        return cls.from_ent(ent, state=cls.get_state(ent))
+        return cls.from_ent(
+            ent, description=cls.get_description(ent), size=cls.get_size(ent)
+        )
 
     @classmethod
     def nipple_count_state_match(cls, ent: Span) -> "Nipple":
         return cls.from_ent(
             ent,
             count=cls.get_count(ent),
-            state=cls.get_state(ent),
+            size=cls.get_size(ent),
+            description=cls.get_description(ent),
         )
 
 

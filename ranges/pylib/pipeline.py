@@ -20,7 +20,6 @@ from ranges.rules.hind_foot_length import HindFootLength
 from ranges.rules.lactation_state import LactationState
 from ranges.rules.length_shorthand import LengthShorthand
 from ranges.rules.life_stage import LifeStage
-from ranges.rules.mammary import Mammary
 from ranges.rules.nipple import Nipple
 from ranges.rules.ovary import Ovary
 from ranges.rules.placenta_scar_count import PlacentalScarCount
@@ -76,9 +75,6 @@ def build() -> Language:
     FemaleStateShorthand.pipe(nlp)
 
     Number.pipe(nlp)
-    Mammary.pipe(nlp)
-
-    Number.pipe(nlp)
     Nipple.pipe(nlp)
 
     LactationState.pipe(nlp)
@@ -123,9 +119,6 @@ def female_repro() -> Language:
 
     Number.pipe(nlp)
     Embryo.pipe(nlp)
-
-    Number.pipe(nlp)
-    Mammary.pipe(nlp)
 
     Number.pipe(nlp)
     Nipple.pipe(nlp)

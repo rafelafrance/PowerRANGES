@@ -108,10 +108,10 @@ class Ovary(Base):
     right_side: str | None = None
     both_sides: str | None = None
 
-    length: float | None = None
+    length1: float | None = None
     length2: float | None = None
 
-    width: float | None = None
+    width1: float | None = None
     width2: float | None = None
 
     units_inferred: bool | None = None
@@ -123,13 +123,13 @@ class Ovary(Base):
             value["ovary_description"] = self.description
 
         if self.length is not None:
-            value["ovary_length"] = self.length
+            value["ovary_length_1"] = self.length1
 
         if self.length2 is not None:
             value["ovary_length_2"] = self.length2
 
         if self.width is not None:
-            value["ovary_width"] = self.width
+            value["ovary_width_1"] = self.width1
 
         if self.width2 is not None:
             value["ovary_width_2"] = self.width2
@@ -316,8 +316,8 @@ class Ovary(Base):
         one_pair = 2
         two_pairs = 4
 
-        data["length"] = nums[0]
-        data["width"] = nums[1] if len(nums) > 1 else None
+        data["length1"] = nums[0]
+        data["width1"] = nums[1] if len(nums) > 1 else None
         data["length2"] = nums[2] if len(nums) > one_pair else None
         data["width2"] = nums[3] if len(nums) >= two_pairs else None
 
@@ -348,9 +348,9 @@ class Ovary(Base):
             data["units_inferred"] = True
 
         if key in ("ovary_len", "ovary_len_mm"):
-            data["length"] = val
+            data["length1"] = val
         else:
-            data["width"] = val
+            data["width1"] = val
 
         return cls.from_ent(ent, **data)
 

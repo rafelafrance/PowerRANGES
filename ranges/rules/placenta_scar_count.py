@@ -7,6 +7,7 @@ from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes import add, reject_match
 from traiter.pylib import const as t_const
+from traiter.pylib import term_util
 from traiter.pylib.pattern_compiler import Compiler
 
 from ranges.rules.base import Base
@@ -45,14 +46,18 @@ class PlacentalScarCount(Base):
         "side_word": {"LOWER": "side"},
         "on": {"LOWER": {"IN": ["on", "of"]}},
     }
+
+    side: ClassVar[dict[str, str]] = term_util.look_up_table(csv, "side")
+    replace: ClassVar[dict[str, str]] = term_util.look_up_table(csv, "replace")
     # ---------------------
 
     present: bool | None = None
 
     # Count fields
-    count: int | None = None
-    side1: int | None = None
-    side2: int | None = None
+    count1: int | None = None
+    count2: int | None = None
+    side1: str | None = None
+    side2: str | None = None
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
@@ -60,8 +65,11 @@ class PlacentalScarCount(Base):
         if self.present is not None:
             value["placental_scars_present"] = self.present
 
-        if self.count is not None:
-            value["placental_scar_count"] = self.count
+        if self.count1 is not None:
+            value["placental_scar_count_1"] = self.count1
+
+        if self.countr2 is not None:
+            value["placental_scar_count_1"] = self.count2
 
         if self.side1 is not None:
             value["placental_scars_side_1"] = self.side1
@@ -89,6 +97,7 @@ class PlacentalScarCount(Base):
             overwrite=["number"],
         )
 
+        # add.debug_tokens(nlp)  # #############################################
         add.trait_pipe(
             nlp,
             name="placental_scar_count_at_0_patterns",
@@ -103,7 +112,6 @@ class PlacentalScarCount(Base):
             overwrite=["number"],
         )
 
-        # add.debug_tokens(nlp)  # #############################################
         add.trait_pipe(
             nlp,
             name="placental_scar_total_missing_patterns",
@@ -261,17 +269,55 @@ class PlacentalScarCount(Base):
         ]
 
     @classmethod
-    def get_counts(cls, ent: Span) -> list[int]:
-        if any(e._.trait.is_fraction for e in ent.ents if e.label_ == "number"):
-            raise reject_match.RejectMatch
-        nums = [int(e._.trait.number) for e in ent.ents if e.label_ == "number"]
-        return nums
+    def get_sides(cls, ent: Span, counts: list[int]) -> list[str]:
+        sides = [e for e in ent.ents if e.label_ == "side"]
+        new = []
+        if not sides:
+            new.append("side1")
+
+        for side in sides:
+            side = cls.replace.get(side.text.lower(), side.text)
+
+            if side.endswith("1"):
+                new.append("side1")
+            elif side.endswith("2"):
+                new.append("side2")
+            elif side.startswith("l"):
+                new.append("left")
+            elif side.startswith("r"):
+                new.append("right")
+            else:
+                new.append(cls.side.get(side.lower(), ""))
+
+        if len(counts) >= 2 and len(sides) == 0:
+            new = ["side1", "side2"]
+
+        return new
 
     @classmethod
-    def get_sides(cls) -> list[str]:
-        # sides = [e.label_ for e in ent.ents if e.label_ in cls.sides]
-        sides = ["side1", "side2"]
-        return sides
+    def add_sides(cls, data: dict, counts: list[int], sides: list[str]) -> None:
+        labels = (("count1", "side1"), ("count2", "side2"))
+        side_term = {"left": "L", "right": "R", "side1": "1", "side2": "2"}
+        for i, (count, side) in enumerate(zip(counts, sides, strict=False)):
+            count_label, side_label = labels[min(i, 1)]
+
+            match side:
+                case "both":
+                    data["count1"] = count
+                    data["count2"] = count
+                    data["side1"] = "L"
+                    data["side2"] = "R"
+                case "side1":
+                    data["count1"] = count
+                    data["side1"] = "1"
+                case "side2":
+                    data["count2"] = count
+                    data["side2"] = "2"
+                case "left" | "right":
+                    data[count_label] = count
+                    data[side_label] = side_term[side]
+                case _:
+                    raise ValueError(f"Unknown side {side=}")
 
     @classmethod
     def placental_scar_bad_match(cls, ent: Span) -> "PlacentalScarCount":
@@ -281,14 +327,18 @@ class PlacentalScarCount(Base):
     def placental_scar_match(
         cls, ent: Span, total_at: int | None = None
     ) -> "PlacentalScarCount":
-        counts = cls.get_counts(ent)
-        sides = cls.get_sides()
+        if any(e._.trait.is_fraction for e in ent.ents if e.label_ == "number"):
+            raise reject_match.RejectMatch
+        counts = [int(e._.trait.number) for e in ent.ents if e.label_ == "number"]
+        if total_at is not None and len(counts) > 1:
+            counts.pop(total_at)
 
-        total = sum(counts) if total_at is None else counts.pop(total_at)
+        sides = cls.get_sides(ent, counts)
 
-        data = {"count": total}
-        data |= dict(zip(sides, counts, strict=False))
-        data["present"] = total > 0
+        data = {}
+        cls.add_sides(data, counts, sides)
+
+        data["present"] = any(c != 0 for c in counts)
 
         return cls.from_ent(ent, **data)
 

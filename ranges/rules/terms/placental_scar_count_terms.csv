@@ -1,168 +1,168 @@
-label,pattern
-absent,missing
-absent,no
-absent,no embryonic
-absent,none
-absent,none visible
-absent,no visible
-absent,not visible
-adj,definite
-adj,faint
-adj,old
-adj,possible
-adj,prominent
-adj,recent
-bad,above
-bad,embryo
-bad,on
-bad,tail
-both,both
-both,both side
-both,both sides
-both,each side
-eq,=
-eq,eq
-eq,equal
-eq,equals
-eq,is
-plac_scar,embryo scar
-plac_scar,embryo scars
-plac_scar,p scar
-plac_scar,p scarring
-plac_scar,p scars
-plac_scar,p - scar
-plac_scar,p - scar -
-plac_scar,p-scarring
-plac_scar,p - scars
-plac_scar,p - scars -
-plac_scar,p . scar
-plac_scar,p . scarring
-plac_scar,p . scars
-plac_scar,pac scar
-plac_scar,pac scarring
-plac_scar,pac scars
-plac_scar,pac . scar
-plac_scar,pac . scarring
-plac_scar,pac . scars
-plac_scar,pacscar
-plac_scar,pacscarring
-plac_scar,pacscars
-plac_scar,pl scar
-plac_scar,pl scar -
-plac_scar,pl scarring
-plac_scar,pl scars
-plac_scar,pl . scar
-plac_scar,pl . scarring
-plac_scar,pl . scars
-plac_scar,plac
-plac_scar,plac scar
-plac_scar,plac scar -
-plac_scar,plac scarring
-plac_scar,plac scarring -
-plac_scar,plac scars
-plac_scar,plac . scar
-plac_scar,plac . scarring
-plac_scar,plac . scars
-plac_scar,placental scar
-plac_scar,placental scar -
-plac_scar,placental scarring
-plac_scar,placental scarring -
-plac_scar,placental scars
-plac_scar,placental scars -
-plac_scar,placental . scar
-plac_scar,placental . scarring
-plac_scar,placental . scars
-plac_scar,placentalscar
-plac_scar,placentalscarring
-plac_scar,placentalscars
-plac_scar,placscar
-plac_scar,placscarring
-plac_scar,placscars
-plac_scar,plsc
-plac_scar,plscar
-plac_scar,plscarring
-plac_scar,plscars
-plac_scar,plscr
-plac_scar,postnatal scar
-plac_scar,postnatal scarring
-plac_scar,postnatal scars
-plac_scar,postnatal . scar
-plac_scar,postnatal . scarring
-plac_scar,postnatal . scars
-plac_scar,postnatalscar
-plac_scar,postnatalscarring
-plac_scar,postnatalscars
-plac_scar,ps
-plac_scar,pslc
-plac_scar,scar
-plac_scar,scar -
-plac_scar,scarring
-plac_scar,scars
-plac_scar,scars -
-plac_scar,ut scar
-plac_scar,ut scarring
-plac_scar,ut scars
-plac_scar,ut . scar
-plac_scar,ut . scarring
-plac_scar,ut . scars
-plac_scar,uterine scar
-plac_scar,uterine scarring
-plac_scar,uterine scars
-plac_scar,uterine . scar
-plac_scar,uterine . scarring
-plac_scar,uterine . scars
-plac_scar,uterinescar
-plac_scar,uterinescarring
-plac_scar,uterinescars
-plac_scar,uterus scar
-plac_scar,uterus scarring
-plac_scar,uterus scars
-plac_scar,uterus . scar
-plac_scar,uterus . scarring
-plac_scar,uterus . scars
-plac_scar,uterusscar
-plac_scar,uterusscarring
-plac_scar,uterusscars
-plac_scar,utscar
-plac_scar,utscarring
-plac_scar,utscars
-side,l
-side,l side
-side,l side
-side,l x
-side,l.
-side,l. side
-side,l. x
-side,left
-side,left side
-side,lf
-side,lf side
-side,lf.
-side,lf. side
-side,lft
-side,lft side
-side,lft.
-side,lft. side
-side,lt
-side,lt.
-side,lx
-side,of left
-side,on left
-side,of right
-side,on right
-side,r
-side,r side
-side,r x
-side,r.
-side,r. side
-side,r. x
-side,right
-side,right side
-side,rt
-side,rt side
-side,rt.
-side,rt. side
-side,rx
-side,rx.
-side,on side
-side,of side
+label,pattern,replace
+absent,missing,
+absent,no,
+absent,no embryonic,
+absent,none,
+absent,none visible,
+absent,no visible,
+absent,not visible,
+adj,definite,
+adj,faint,
+adj,old,
+adj,possible,
+adj,prominent,
+adj,recent,
+bad,above,
+bad,embryo,
+bad,on,
+bad,tail,
+both,both,
+both,both side,
+both,both sides,
+both,each side,
+eq,=,
+eq,eq,
+eq,equal,
+eq,equals,
+eq,is,
+plac_scar,embryo scar,
+plac_scar,embryo scars,
+plac_scar,p scar,
+plac_scar,p scarring,
+plac_scar,p scars,
+plac_scar,p - scar,
+plac_scar,p - scar -,
+plac_scar,p-scarring,
+plac_scar,p - scars,
+plac_scar,p - scars -,
+plac_scar,p . scar,
+plac_scar,p . scarring,
+plac_scar,p . scars,
+plac_scar,pac scar,
+plac_scar,pac scarring,
+plac_scar,pac scars,
+plac_scar,pac . scar,
+plac_scar,pac . scarring,
+plac_scar,pac . scars,
+plac_scar,pacscar,
+plac_scar,pacscarring,
+plac_scar,pacscars,
+plac_scar,pl scar,
+plac_scar,pl scar -,
+plac_scar,pl scarring,
+plac_scar,pl scars,
+plac_scar,pl . scar,
+plac_scar,pl . scarring,
+plac_scar,pl . scars,
+plac_scar,plac,
+plac_scar,plac scar,
+plac_scar,plac scar -,
+plac_scar,plac scarring,
+plac_scar,plac scarring -,
+plac_scar,plac scars,
+plac_scar,plac . scar,
+plac_scar,plac . scarring,
+plac_scar,plac . scars,
+plac_scar,placental scar,
+plac_scar,placental scar -,
+plac_scar,placental scarring,
+plac_scar,placental scarring -,
+plac_scar,placental scars,
+plac_scar,placental scars -,
+plac_scar,placental . scar,
+plac_scar,placental . scarring,
+plac_scar,placental . scars,
+plac_scar,placentalscar,
+plac_scar,placentalscarring,
+plac_scar,placentalscars,
+plac_scar,placscar,
+plac_scar,placscarring,
+plac_scar,placscars,
+plac_scar,plsc,
+plac_scar,plscar,
+plac_scar,plscarring,
+plac_scar,plscars,
+plac_scar,plscr,
+plac_scar,postnatal scar,
+plac_scar,postnatal scarring,
+plac_scar,postnatal scars,
+plac_scar,postnatal . scar,
+plac_scar,postnatal . scarring,
+plac_scar,postnatal . scars,
+plac_scar,postnatalscar,
+plac_scar,postnatalscarring,
+plac_scar,postnatalscars,
+plac_scar,ps,
+plac_scar,pslc,
+plac_scar,scar,
+plac_scar,scar -,
+plac_scar,scarring,
+plac_scar,scars,
+plac_scar,scars -,
+plac_scar,ut scar,
+plac_scar,ut scarring,
+plac_scar,ut scars,
+plac_scar,ut . scar,
+plac_scar,ut . scarring,
+plac_scar,ut . scars,
+plac_scar,uterine scar,
+plac_scar,uterine scarring,
+plac_scar,uterine scars,
+plac_scar,uterine . scar,
+plac_scar,uterine . scarring,
+plac_scar,uterine . scars,
+plac_scar,uterinescar,
+plac_scar,uterinescarring,
+plac_scar,uterinescars,
+plac_scar,uterus scar,
+plac_scar,uterus scarring,
+plac_scar,uterus scars,
+plac_scar,uterus . scar,
+plac_scar,uterus . scarring,
+plac_scar,uterus . scars,
+plac_scar,uterusscar,
+plac_scar,uterusscarring,
+plac_scar,uterusscars,
+plac_scar,utscar,
+plac_scar,utscarring,
+plac_scar,utscars,
+side,l,left
+side,l side,left
+side,l side,left
+side,l x,left
+side,l.,left
+side,l. side,left
+side,l. x,left
+side,left,left
+side,left side,left
+side,lf,left
+side,lf side,left
+side,lf.,left
+side,lf. side,left
+side,lft,left
+side,lft side,left
+side,lft.,left
+side,lft. side,left
+side,lt,left
+side,lt.,left
+side,lx,left
+side,of left,left
+side,on left,left
+side,of right,left
+side,on right,left
+side,r,right
+side,r side,right
+side,r x,right
+side,r.,right
+side,r. side,right
+side,r. x,right
+side,right,right
+side,right side,right
+side,rt,right
+side,rt side,right
+side,rt.,right
+side,rt. side,right
+side,rx,right
+side,rx.,right
+side,on side,
+side,of side,

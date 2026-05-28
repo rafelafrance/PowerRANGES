@@ -68,9 +68,10 @@ class Embryo(BaseLength):
     measured_from: str | None = None
 
     # Count fields
-    count: int | None = None
-    side1: int | None = None
-    side2: int | None = None
+    count1: int | None = None
+    count2: int | None = None
+    side1: str | None = None
+    side2: str | None = None
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
@@ -81,14 +82,17 @@ class Embryo(BaseLength):
         if self.measured_from is not None:
             value["embryo_length_measured_from"] = self.measured_from
 
-        if self.count is not None:
-            value["embryo_count"] = self.count
+        if self.count1 is not None:
+            value["embryo_count_1"] = self.count
 
         if self.side1 is not None:
-            value["embryo_count_side_1"] = self.side1
+            value["embryo_count_1_side"] = self.side1
+
+        if self.count2 is not None:
+            value["embryo_count_2"] = self.count
 
         if self.side2 is not None:
-            value["embryo_count_side_2"] = self.side2
+            value["embryo_count_2_side"] = self.side2
 
         return value
 
@@ -418,15 +422,30 @@ class Embryo(BaseLength):
 
     @classmethod
     def add_sides(cls, data: dict, counts: list[int], sides: list[str]) -> None:
-        for count, side in zip(counts, sides, strict=False):
-            if side == "both":
-                data["side1"] = count
-                data["side2"] = count
-                data["count"] = count + count
-            elif side in ("left", "side1"):
-                data["side1"] = count
-            elif side in ("right", "side2"):
-                data["side2"] = count
+        labels = (("count1", "side1"), ("count2", "side2"))
+        side_term = {"left": "L", "right": "R", "side1": "1", "side2": "2"}
+        for i, (count, side) in enumerate(zip(counts, sides, strict=False)):
+            count_label, side_label = labels[min(i, 1)]
+
+            match side:
+                case "both":
+                    data["count1"] = count
+                    data["count2"] = count
+                    data["side1"] = "L"
+                    data["side2"] = "R"
+                case "side1":
+                    data["count1"] = count
+                    data["side1"] = "1"
+                case "side2":
+                    data["count2"] = count
+                    data["side2"] = "2"
+                case "left" | "right":
+                    data[count_label] = count
+                    data[side_label] = side_term[side]
+                case "male" | "female":
+                    pass
+                case _:
+                    raise ValueError(f"Unknown side {side}")
 
     @classmethod
     def get_sides(cls, ent: Span, counts: list[int]) -> list[str]:
@@ -456,7 +475,7 @@ class Embryo(BaseLength):
         else:
             total = sum(counts)
 
-        data = {"count": total}
+        data = {"count1": total}
         cls.add_sides(data, counts, sides)
 
         return cls.from_ent(ent, **data)
@@ -469,7 +488,7 @@ class Embryo(BaseLength):
         count = 1 if any(e.label_ == "yes" for e in ent.ents) or side else 0
         count = 1 if side else count
 
-        data = {"count": count}
+        data = {"count1": count}
 
         if side:
             data[side[0]] = count
@@ -506,7 +525,7 @@ class Embryo(BaseLength):
             "_prefix": "embryo",
             "length": length,
             "width": width,
-            "count": total,
+            "count1": total,
             "measured_from": meas_from,
         }
 

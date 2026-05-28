@@ -14,7 +14,7 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_02(self) -> None:
         self.assertEqual(
             parse("reproductive data=OVARIES ENLARGED - 7X12 MM"),
-            [Ovary(description="enlarged", length=7.0, width=12.0, start=18, end=44)],
+            [Ovary(description="enlarged", length1=7.0, width1=12.0, start=18, end=44)],
         )
 
     def test_ovary_description_03(self) -> None:
@@ -65,8 +65,8 @@ class TestOvaryState(unittest.TestCase):
             [
                 Ovary(
                     left_side="pale pink",
-                    length=3.0,
-                    width=1.5,
+                    length1=3.0,
+                    width1=1.5,
                     start=18,
                     end=47,
                 ),

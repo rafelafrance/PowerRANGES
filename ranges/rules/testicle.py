@@ -66,8 +66,8 @@ class Testicle(Base):
 
     position: str | None = None
     description: str | None = None
-    length: float | None = None
-    width: float | None = None
+    length1: float | None = None
+    width1: float | None = None
     length2: float | None = None
     width2: float | None = None
     units_inferred: bool | None = None
@@ -82,13 +82,13 @@ class Testicle(Base):
             value["testis_position"] = self.position
 
         if self.length is not None:
-            value["testis_length"] = self.length
+            value["testis_length_1"] = self.length1
 
         if self.length2 is not None:
             value["testis_length_2"] = self.length2
 
         if self.width is not None:
-            value["testis_width"] = self.width
+            value["testis_width_1"] = self.width1
 
         if self.width2 is not None:
             value["testis_width_2"] = self.width2
@@ -338,8 +338,8 @@ class Testicle(Base):
         one_pair = 2
         two_pairs = 4
 
-        data["length"] = nums[0]
-        data["width"] = nums[1] if len(nums) > 1 else None
+        data["length1"] = nums[0]
+        data["width1"] = nums[1] if len(nums) > 1 else None
         data["length2"] = nums[2] if len(nums) > one_pair else None
         data["width2"] = nums[3] if len(nums) >= two_pairs else None
 
@@ -358,7 +358,7 @@ class Testicle(Base):
 
         nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
 
-        data["length"] = nums[0]
+        data["length1"] = nums[0]
         data["length2"] = nums[1] if len(nums) > 1 else None
 
         data["position"] = pos

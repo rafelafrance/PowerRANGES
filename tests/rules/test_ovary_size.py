@@ -18,11 +18,12 @@ class TestOvarySize(unittest.TestCase):
         )
 
     def test_ovary_size_03(self) -> None:
+        self.maxDiff = None
         self.assertEqual(
             parse("[right ovary listed, left ovary: 4 x 2 mm]"),
             [
-                Ovary(start=1, end=19, right_side="listed"),
-                Ovary(length1=4, width1=2, start=21, end=41),
+                Ovary(start=1, end=19, description="right listed"),
+                Ovary(length1=4.0, width1=2.0, start=21, end=41),
             ],
         )
 

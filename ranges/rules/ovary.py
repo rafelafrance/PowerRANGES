@@ -29,14 +29,6 @@ class Ovary(Base):
         Path(__file__).parent / "terms" / "ovary_terms.csv",
     ]
 
-    side_map: ClassVar[dict[str, str]] = {
-        "left": "left_side",
-        "right": "right_side",
-        "both": "both_sides",
-        "left_ovary": "left_side",
-        "right_ovary": "right_side",
-    }
-
     keys: ClassVar[list[str]] = [
         "ovary_len",
         "ovary_len_mm",
@@ -104,9 +96,6 @@ class Ovary(Base):
     # ---------------------
 
     description: str | None = None
-    left_side: str | None = None
-    right_side: str | None = None
-    both_sides: str | None = None
 
     length1: float | None = None
     length2: float | None = None
@@ -122,14 +111,14 @@ class Ovary(Base):
         if self.description is not None:
             value["ovary_description"] = self.description
 
-        if self.length is not None:
-            value["ovary_length_1"] = self.length1
+        if self.length1 is not None:
+            value["ovary_length"] = self.length1
 
         if self.length2 is not None:
             value["ovary_length_2"] = self.length2
 
-        if self.width is not None:
-            value["ovary_width_1"] = self.width1
+        if self.width1 is not None:
+            value["ovary_width"] = self.width1
 
         if self.width2 is not None:
             value["ovary_width_2"] = self.width2
@@ -293,13 +282,11 @@ class Ovary(Base):
     def ovary_state_match(cls, ent: Span) -> "Ovary":
         data = {}
 
-        sides = [e.label_ for e in ent.ents if e.label_ in cls.all_sides]
-        descr = [e.text.lower() for e in ent.ents if e.label_ == "description"]
-        if sides and descr:
-            for side, desc in zip(sides, descr, strict=False):
-                data[cls.side_map[side]] = desc
-        elif descr:
-            data["description"] = descr[0]
+        descr = [
+            e.text for e in ent.ents if e.label_ in ("right", "left", "description")
+        ]
+        if descr:
+            data["description"] = " ".join(descr)
 
         return cls.from_ent(ent, **data)
 
@@ -308,8 +295,6 @@ class Ovary(Base):
         data = {}
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
-
-        sides = [e.label_ for e in ent.ents if e.label_ in cls.all_sides]
 
         nums = [cls.in_millimeters(e, units) for e in ent.ents if e.label_ == "number"]
 
@@ -325,9 +310,7 @@ class Ovary(Base):
         descr = next(
             (e.text.lower() for e in ent.ents if e.label_ == "description"), None
         )
-        if sides and descr:
-            data[cls.side_map[sides[0]]] = descr
-        elif descr:
+        if descr:
             data["description"] = descr
 
         data["units_inferred"] = True if units is None else None

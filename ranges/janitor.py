@@ -421,9 +421,9 @@ def microtus_mod(args: argparse.Namespace) -> None:
                 "reproductiveCondition": in_row["reproductive data"],
                 "testis_length": in_row["testes L"],
                 "testis_width": in_row["testes W"],
-                "embryo_count": in_row["emb count"],
-                "embryo_count_side_1": in_row["embs L"],
-                "embryo_count_side_2": in_row["embs R"],
+                # "embryo_count": in_row["emb count"],
+                # "embryo_count_side_1": in_row["embs L"],
+                # "embryo_count_side_2": in_row["embs R"],
                 "embryo_length": in_row["emb CR"],
                 "embryo_length_measured_from": "crown-rump",
                 "placental_scar_count": in_row["scars"],
@@ -641,12 +641,12 @@ def eptesicus_mod(args: argparse.Namespace) -> None:
                     in_row["hind foot with claw"], in_row["unit"]
                 ),
                 "hind_foot_length_includes": "claw",
-                "ear_length_from_notch": to_mm(
-                    in_row["ear from notch"], in_row["unit"]
-                ),
-                "ear_length_from_crown": to_mm(
-                    in_row["ear from crown"], in_row["unit"]
-                ),
+                # "ear_length_from_notch": to_mm(
+                #     in_row["ear from notch"], in_row["unit"]
+                # ),
+                # "ear_length_from_crown": to_mm(
+                #     in_row["ear from crown"], in_row["unit"]
+                # ),
                 "tragus_length": to_mm(in_row["tragus"], in_row["unit"]),
                 "forearm_length": to_mm(in_row["forearm"], in_row["unit"]),
                 "body_mass": to_grams(in_row["weight"], in_row["units"]),
@@ -663,19 +663,12 @@ def eptesicus_mod(args: argparse.Namespace) -> None:
                 "month": in_row["Month"],
                 "year": in_row["Year"],
             }
-            if in_row["ear_length"]:
-                out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
-                out_row["ear_length_measured_from"] = ""
-            elif in_row["ear_length_from_crown"]:
-                out_row["ear_length"] = to_mm(
-                    in_row["ear_length_from_crown"], in_row["unit"]
-                )
-                out_row["ear_length_measured_from"] = "crown"
-            elif in_row["ear_from_notch"]:
-                out_row["ear_length"] = to_mm(
-                    in_row["ear_length_from_notch"], in_row["unit"]
-                )
+            if in_row["ear from notch"]:
+                out_row["ear_length"] = to_mm(in_row["ear from notch"], in_row["unit"])
                 out_row["ear_length_measured_from"] = "notch"
+            elif in_row["ear from crown"]:
+                out_row["ear_length"] = to_mm(in_row["ear from crown"], in_row["unit"])
+                out_row["ear_length_measured_from"] = "crown"
 
             out_data.append(out_row)
 
@@ -874,10 +867,10 @@ def antrozous_pallidus_mod(args: argparse.Namespace) -> None:
                 "month": to_int(in_row["Month"]),
                 "year": to_int(in_row["Year"]),
                 "sex": in_row["sex"],
-                "body_mass_grams": to_grams(in_row["weight"], in_row["units"]),
-                "embryo_count": to_int(in_row["emb count"]),
-                "embryo_count_side_1": to_int(in_row["embs L"]),
-                "embryo_count_side_2": to_int(in_row["embs R"]),
+                "body_mass": to_grams(in_row["weight"], in_row["units"]),
+                # "embryo_count": to_int(in_row["emb count"]),
+                # "embryo_count_side_1": to_int(in_row["embs L"]),
+                # "embryo_count_side_2": to_int(in_row["embs R"]),
                 "embryo_length": to_mm(in_row["emb CR"], in_row["unit"]),
                 "embryo_length_measured_from": "crown-rump",
                 "forearm_length": to_mm(in_row["forearm"], in_row["unit"]),
@@ -891,6 +884,32 @@ def antrozous_pallidus_mod(args: argparse.Namespace) -> None:
                 ],
                 "unformatted_measurements": in_row["unformatted measurements"],
             }
+
+            if in_row["embs L"] and in_row["embs R"]:
+                out_row["embryo_count_1"] = to_int(in_row["embs L"])
+                out_row["embryo_count_1_side"] = "L"
+                out_row["embryo_count_2"] = to_int(in_row["embs R"])
+                out_row["embryo_count_2_side"] = "R"
+            elif in_row["embs L"]:
+                out_row["embryo_count_1"] = to_int(in_row["embs L"])
+                out_row["embryo_count_1_side"] = "L"
+                out_row["embryo_count_2"] = ""
+                out_row["embryo_count_2_side"] = ""
+            elif in_row["embs R"]:
+                out_row["embryo_count_1"] = to_int(in_row["embs R"])
+                out_row["embryo_count_1_side"] = "R"
+                out_row["embryo_count_2"] = ""
+                out_row["embryo_count_2_side"] = ""
+            elif in_row["emb count"]:
+                out_row["embryo_count_1"] = to_int(in_row["emb count"])
+                out_row["embryo_count_1_side"] = ""
+                out_row["embryo_count_2"] = ""
+                out_row["embryo_count_2_side"] = ""
+            else:
+                out_row["embryo_count_1"] = ""
+                out_row["embryo_count_1_side"] = ""
+                out_row["embryo_count_2"] = ""
+                out_row["embryo_count_2_side"] = ""
 
             if in_row["ear_length"]:
                 out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
@@ -939,15 +958,16 @@ def anourosorex_yamashinai_mod(args: argparse.Namespace) -> None:
                     "remarks (data discrepancy, need to revisit specimen, etc.)"
                 ],
                 "sex": in_row["sex"],
-                "body_mass_grams": to_grams(in_row["wt"], in_row["units"]),
+                "body_mass": to_grams(in_row["wt"], in_row["units"]),
                 "ear_length": to_mm(in_row["ear"], in_row["unit"]),
                 "embryo_count": to_int(in_row["emb count"]),
-                "embryo_count_side_1": to_int(in_row["embs L"]),
-                "embryo_count_side_2": to_int(in_row["embs R"]),
+                "embryo_count_left": to_int(in_row["embs L"]),
+                "embryo_count_right": to_int(in_row["embs R"]),
                 "embryo_length": to_mm(in_row["emb CR"], in_row["unit"]),
                 "embryo_length_measured_from": "crown-rump",
                 "hind_foot_length": to_mm(in_row["hf"], in_row["unit"]),
-                "placental_scar_count": to_int(in_row["scars"]),
+                "placental_scar_count_1": to_int(in_row["scars"]),
+                "placental_scar_count_1_side": "1" if in_row["scars"] else "",
                 "tail_length": to_mm(in_row["tail"], in_row["unit"]),
                 "testis_length_2": to_mm(in_row["testis R"], in_row["unit"]),
                 "testis_length": to_mm(in_row["testis L"], in_row["unit"]),
@@ -960,6 +980,7 @@ def anourosorex_yamashinai_mod(args: argparse.Namespace) -> None:
                     "skin tag checked? (or no skin tag available)"
                 ],
             }
+
             out_data.append(out_row)
 
     df = pd.DataFrame(out_data)

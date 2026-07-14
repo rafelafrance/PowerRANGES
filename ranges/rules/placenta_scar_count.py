@@ -54,10 +54,9 @@ class PlacentalScarCount(Base):
     present: bool | None = None
 
     # Count fields
-    count1: int | None = None
-    count2: int | None = None
-    side1: str | None = None
-    side2: str | None = None
+    count: int | None = None
+    left: int | None = None
+    right: int | None = None
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
@@ -65,17 +64,14 @@ class PlacentalScarCount(Base):
         if self.present is not None:
             value["placental_scars_present"] = self.present
 
-        if self.count1 is not None:
-            value["placental_scar_count_1"] = self.count1
+        if self.count is not None:
+            value["placental_scar_count"] = self.count
 
-        if self.countr2 is not None:
-            value["placental_scar_count_1"] = self.count2
+        if self.left is not None:
+            value["placental_scars_left"] = self.left
 
-        if self.side1 is not None:
-            value["placental_scars_side_1"] = self.side1
-
-        if self.side2 is not None:
-            value["placental_scars_side_2"] = self.side2
+        if self.right is not None:
+            value["placental_scars_right"] = self.right
 
         return value
 
@@ -296,28 +292,30 @@ class PlacentalScarCount(Base):
 
     @classmethod
     def add_sides(cls, data: dict, counts: list[int], sides: list[str]) -> None:
-        labels = (("count1", "side1"), ("count2", "side2"))
-        side_term = {"left": "L", "right": "R", "side1": "1", "side2": "2"}
-        for i, (count, side) in enumerate(zip(counts, sides, strict=False)):
-            count_label, side_label = labels[min(i, 1)]
-
+        total, left, right = None, None, None
+        for count, side in zip(counts, sides, strict=False):
             match side:
                 case "both":
-                    data["count1"] = count
-                    data["count2"] = count
-                    data["side1"] = "L"
-                    data["side2"] = "R"
+                    total = total or 0
+                    total += count * 2
                 case "side1":
-                    data["count1"] = count
-                    data["side1"] = "1"
+                    total = total or 0
+                    total += count
                 case "side2":
-                    data["count2"] = count
-                    data["side2"] = "2"
-                case "left" | "right":
-                    data[count_label] = count
-                    data[side_label] = side_term[side]
+                    total = total or 0
+                    total += count
+                case "left":
+                    left = count
+                case "right":
+                    right = count
                 case _:
                     raise ValueError(f"Unknown side {side=}")
+        if total is not None:
+            data["count"] = total
+        if left is not None:
+            data["left"] = left
+        if right is not None:
+            data["right"] = right
 
     @classmethod
     def placental_scar_bad_match(cls, ent: Span) -> "PlacentalScarCount":

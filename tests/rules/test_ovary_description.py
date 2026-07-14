@@ -34,14 +34,14 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_05(self) -> None:
         self.assertEqual(
             parse("reproductive data= +corp. alb both ovaries;"),
-            [Ovary(both_sides="+corp. alb", start=19, end=42)],
+            [Ovary(description="+corp. alb", start=19, end=42)],
         )
 
     def test_ovary_description_06(self) -> None:
         self.assertEqual(
             parse("ovaries: R 2 c. alb, L sev c. alb;"),
             [
-                Ovary(left_side="sev c. alb", right_side="2 c. alb", start=0, end=33),
+                Ovary(description="R 2 c. alb L sev c. alb", start=0, end=33),
             ],
         )
 
@@ -64,7 +64,7 @@ class TestOvaryState(unittest.TestCase):
             ),
             [
                 Ovary(
-                    left_side="pale pink",
+                    description="pale pink",
                     length1=3.0,
                     width1=1.5,
                     start=18,
@@ -100,7 +100,7 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_14(self) -> None:
         self.assertEqual(
             parse("; both ovaries sev c.alb.;"),
-            [Ovary(both_sides="sev c.alb", start=2, end=24)],
+            [Ovary(description="sev c.alb", start=2, end=24)],
         )
 
     def test_ovary_description_15(self) -> None:
@@ -112,7 +112,7 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_16(self) -> None:
         self.assertEqual(
             parse("reproductive data=right ovary destroyed ;"),
-            [Ovary(right_side="destroyed", start=18, end=39)],
+            [Ovary(description="right destroyed", start=18, end=39)],
         )
 
     def test_ovary_description_17(self) -> None:
@@ -135,13 +135,13 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_20(self) -> None:
         self.assertEqual(
             parse("ovaries: both w/sev c. alb;"),
-            [Ovary(both_sides="sev c. alb", start=0, end=26)],
+            [Ovary(description="sev c. alb", start=0, end=26)],
         )
 
     def test_ovary_description_21(self) -> None:
         self.assertEqual(
             parse("corpus luteum visible in both ovaries"),
-            [Ovary(both_sides="corpus luteum visible", start=0, end=37)],
+            [Ovary(description="corpus luteum visible", start=0, end=37)],
         )
 
     def test_ovary_description_22(self) -> None:
@@ -165,13 +165,13 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_26(self) -> None:
         self.assertEqual(
             parse("Cyst on ovary"),
-            [Ovary(description="cyst", start=0, end=13)],
+            [Ovary(description="Cyst", start=0, end=13)],
         )
 
     def test_ovary_description_27(self) -> None:
         self.assertEqual(
             parse("; 4 bodies in L ovary;"),
-            [Ovary(left_side="4 bodies", start=2, end=21)],
+            [Ovary(description="4 bodies L", start=2, end=21)],
         )
 
     def test_ovary_description_28(self) -> None:
@@ -195,7 +195,7 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_31(self) -> None:
         self.assertEqual(
             parse("Left side of ovaries large and cancerous"),
-            [Ovary(left_side="large and cancerous", start=0, end=40)],
+            [Ovary(description="Left side large and cancerous", start=0, end=40)],
         )
 
     def test_ovary_description_32(self) -> None:
@@ -219,7 +219,7 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_35(self) -> None:
         self.assertEqual(
             parse("both ov w/ few sm foll;"),
-            [Ovary(both_sides="few sm foll", start=0, end=22)],
+            [Ovary(description="few sm foll", start=0, end=22)],
         )
 
     def test_ovary_description_36(self) -> None:
@@ -233,9 +233,7 @@ class TestOvaryState(unittest.TestCase):
             parse("Rov 3 cl, Lov 4 cl, both ov sm-med foll;"),
             [
                 Ovary(
-                    both_sides="sm-med foll",
-                    left_side="4 cl",
-                    right_side="3 cl",
+                    description="3 cl 4 cl sm-med foll",
                     start=0,
                     end=39,
                 )

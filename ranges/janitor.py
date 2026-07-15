@@ -88,8 +88,159 @@ def main(args: argparse.Namespace) -> None:
     mustela_mod(args)
     myosorex_varius_mod(args)
     myotis_mod(args)
+    neotoma_mod(args)
+    notiosorex_crawfordi_mod(args)
+
+    # Peromyscus_Master.csv
+    # Reithrodontomys_mod.csv
+    # Sorex_Master.csv
+    # Soriculus_Master.csv
+    # Suncus_Master.csv
+    # 'Tamias speciosus_mod.csv'
+    # TAMU_RANGESALL_TraitsOnly2Sept2025_mod.csv
+    # 'Thomomys bottae_mod.csv'
+    # 'TTU-NSF-Ranges-Data Corrections Next to Data-7-28-2025_mod.csv'
+    # UMMZ_ranges_y2_final_mod.csv
+    # UWBM_Mamm_JSON_Attributes.csv
+    # UWYMZ_Y1_mod.csv
+    # UWYMZ_Y2_mod.csv
 
     log.finished()
+
+
+def notiosorex_crawfordi_mod(args: argparse.Namespace) -> None:
+    name = "Notiosorex_crawfordi_mod.csv"
+    logging.info(name)
+    in_name = args.csv_dir / name
+
+    out_data = []
+    with in_name.open() as in_csv:
+        reader = csv.DictReader(in_csv)
+        for in_row in reader:
+            out_row = {
+                "occurrenceID": in_row["occurrenceID"],
+                "institutionCode": in_row["institutionCode"],
+                "collectionCode": in_row["collectionCode"],
+                "catalogNumber": in_row["MVZ #"],
+                "scientificName": in_row["sci name"],
+                "stateProvince": in_row["state"],
+                "county": in_row["county"],
+                "locality": in_row["specific"],
+                "recordedBy": in_row["collector"],
+                "recordedByID": in_row["coll #"],
+                "eventDate": in_row["date"],
+                "sex": in_row["sex"],
+                "preservedSpecimen": in_row["parts"],
+                "total_length": to_mm(in_row["total"], in_row["unit"]),
+                "tail_length": to_mm(in_row["tail"], in_row["unit"]),
+                "hind_foot_length": to_mm(in_row["hf"], in_row["unit"]),
+                "ear_length": to_mm(in_row["earlength"], in_row["unit"]),
+                "body_mass": to_grams(in_row["wt"], in_row["units"]),
+                "reproductiveCondition": in_row["repro comments"],
+                "testis_length": in_row["testes L"],
+                "testis_width": in_row["testes W"],
+                "source_and_date": in_row["source and date for most attributes"],
+                "skin_tag": in_row["skin tag checked? (or no skin tag available)"],
+                "catalog_checked": in_row["catalog checked? (or no catalog available)"],
+                "unnamed": in_row["Unnamed: 31"],
+                "arctos_upload": in_row["data uploaded to Arctos?"],
+                "review_need": in_row["REVIEW NEEDED"],
+            }
+
+            if in_row["ear_length"]:
+                out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
+                out_row["ear_length_measured_from"] = ""
+            elif in_row["ear_length_from_crown"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_crown"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "crown"
+            elif in_row["ear_from_notch"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_notch"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "notch"
+                out_data.append(out_row)
+
+    df = pd.DataFrame(out_data)
+    path = args.output_dir / name
+    df.to_csv(path, index=False)
+
+
+def neotoma_mod(args: argparse.Namespace) -> None:
+    name = "Neotoma_mod.csv"
+    logging.info(name)
+    in_name = args.csv_dir / name
+    out_data = []
+    with in_name.open() as in_csv:
+        reader = csv.DictReader(in_csv)
+        for in_row in reader:
+            sci_name = in_row["scientific_name"].split()
+            out_row = {
+                "occurrenceID": in_row["occurrenceID"],
+                "catalogNumber": in_row["guid"],
+                "catalog_number_int": in_row["catalognumberint"],
+                "scientificName": in_row["subspecies"],
+                "specificEpithet": sci_name[2] if len(sci_name) > 2 else "",
+                "recordedBy": in_row["collectors"],
+                "stateProvince": in_row["state_prov"],
+                "county": in_row["county"],
+                "locality": in_row["spec_locality"],
+                "recordedByID": in_row["collector number"],
+                "eventDate": in_row["verbatim_date"],
+                "preservedSpecimen": in_row["parts"],
+                "sex": in_row["sex"],
+                "total_length": to_mm(in_row["total length"], in_row["unit"]),
+                "tail_length": to_mm(in_row["tail length"], in_row["unit"]),
+                "hind_foot_length": to_mm(
+                    in_row["hind foot with claw"], in_row["unit"]
+                ),
+                "hind_foot_length_includes": "claw",
+                # "": in_row["ear"],
+                # "": in_row["ear from notch"],
+                # "": in_row["ear from crown"],
+                # "": in_row["unit"],
+                "body_mass": to_grams(in_row["weight"], in_row["units"]),
+                "reproductiveCondition": in_row["reproductive data"],
+                "testis_length": to_mm(in_row["testes L"], in_row["unit"]),
+                "testis_width": to_mm(in_row["testes W"], in_row["unit"]),
+                # "": in_row["emb count"],
+                # "": in_row["embs L"],
+                # "": in_row["embs R"],
+                "embryo_length": to_mm(in_row["emb CR"], in_row["unit"]),
+                "embryo_length_measured_from": "crown-rump",
+                "placental_scar_count": to_int(in_row["scars"]),
+                "placental_scars_present": bool(in_row["scars"]),
+                "unformatted_measurements": in_row["unformatted measurements"],
+                "tag_checked": in_row[
+                    "tag checked? (or no tag available), initial here"
+                ],
+                "day": in_row["Day"],
+                "month": in_row["Month"],
+                "year": in_row["Year"],
+                "review_needed": in_row["REVIEW NEEDED"],
+            }
+            set_embryo_counts(in_row, out_row)
+
+            if in_row["ear_length"]:
+                out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
+                out_row["ear_length_measured_from"] = ""
+            elif in_row["ear_length_from_crown"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_crown"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "crown"
+            elif in_row["ear_from_notch"]:
+                out_row["ear_length"] = to_mm(
+                    in_row["ear_length_from_notch"], in_row["unit"]
+                )
+                out_row["ear_length_measured_from"] = "notch"
+
+            out_data.append(out_row)
+
+    df = pd.DataFrame(out_data)
+    path = args.output_dir / name
+    df.to_csv(path, index=False)
 
 
 def myotis_mod(args: argparse.Namespace) -> None:
@@ -131,9 +282,9 @@ def myotis_mod(args: argparse.Namespace) -> None:
                 "unformatted_measurements": in_row["unformatted measurements"],
                 "testis_length": in_row["testes L"],
                 "testis_width": in_row["testes W"],
-                "embryo_count": in_row["emb count"],
-                "embryo_count_side_1": in_row["embs L"],
-                "embryo_count_side_2": in_row["embs R"],
+                # "embryo_count": in_row["emb count"],
+                # "embryo_count_side_1": in_row["embs L"],
+                # "embryo_count_side_2": in_row["embs R"],
                 "embryo_length": in_row["emb CR"],
                 "embryo_length_measured_from": "crown-rump",
                 "placental_scar_count": in_row["scars"],
@@ -144,6 +295,8 @@ def myotis_mod(args: argparse.Namespace) -> None:
                 "year": in_row["Year"],
                 "review_needed": in_row["REVIEW NEEDED"],
             }
+            set_embryo_counts(in_row, out_row)
+
             if in_row["ear_from_notch"]:
                 out_row["ear_length"] = to_mm(in_row["ear_from_notch"], in_row["unit"])
                 out_row["ear_length_measured_from"] = "notch"
@@ -192,9 +345,9 @@ def myosorex_varius_mod(args: argparse.Namespace) -> None:
                 "body_mass": to_grams(in_row["wt"], in_row["units"]),
                 "testis_length": to_mm(in_row["testis L"], ""),
                 "testis_length_2": to_mm(in_row["testis R"], ""),
-                "embryo_count": to_int(in_row["emb count"]),
-                "embryo_count_side_1": to_int(in_row["embs L"]),
-                "embryo_count_side_2": to_int(in_row["embs R"]),
+                # "embryo_count": to_int(in_row["emb count"]),
+                # "embryo_count_side_1": to_int(in_row["embs L"]),
+                # "embryo_count_side_2": to_int(in_row["embs R"]),
                 "placental_scar_count": to_int(in_row["scars"]),
                 "attribute_source": in_row["source and date for most attributes"],
                 "skin_tag_checked": in_row[
@@ -223,6 +376,8 @@ def myosorex_varius_mod(args: argparse.Namespace) -> None:
 
             out_row |= parse_all(in_row["repro comments"], out_row)
 
+            set_embryo_counts(in_row, out_row)
+
             out_data.append(out_row)
 
     df = pd.DataFrame(out_data)
@@ -246,7 +401,7 @@ def mustela_mod(args: argparse.Namespace) -> None:
                 "institutionCode": in_row["institutionCode"],
                 "collectionCode": in_row["collectionCode"],
                 "mvz_num": in_row["mvz_num"],
-                "scientificName": " ".join(sci_name[:2]) if len(sci_name) > 1 else "",
+                "scientificName": in_row["subspecies"],
                 "infraspecificEpithet": sci_name[2] if len(sci_name) > 2 else "",
                 "recordedBy": in_row["collectors"],
                 "country": in_row["country"],
@@ -264,10 +419,10 @@ def mustela_mod(args: argparse.Namespace) -> None:
                 "lifeStage": in_row["lifestage"],
                 "reproductiveCondition": in_row["reproductive_data"],
                 "testis_length": in_row["testes_length"],
-                "testes_width": in_row["testes_width"],
-                "embryo_count": in_row["embryo_count"],
-                "embryo_count_side_1": in_row["embryo_count_left"],
-                "embryo_count_side_2": in_row["embryo_count_right"],
+                "testis_width": in_row["testes_width"],
+                # "embryo_count": in_row["embryo_count"],
+                # "embryo_count_side_1": in_row["embryo_count_left"],
+                # "embryo_count_side_2": in_row["embryo_count_right"],
                 "embryo_length": in_row["crown_rump_length"],
                 "placental_scar_count": in_row["scars"],
                 "unformatted_measurements": in_row["unformatted_measurements"],
@@ -277,6 +432,13 @@ def mustela_mod(args: argparse.Namespace) -> None:
                 "year": in_row["year"],
                 "review_needed": in_row["review_needed"],
             }
+            set_embryo_counts(
+                in_row,
+                out_row,
+                count_label="embryo_count",
+                left_label="embryo_count_left",
+                right_label="embryo_count_right",
+            )
             if in_row["ear_length_from_crown"]:
                 out_row["ear_length"] = to_mm(
                     in_row["ear_length_from_crown"], in_row["unit"]
@@ -398,9 +560,9 @@ def microtus_mod(args: argparse.Namespace) -> None:
 
             out_row = {
                 "occurenceID": in_row["occurrenceID"],
-                "catalogNumber": in_row["catalognumberint"],
-                "occurrence_id_2": in_row["guid"],
-                "scientificName": " ".join(sci_name[:2]) if len(sci_name) > 1 else "",
+                "catalogNumber": in_row["guid"],
+                "catalognumberint": in_row["catalognumberint"],
+                "scientificName": in_row["subspecies"],
                 "infraspecificEpithet": sci_name[2] if len(sci_name) > 2 else "",
                 "recordedBy": in_row["collectors"],
                 "stateProvince": in_row["state_prov"],
@@ -436,6 +598,8 @@ def microtus_mod(args: argparse.Namespace) -> None:
                 "year": in_row["Year"],
                 "review_needed": in_row["REVIEW NEEDED"],
             }
+            set_embryo_counts(in_row, out_row)
+
             if in_row["ear_length"]:
                 out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
                 out_row["ear_length_measured_from"] = ""
@@ -572,9 +736,7 @@ def fmnh_test_ranges_traits(args: argparse.Namespace) -> None:
             row[key]["catalogNumber"] = in_row["catalogNumber"]
 
             sci_name = in_row["scientificName"].split()
-            row[key]["scientificName"] = (
-                " ".join(sci_name[:2]) if len(sci_name) > 1 else ""
-            )
+            row[key]["scientificName"] = (in_row["scientificName"],)
             row[key]["infraspecificEpithet"] = sci_name[2] if len(sci_name) > 2 else ""
 
             row[key]["country"] = in_row["countryCode"]
@@ -626,7 +788,7 @@ def eptesicus_mod(args: argparse.Namespace) -> None:
                 "collectionCode": in_row["collectionCode"],
                 "catalogNumber": in_row["catalognumberint"],
                 "occurrence_id_2": in_row["GUID"],
-                "scientificName": " ".join(sci_name[:2]) if len(sci_name) > 1 else "",
+                "scientificName": in_row["SUBSPECIES"],
                 "infraspecificEpithet": sci_name[2] if len(sci_name) > 2 else "",
                 "county": in_row["COUNTY"],
                 "locality": in_row["SPEC_LOCALITY"],
@@ -655,9 +817,9 @@ def eptesicus_mod(args: argparse.Namespace) -> None:
                 "unformatted_measurements": in_row["unformatted measurements"],
                 "testis_length": in_row["testes L"],
                 "testis_width": in_row["testes W"],
-                "embryo_count": in_row["emb count"],
-                "embryo_count_side_1": in_row["embs L"],
-                "embryo_count_side_2": in_row["embs R"],
+                # "embryo_count": in_row["emb count"],
+                # "embryo_count_side_1": in_row["embs L"],
+                # "embryo_count_side_2": in_row["embs R"],
                 "placental_scar_count": to_int(in_row["scars"]),
                 "day": in_row["Day"],
                 "month": in_row["Month"],
@@ -669,6 +831,8 @@ def eptesicus_mod(args: argparse.Namespace) -> None:
             elif in_row["ear from crown"]:
                 out_row["ear_length"] = to_mm(in_row["ear from crown"], in_row["unit"])
                 out_row["ear_length_measured_from"] = "crown"
+
+            set_embryo_counts(in_row, out_row)
 
             out_data.append(out_row)
 
@@ -855,11 +1019,12 @@ def antrozous_pallidus_mod(args: argparse.Namespace) -> None:
     with in_name.open() as in_csv:
         reader = csv.DictReader(in_csv)
         for in_row in reader:
+            sci_name = in_row["SUBSPECIES"].split()
             out_row = {
                 "catalogNumber": in_row["catalognumberint"],
                 "recordNumber": in_row["GUID"],
-                "scientificName": to_sci_name(in_row["SUBSPECIES"]),
-                "infraspecificEpithet": to_sub_spec(in_row["SUBSPECIES"]),
+                "scientificName": in_row["SUBSPECIES"],
+                "infraspecificEpithet": sci_name[2] if len(sci_name) > 2 else "",
                 "county": in_row["COUNTY"],
                 "locality": in_row["SPEC_LOCALITY"],
                 "preservedSpecimen": in_row["PARTS"],
@@ -885,31 +1050,7 @@ def antrozous_pallidus_mod(args: argparse.Namespace) -> None:
                 "unformatted_measurements": in_row["unformatted measurements"],
             }
 
-            if in_row["embs L"] and in_row["embs R"]:
-                out_row["embryo_count_1"] = to_int(in_row["embs L"])
-                out_row["embryo_count_1_side"] = "L"
-                out_row["embryo_count_2"] = to_int(in_row["embs R"])
-                out_row["embryo_count_2_side"] = "R"
-            elif in_row["embs L"]:
-                out_row["embryo_count_1"] = to_int(in_row["embs L"])
-                out_row["embryo_count_1_side"] = "L"
-                out_row["embryo_count_2"] = ""
-                out_row["embryo_count_2_side"] = ""
-            elif in_row["embs R"]:
-                out_row["embryo_count_1"] = to_int(in_row["embs R"])
-                out_row["embryo_count_1_side"] = "R"
-                out_row["embryo_count_2"] = ""
-                out_row["embryo_count_2_side"] = ""
-            elif in_row["emb count"]:
-                out_row["embryo_count_1"] = to_int(in_row["emb count"])
-                out_row["embryo_count_1_side"] = ""
-                out_row["embryo_count_2"] = ""
-                out_row["embryo_count_2_side"] = ""
-            else:
-                out_row["embryo_count_1"] = ""
-                out_row["embryo_count_1_side"] = ""
-                out_row["embryo_count_2"] = ""
-                out_row["embryo_count_2_side"] = ""
+            set_embryo_counts(in_row, out_row)
 
             if in_row["ear_length"]:
                 out_row["ear_length"] = to_mm(in_row["earlength"], in_row["unit"])
@@ -945,7 +1086,7 @@ def anourosorex_yamashinai_mod(args: argparse.Namespace) -> None:
                 "institutionCode": in_row["institutionCode"],
                 "collectionCode": in_row["collectionCode"],
                 "recordNumber": in_row["MVZ #"],
-                "scientificName": to_sci_name(in_row["sci name"]),
+                "scientificName": in_row["sci name"],
                 "stateProvince": in_row["state"],
                 "county": in_row["county"],
                 "locality": in_row["specific"],
@@ -960,9 +1101,9 @@ def anourosorex_yamashinai_mod(args: argparse.Namespace) -> None:
                 "sex": in_row["sex"],
                 "body_mass": to_grams(in_row["wt"], in_row["units"]),
                 "ear_length": to_mm(in_row["ear"], in_row["unit"]),
-                "embryo_count": to_int(in_row["emb count"]),
-                "embryo_count_left": to_int(in_row["embs L"]),
-                "embryo_count_right": to_int(in_row["embs R"]),
+                # "embryo_count": to_int(in_row["emb count"]),
+                # "embryo_count_left": to_int(in_row["embs L"]),
+                # "embryo_count_right": to_int(in_row["embs R"]),
                 "embryo_length": to_mm(in_row["emb CR"], in_row["unit"]),
                 "embryo_length_measured_from": "crown-rump",
                 "hind_foot_length": to_mm(in_row["hf"], in_row["unit"]),
@@ -980,12 +1121,46 @@ def anourosorex_yamashinai_mod(args: argparse.Namespace) -> None:
                     "skin tag checked? (or no skin tag available)"
                 ],
             }
+            set_embryo_counts(in_row, out_row)
 
             out_data.append(out_row)
 
     df = pd.DataFrame(out_data)
     path = args.output_dir / name
     df.to_csv(path, index=False)
+
+
+def set_embryo_counts(
+    in_row: dict,
+    out_row: dict,
+    count_label: str = "emb count",
+    left_label: str = "embs L",
+    right_label: str = "embs R",
+) -> None:
+    if in_row[left_label] and in_row[right_label]:
+        left = to_int(in_row[left_label])
+        right = to_int(in_row[right_label])
+        out_row["embryo_count_left"] = left
+        out_row["embryo_count_right"] = right
+        out_row["embryo_count"] = left + right
+    elif in_row[left_label]:
+        left = to_int(in_row[left_label])
+        out_row["embryo_count_left"] = left
+        out_row["embryo_count_right"] = ""
+        out_row["embryo_count"] = left
+    elif in_row[right_label]:
+        right = to_int(in_row[right_label])
+        out_row["embryo_count_right"] = right
+        out_row["embryo_count_left"] = ""
+        out_row["embryo_count"] = right
+    elif in_row[count_label]:
+        out_row["embryo_count"] = to_int(in_row[count_label])
+        out_row["embryo_count_left"] = ""
+        out_row["embryo_count_right"] = ""
+    else:
+        out_row["embryo_count"] = ""
+        out_row["embryo_count_left"] = ""
+        out_row["embryo_count_right"] = ""
 
 
 def get_traits(doc: Doc, curr: dict | None = None) -> dict:
@@ -1020,16 +1195,6 @@ def parse_shorthand(text: str) -> dict:
 def parse_body_mass(text: str) -> dict:
     doc = BODY_MASS(text)
     return get_traits(doc)
-
-
-def to_sci_name(value: str) -> str:
-    words = value.split()
-    return " ".join(words[:2])
-
-
-def to_sub_spec(value: str) -> str:
-    words = value.split()
-    return words[2] if len(words) > 2 else ""
 
 
 def as_int(value: str) -> int | None:

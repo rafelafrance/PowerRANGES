@@ -329,12 +329,15 @@ class PlacentalScarCount(Base):
         if any(e._.trait.is_fraction for e in ent.ents if e.label_ == "number"):
             raise reject_match.RejectMatch
         counts = [int(e._.trait.number) for e in ent.ents if e.label_ == "number"]
+
         if total_at is not None and len(counts) > 1:
-            counts.pop(total_at)
+            total = counts.pop(total_at)
+        else:
+            total = sum(counts)
 
         sides = cls.get_sides(ent, counts)
 
-        data = {}
+        data = {"count": total}
         cls.add_sides(data, counts, sides)
 
         data["present"] = any(c != 0 for c in counts)

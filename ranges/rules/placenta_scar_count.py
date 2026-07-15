@@ -285,8 +285,8 @@ class PlacentalScarCount(Base):
             else:
                 new.append(cls.side.get(side.lower(), ""))
 
-        if len(counts) >= 2 and len(sides) == 0:
-            new = ["side1", "side2"]
+        if len(counts) >= len(sides):
+            new += ["side1", "side2"]
 
         return new
 
@@ -296,8 +296,8 @@ class PlacentalScarCount(Base):
         for count, side in zip(counts, sides, strict=False):
             match side:
                 case "both":
-                    total = total or 0
-                    total += count * 2
+                    left = count
+                    right = count
                 case "side1":
                     total = total or 0
                     total += count
@@ -310,6 +310,7 @@ class PlacentalScarCount(Base):
                     right = count
                 case _:
                     raise ValueError(f"Unknown side {side=}")
+
         if total is not None:
             data["count"] = total
         if left is not None:

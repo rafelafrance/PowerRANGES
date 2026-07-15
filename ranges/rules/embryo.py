@@ -68,10 +68,9 @@ class Embryo(BaseLength):
     measured_from: str | None = None
 
     # Count fields
-    count1: int | None = None
-    count2: int | None = None
-    side1: str | None = None
-    side2: str | None = None
+    count: int | None = None
+    right: int | None = None
+    left: int | None = None
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
@@ -82,17 +81,14 @@ class Embryo(BaseLength):
         if self.measured_from is not None:
             value["embryo_length_measured_from"] = self.measured_from
 
-        if self.count1 is not None:
-            value["embryo_count_1"] = self.count
+        if self.count is not None:
+            value["embryo_count"] = self.count
 
-        if self.side1 is not None:
-            value["embryo_count_1_side"] = self.side1
+        if self.left is not None:
+            value["embryo_count_left"] = self.left
 
-        if self.count2 is not None:
-            value["embryo_count_2"] = self.count
-
-        if self.side2 is not None:
-            value["embryo_count_2_side"] = self.side2
+        if self.right is not None:
+            value["embryo_count_right"] = self.right
 
         return value
 
@@ -105,12 +101,12 @@ class Embryo(BaseLength):
         cls.embryo_side_pipe(nlp)
         cls.embryo_mix_2_3_pipe(nlp)
         cls.embryo_mix_1_2_pipe(nlp)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.embryo_mix_3_pipe(nlp)
         cls.embryo_mix_2_pipe(nlp)
         cls.embryo_mix_1_pipe(nlp)
         cls.embryo_mix_0_pipe(nlp)
         cls.embryo_width_pipe(nlp)
-        # add.debug_tokens(nlp)  # ###########################################
         cls.length_pipe(nlp, label=cls.name)
         cls.embryo_count_pipe(nlp)
         cls.embryo_present_pipe(nlp)
@@ -273,6 +269,8 @@ class Embryo(BaseLength):
                     " 9 word emb_key+ : ( 9 ( side ) , word 9 ( side ) ",
                     " 9 word emb_key+ word ( side ) word , 9 word ( side ) ",
                     " 9 word key+ ( side ) , 9 , word ( side ) , 9 ) ",
+                    " 9 emb_key+ ( side =? 9 , side =? 9 ",
+                    "   emb_key+ : 9 side 9 side =? 9 ",
                 ],
             ),
         ]
@@ -345,13 +343,13 @@ class Embryo(BaseLength):
                 on_match="embryo_mix_1_2_match",
                 decoder=DECODER,
                 patterns=[
-                    "      9 key+ word , 9 x 9 mm+ , ( 9 side , 9 side ) ",
                     "      9 key+ word , 9 x 9 mm+ ",
                     " side 9 key+ word , 9 x 9 mm* , side 9 key+ ",
                     "      9 key+ side word , 9 x 9 mm* , key* 9 side ",
                     "      9 key+ side word , 9 x 9 mm* , key* side 9 ",
                     "      9 key+ side word , 9 x 9 mm* , 9 key* side ",
                     "      9 key+ side word , 9 x 9 mm* ",
+                    "      9 key+ word      , 9 x 9 mm+ , ( 9 side , 9 side ) ",
                 ],
             ),
         ]
@@ -370,6 +368,8 @@ class Embryo(BaseLength):
                     "            side word , 9 , side word , 9 , key+ 9 mm+ ",
                     "   key+ : ( side word , 9 , side word , 9 , key* 9 mm+ ) ",
                     "   key+ : ( side ) word , 9 , ( side ) word , 9 , key* 9 mm+ ",
+                    "   key+ : ( 9   side   word , 9 , word   side ,   : 9 mm+ ) ",
+                    "   key+ :   9 ( side ) word , 9 , word ( side ) , : 9 mm+ ",
                 ],
             ),
         ]
@@ -421,61 +421,79 @@ class Embryo(BaseLength):
         ]
 
     @classmethod
-    def add_sides(cls, data: dict, counts: list[int], sides: list[str]) -> None:
-        labels = (("count1", "side1"), ("count2", "side2"))
-        side_term = {"left": "L", "right": "R", "side1": "1", "side2": "2"}
-        for i, (count, side) in enumerate(zip(counts, sides, strict=False)):
-            count_label, side_label = labels[min(i, 1)]
-
-            match side:
-                case "both":
-                    data["count1"] = count
-                    data["count2"] = count
-                    data["side1"] = "L"
-                    data["side2"] = "R"
-                case "side1":
-                    data["count1"] = count
-                    data["side1"] = "1"
-                case "side2":
-                    data["count2"] = count
-                    data["side2"] = "2"
-                case "left" | "right":
-                    data[count_label] = count
-                    data[side_label] = side_term[side]
-                case "male" | "female":
-                    pass
-                case _:
-                    raise ValueError(f"Unknown side {side}")
-
-    @classmethod
     def get_sides(cls, ent: Span, counts: list[int]) -> list[str]:
         sides = [e for e in ent.ents if e.label_ == "side"]
         new = []
+
         for side in sides:
-            if side.text.endswith("1"):
+            side = cls.replace.get(side.text.lower(), side.text)
+
+            if side.endswith("1"):
                 new.append("side1")
-            elif side.text.endswith("2"):
+            elif side.endswith("2"):
+                new.append("side2")
+            elif side.startswith("l"):
+                new.append("left")
+            elif side.startswith("r"):
+                new.append("right")
+            elif side.startswith("f"):
+                new.append("side1")
+            elif side.startswith("m"):
                 new.append("side2")
             else:
-                new.append(cls.side.get(side.text.lower(), ""))
-        if len(counts) >= 2 and len(sides) == 0:
-            new = ["side1", "side2"]
+                new.append(cls.side.get(side.lower(), ""))
+
+        if len(counts) > len(sides):
+            new += ["side1", "side2"]
         return new
+
+    @classmethod
+    def add_sides(cls, data: dict, counts: list[int], sides: list[str]) -> None:
+        total, left, right = None, None, None
+        for count, side in zip(counts, sides, strict=False):
+            match side:
+                case "both":
+                    left = count
+                    right = count
+                case "side1":
+                    total = total or 0
+                    total += count
+                case "side2":
+                    total = total or 0
+                    total += count
+                case "left":
+                    left = count
+                case "right":
+                    right = count
+                case _:
+                    raise ValueError(f"Unknown side {side=}")
+
+        if total is not None:
+            data["count"] = total
+        if left is not None:
+            data["left"] = left
+        if right is not None:
+            data["right"] = right
+
+    @classmethod
+    def get_counts(cls, counts: list[Span]) -> list[int]:
+        numbers = [int(c._.trait.number) for c in counts if not c._.trait.is_fraction]
+        if len(numbers) == 3:
+            if numbers[0] == max(numbers):
+                return [numbers[1], numbers[2]]
+            if numbers[1] == max(numbers):
+                return [numbers[0], numbers[2]]
+            return [numbers[0], numbers[1]]
+        return numbers
 
     @classmethod
     def embryo_count_match(cls, ent: Span) -> "Embryo":
         counts = [e for e in ent.ents if e.label_ == "number"]
-        counts = [int(c._.trait.number) for c in counts if not c._.trait.is_fraction]
+        counts = cls.get_counts(counts)
 
         sides = cls.get_sides(ent, counts)
 
-        if len(counts) > len(sides):
-            total = max(counts)
-            counts.remove(total)
-        else:
-            total = sum(counts)
-
-        data = {"count1": total}
+        data = {"count": sum(counts)}
         cls.add_sides(data, counts, sides)
 
         return cls.from_ent(ent, **data)
@@ -488,7 +506,7 @@ class Embryo(BaseLength):
         count = 1 if any(e.label_ == "yes" for e in ent.ents) or side else 0
         count = 1 if side else count
 
-        data = {"count1": count}
+        data = {"count": count}
 
         if side:
             data[side[0]] = count
@@ -504,7 +522,7 @@ class Embryo(BaseLength):
         length = counts.pop(length_idx)
         width = counts.pop(width_idx - 1) if width_idx else None
 
-        counts = [int(c._.trait.number) for c in counts]
+        counts = cls.get_counts(counts)
 
         units = next((e for e in ent.ents if e.label_ in cls.units), None)
         length = cls.in_millimeters(length, units)
@@ -513,19 +531,15 @@ class Embryo(BaseLength):
 
         sides = cls.get_sides(ent, counts)
 
-        if len(counts) > len(sides):
-            total = max(counts)
-            counts.remove(total)
-        else:
-            total = sum(counts)
+        data = {"count": sum(counts)}
+        cls.add_sides(data, counts, sides)
 
         meas_from = "crown" if any(e.label_ == "len_key" for e in ent.ents) else None
 
-        data = {
+        data |= {
             "_prefix": "embryo",
             "length": length,
             "width": width,
-            "count1": total,
             "measured_from": meas_from,
         }
 
@@ -599,6 +613,11 @@ def embryo_mix_0_match(ent: Span) -> Embryo:
 @registry.misc("embryo_mix_1_match")
 def embryo_mix_1_match(ent: Span) -> Embryo:
     return Embryo.embryo_mix_match(ent, length_idx=1)
+
+
+@registry.misc("embryo_mix_0_1_match")
+def embryo_mix_0_1_match(ent: Span) -> Embryo:
+    return Embryo.embryo_mix_match(ent, length_idx=0, width_idx=1)
 
 
 @registry.misc("embryo_mix_1_2_match")

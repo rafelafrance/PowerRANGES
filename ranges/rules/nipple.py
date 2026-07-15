@@ -53,7 +53,7 @@ class Nipple(Base):
             value["nipple_size"] = self.size
 
         if self.description:
-            value["nipple_state"] = self.description
+            value["nipple_description"] = self.description
 
         return value
 

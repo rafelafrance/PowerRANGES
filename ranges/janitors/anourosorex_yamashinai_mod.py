@@ -15,7 +15,7 @@ class AnourosorexYamashinaiMod(Janitor):
         self.copy("county", "county")
         self.copy("locality", "specific")
         self.copy("recordedBy", "collector")
-        self.copy("recordedByID", "coll #")
+        self.copy("recordNumber", "coll #")
         self.event_date("date")
         self.copy("sex", "sex")
         self.copy("preservedSpecimen", "parts")

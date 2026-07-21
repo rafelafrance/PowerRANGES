@@ -53,12 +53,15 @@ UNITS = {
     "pound": 453.5924,
     "pounds": 453.5924,
 }
+UNITS_RE = re.compile("|".join(UNITS.keys()), flags=re.IGNORECASE)
 
 PIPELINE = pipeline.build()
+BODY_MASS = pipeline.body_wt()
+LEN_SHORTHAND = pipeline.shorthand()
 FEMALE_REPRO = pipeline.female_repro()
 MALE_REPRO = pipeline.male_repro()
-LEN_SHORTHAND = pipeline.shorthand()
-BODY_MASS = pipeline.body_wt()
+EMBRYO = pipeline.embryo()
+PLACENTAL = pipeline.placental_scar_count()
 
 
 @dataclass
@@ -86,23 +89,49 @@ class Janitor:
     def ear_length(self, length: str, units: str = "", measured_from: str = "") -> None:
         ear_label = "ear_length"
         measure_label = "ear_length_measured_from"
-        if self.ear_length_count:
+        self.ear_length_count += 1
+        if self.ear_length_count > 1:
             ear_label += f"_{self.ear_length_count}"
             measure_label += f"_{self.ear_length_count}"
         self.clean[ear_label] = self.to_mm(self.dirty[length], self.dirty[units])
         self.clean[measure_label] = measured_from
-        self.ear_length_count += 1
 
-    def embryo_count(self, count: str, left: str = "", right: str = "") -> None:
-        self.clean["embryo_count"] = self.to_int(self.dirty.get(count, ""))
-        self.clean["embryo_count_left"] = self.to_int(self.dirty.get(left, ""))
-        self.clean["embryo_count_right"] = self.to_int(self.dirty.get(right, ""))
+    def embryo_count(
+        self,
+        count: str,
+        left: str = "",
+        right: str = "",
+        *,
+        only_if_filled: bool = False,
+    ) -> None:
+        count = self.to_int(self.dirty.get(count, ""))
+        left = self.to_int(self.dirty.get(left, ""))
+        right = self.to_int(self.dirty.get(right, ""))
+        if only_if_filled:
+            self.clean["embryo_count"] = count or self.clean.get("embryo_count", "")
+            self.clean["embryo_count_left"] = left or self.clean.get(
+                "embryo_count_left", ""
+            )
+            self.clean["embryo_count_right"] = right or self.clean.get(
+                "embryo_count_right", ""
+            )
+        else:
+            self.clean["embryo_count"] = count
+            self.clean["embryo_count_left"] = left
+            self.clean["embryo_count_right"] = right
 
     def embryo_length(
-        self, length: str, units: str = "", measured_from: str = ""
+        self,
+        length: str,
+        units: str = "",
+        measured_from: str = "",
+        *,
+        only_if_filled: bool = False,
     ) -> None:
-        self.clean["embryo_length"] = self.to_mm(self.dirty[length], self.dirty[units])
-        self.clean["embryo_length_measured_from"] = measured_from
+        length = self.to_mm(self.dirty[length], self.dirty[units])
+        if not only_if_filled or (only_if_filled and length):
+            self.clean["embryo_length"] = length
+            self.clean["embryo_length_measured_from"] = measured_from
 
     def event_date(self, date_: str) -> None:
         self.clean["eventDate"] = self.dirty[date_].removesuffix("00:00:00").strip()
@@ -129,6 +158,16 @@ class Janitor:
         self.clean["placental_scars_left"] = left
         self.clean["placental_scars_right"] = right
 
+    def placental_scars_present(self, present: str) -> None:
+        value = self.dirty[present]
+        true = re.match(r"true|yes", value, flags=re.IGNORECASE)
+        false = re.match(r"false|no", value, flags=re.IGNORECASE)
+        self.clean["placental_scars_present"] = ""
+        if true:
+            self.clean["placental_scars_present"] = "True"
+        if false:
+            self.clean["placental_scars_present"] = "False"
+
     def tail_length(self, length: str, units: str = "") -> None:
         self.clean["tail_length"] = self.to_mm(self.dirty[length], self.dirty[units])
 
@@ -136,16 +175,16 @@ class Janitor:
         self.clean["tarsus_length"] = self.to_mm(self.dirty[length], self.dirty[units])
 
     def testis_length(self, length: str, units: str = "") -> None:
-        label = "testis_length"
-        label += f"_{self.testis_length_count}" if self.testis_length_count else ""
-        self.clean[label] = self.to_mm(self.dirty[length], self.dirty[units])
         self.testis_length_count += 1
+        label = "testis_length"
+        label += f"_{self.testis_length_count}" if self.testis_length_count > 1 else ""
+        self.clean[label] = self.to_mm(self.dirty[length], self.dirty[units])
 
     def testis_width(self, width: str, units: str = "") -> None:
-        label = "testis_width"
-        label += f"_{self.testis_width_count}" if self.testis_width_count else ""
-        self.clean[label] = self.to_mm(self.dirty[width], self.dirty[units])
         self.testis_width_count += 1
+        label = "testis_width"
+        label += f"_{self.testis_width_count}" if self.testis_width_count > 1 else ""
+        self.clean[label] = self.to_mm(self.dirty[width], self.dirty[units])
 
     def thumb_length(self, length: str, units: str = "", includes: str = "") -> None:
         self.clean["thumb_length"] = self.to_mm(self.dirty[length], self.dirty[units])
@@ -173,12 +212,20 @@ class Janitor:
         doc = PIPELINE(text)
         self.get_traits(doc)
 
-    def parse_repro_cond(self, sex: str, text: str) -> None:
-        doc = FEMALE_REPRO(text) if sex.lower().startswith("f") else MALE_REPRO(text)
-        self.get_traits(doc)
-
     def parse_body_mass(self, text: str) -> None:
         doc = BODY_MASS(text)
+        self.get_traits(doc)
+
+    def parse_embryo(self, text: str) -> None:
+        doc = EMBRYO(text)
+        self.get_traits(doc)
+
+    def parse_placental_scar_count(self, text: str) -> None:
+        doc = PLACENTAL(text)
+        self.get_traits(doc)
+
+    def parse_repro_cond(self, sex: str, text: str) -> None:
+        doc = FEMALE_REPRO(text) if sex.lower().startswith("f") else MALE_REPRO(text)
         self.get_traits(doc)
 
     def parse_shorthand(self, text: str) -> None:
@@ -203,15 +250,24 @@ class Janitor:
         return "" if num is None else str(num)
 
     @staticmethod
-    def to_grams(value: str, units: str = "g", dec: int = 1) -> str:
-        return Janitor.convert_units(value, units, dec)
+    def value_with_units(value: str) -> str:
+        units_match = UNITS_RE.match(value)
+        float_match = FLOAT.match(value)
+        units = units_match.group(0) if units_match else ""
+        flt = float_match.group(0) if float_match else ""
+        converted = Janitor.convert_units(flt, units)
+        return converted
 
     @staticmethod
-    def to_mm(value: str, units: str = "mm", dec: int = 1) -> str:
-        return Janitor.convert_units(value, units, dec)
+    def to_grams(value: str, units: str = "g", decimals: int = 1) -> str:
+        return Janitor.convert_units(value, units, decimals)
 
     @staticmethod
-    def convert_units(value: str, units: str, dec: int) -> str:
+    def to_mm(value: str, units: str = "mm", decimals: int = 1) -> str:
+        return Janitor.convert_units(value, units, decimals)
+
+    @staticmethod
+    def convert_units(value: str, units: str, decimals: int = 1) -> str:
         num = Janitor.as_float(value)
 
         if num is None:
@@ -219,7 +275,7 @@ class Janitor:
 
         factor = UNITS.get(units.lower(), 1.0)
         num *= factor
-        num = round(num, dec)
+        num = round(num, decimals)
         return str(num)
 
     @staticmethod
@@ -240,6 +296,6 @@ class Janitor:
         return float(m[0]) if m else None
 
     @staticmethod
-    def to_float(value: str, dec: int = 1) -> str:
+    def to_float(value: str, decimals: int = 1) -> str:
         flt = Janitor.as_float(value)
-        return f"{flt:0.{dec}f}" if flt is not None else ""
+        return f"{flt:0.{decimals}f}" if flt is not None else ""

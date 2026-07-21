@@ -33,6 +33,18 @@ from ranges.janitors.notiosorex_crawfordi_mod import NotiosorexCrawfordiMod
 from ranges.janitors.peromyscus_master import PeromyscusMaster
 from ranges.janitors.reithrodontomys_mod import ReithrodontomysMod
 from ranges.janitors.sorex_master import SorexMaster
+from ranges.janitors.soriculus_master import SoriculusMaster
+from ranges.janitors.suncus_master import SuncusMaster
+from ranges.janitors.tamias_speciosus_mod import TamiasSpeciosusMod
+from ranges.janitors.tamu_ranged_all_traits_only_2sept2025_mod import (
+    TamuRangesAllTraitsOnly2Sept2025Mod,
+)
+from ranges.janitors.thomomys_bottae_mod import ThomomysBottaeMod
+from ranges.janitors.ttu_nsf_ranges_data_corrections import TtunsfRangesDataCorrections
+from ranges.janitors.ummz_ranges_y2_final_mod import UmmzRangesY2FinalMod
+from ranges.janitors.uwbm_mamm_json_attributes import UwbmMammJsonAttributes
+from ranges.janitors.uwymz_y1_mod import UwymzY1Mod, uwymz_y1_mod_multi_row_cleaner
+from ranges.janitors.uwymz_y2_mod import UwymzY2Mod, uwymz_y2_mod_multi_row_cleaner
 from ranges.pylib import log
 
 CSVS = {
@@ -57,16 +69,20 @@ CSVS = {
     "Peromyscus_Master.csv": (PeromyscusMaster,),
     "Reithrodontomys_mod.csv": (ReithrodontomysMod,),
     "Sorex_Master.csv": (SorexMaster,),
-    "Soriculus_Master.csv": None,
-    "Suncus_Master.csv": None,
-    "Tamias speciosus_mod.csv": None,
-    "TAMU_RANGESALL_TraitsOnly2Sept2025_mod.csv": None,
-    "Thomomys bottae_mod.csv": None,
-    "TTU-NSF-Ranges-Data Corrections Next to Data-7-28-2025_mod.csv": None,
-    "UMMZ_ranges_y2_final_mod.csv": None,
-    "UWBM_Mamm_JSON_Attributes.csv": None,
-    "UWYMZ_Y1_mod.csv": None,
-    "UWYMZ_Y2_mod.csv": None,
+    "Soriculus_Master.csv": (SoriculusMaster,),
+    "Suncus_Master.csv": (SuncusMaster,),
+    "Tamias speciosus_mod.csv": (TamiasSpeciosusMod,),
+    "TAMU_RANGESALL_TraitsOnly2Sept2025_mod.csv": (
+        TamuRangesAllTraitsOnly2Sept2025Mod,
+    ),
+    "Thomomys bottae_mod.csv": (ThomomysBottaeMod,),
+    "TTU-NSF-Ranges-Data Corrections Next to Data-7-28-2025_mod.csv": (
+        TtunsfRangesDataCorrections,
+    ),
+    "UMMZ_ranges_y2_final_mod.csv": (UmmzRangesY2FinalMod,),
+    "UWBM_Mamm_JSON_Attributes.csv": (UwbmMammJsonAttributes,),
+    "UWYMZ_Y1_mod.csv": (UwymzY1Mod, uwymz_y1_mod_multi_row_cleaner),
+    "UWYMZ_Y2_mod.csv": (UwymzY2Mod, uwymz_y2_mod_multi_row_cleaner),
 }
 
 

@@ -34,7 +34,7 @@ class AnourosorexYamashinaiMod(Janitor):
         self.copy("skin_tag_checked", "skin tag checked? (or no skin tag available)")
         self.copy("catalog_checked", "catalog checked? (or no catalog available)")
         self.copy("date_scanned", "Unnamed: 33")
-        self.copy("arctos_upload_date", "data uploaded to Arctos?")
+        self.copy("arctos_upload", "data uploaded to Arctos?")
         self.copy(
             "remarks", "remarks (data discrepancy, need to revisit specimen, etc.)"
         )

@@ -161,3 +161,17 @@ def body_wt() -> Language:
     Number.pipe(nlp)
     BodyMass.pipe(nlp)
     return nlp
+
+
+def placental_scar_count() -> Language:
+    nlp = init_pipe()
+    Number.pipe(nlp)
+    PlacentalScarCount.pipe(nlp)
+    return nlp
+
+
+def embryo() -> Language:
+    nlp = init_pipe()
+    Number.pipe(nlp)
+    Embryo.pipe(nlp)
+    return nlp

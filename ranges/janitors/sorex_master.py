@@ -35,7 +35,7 @@ class SorexMaster(Janitor):
         self.placental_scar_count("scars")
         self.copy("fur", "fur")
         self.copy("attribute_source", "source and date for most attributes")
-        self.copy("skin_tag", "skin tag checked? (or no skin tag available)")
+        self.copy("skin_tag_checked", "skin tag checked? (or no skin tag available)")
         self.copy("catalog_checked", "catalog checked? (or no catalog available)")
         self.copy("library_catalog", "Unnamed: 35")
         self.copy("arctos_uploaded", "data uploaded to Arctos?")

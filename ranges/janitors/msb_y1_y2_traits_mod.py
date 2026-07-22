@@ -7,7 +7,7 @@ from ranges.janitors.base import Janitor
 @dataclass
 class MsbY1Y2TraitsMod(Janitor):
     def cleaner(self) -> None:
-        self.copy("occurrenceID", "occurrenceID")
+        self.copy("occurrenceID", "occurenceID")
         self.copy("msb_id", "MSBID")
         self.copy("catalogNumber", "catalogNumber")
         self.copy("scientificName", "scientificName")

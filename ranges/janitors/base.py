@@ -78,10 +78,14 @@ class Janitor:
     # Per field actions
 
     def body_mass(self, mass: str, units: str = "") -> None:
-        self.clean["body_mass"] = self.to_grams(self.dirty[mass], self.dirty[units])
+        self.clean["body_mass"] = self.to_grams(
+            self.dirty[mass], self.dirty.get(units, "")
+        )
 
     def calcar_length(self, length: str, units: str = "") -> None:
-        self.clean["calcar_length"] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean["calcar_length"] = self.to_mm(
+            self.dirty[length], self.dirty.get(units, "")
+        )
 
     def copy(self, clean_label: str, dirty_label: str) -> None:
         self.clean[clean_label] = self.dirty[dirty_label]
@@ -93,7 +97,9 @@ class Janitor:
         if self.ear_length_count > 1:
             ear_label += f"_{self.ear_length_count}"
             measure_label += f"_{self.ear_length_count}"
-        self.clean[ear_label] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean[ear_label] = self.to_mm(
+            self.dirty[length], self.dirty.get(units, "")
+        )
         self.clean[measure_label] = measured_from
 
     def embryo_count(
@@ -128,7 +134,7 @@ class Janitor:
         *,
         only_if_filled: bool = False,
     ) -> None:
-        length = self.to_mm(self.dirty[length], self.dirty[units])
+        length = self.to_mm(self.dirty[length], self.dirty.get(units, ""))
         if not only_if_filled or (only_if_filled and length):
             self.clean["embryo_length"] = length
             self.clean["embryo_length_measured_from"] = measured_from
@@ -137,13 +143,15 @@ class Janitor:
         self.clean["eventDate"] = self.dirty[date_].removesuffix("00:00:00").strip()
 
     def forearm_length(self, length: str, units: str = "") -> None:
-        self.clean["forearm_length"] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean["forearm_length"] = self.to_mm(
+            self.dirty[length], self.dirty.get(units, "")
+        )
 
     def hind_foot_length(
         self, length: str, units: str = "", includes: str = ""
     ) -> None:
         self.clean["hind_foot_length"] = self.to_mm(
-            self.dirty[length], self.dirty[units]
+            self.dirty[length], self.dirty.get(units, "")
         )
         self.clean["hind_foot_length_includes"] = includes
 
@@ -169,32 +177,42 @@ class Janitor:
             self.clean["placental_scars_present"] = "False"
 
     def tail_length(self, length: str, units: str = "") -> None:
-        self.clean["tail_length"] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean["tail_length"] = self.to_mm(
+            self.dirty[length], self.dirty.get(units, "")
+        )
 
     def tarsus_length(self, length: str, units: str = "") -> None:
-        self.clean["tarsus_length"] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean["tarsus_length"] = self.to_mm(
+            self.dirty[length], self.dirty.get(units, "")
+        )
 
     def testis_length(self, length: str, units: str = "") -> None:
         self.testis_length_count += 1
         label = "testis_length"
         label += f"_{self.testis_length_count}" if self.testis_length_count > 1 else ""
-        self.clean[label] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean[label] = self.to_mm(self.dirty[length], self.dirty.get(units, ""))
 
     def testis_width(self, width: str, units: str = "") -> None:
         self.testis_width_count += 1
         label = "testis_width"
         label += f"_{self.testis_width_count}" if self.testis_width_count > 1 else ""
-        self.clean[label] = self.to_mm(self.dirty[width], self.dirty[units])
+        self.clean[label] = self.to_mm(self.dirty[width], self.dirty.get(units, ""))
 
     def thumb_length(self, length: str, units: str = "", includes: str = "") -> None:
-        self.clean["thumb_length"] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean["thumb_length"] = self.to_mm(
+            self.dirty[length], self.dirty.get(units, "")
+        )
         self.clean["thumb_length_includes"] = includes
 
     def total_length(self, length: str, units: str = "") -> None:
-        self.clean["total_length"] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean["total_length"] = self.to_mm(
+            self.dirty[length], self.dirty.get(units, "")
+        )
 
     def tragus_length(self, length: str, units: str = "") -> None:
-        self.clean["tragus_length"] = self.to_mm(self.dirty[length], self.dirty[units])
+        self.clean["tragus_length"] = self.to_mm(
+            self.dirty[length], self.dirty.get(units, "")
+        )
 
     # --------------------------------------------------------------------------------
     # Rule parsers

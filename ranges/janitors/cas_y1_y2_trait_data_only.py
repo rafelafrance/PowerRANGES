@@ -6,7 +6,7 @@ from ranges.janitors.base import Janitor
 @dataclass
 class CasY1Y2TraitDataOnly(Janitor):
     def cleaner(self) -> None:
-        self.copy("occurrenceID", "occurrenceID")
+        self.copy("occurrenceID", "occuranceID")
         self.copy("catalogNumber", "catalog#")
         self.copy("scientificName", "scientific name")
         self.copy("countryCode", "country code")

@@ -1,4 +1,3 @@
-import logging
 from dataclasses import dataclass
 
 from ranges.janitors.base import Janitor
@@ -41,16 +40,20 @@ class DmnsRangesTraits(Janitor):
 
         for trait, meas, units in columns:
             match self.dirty[trait].strip():
-                case "":
+                case "" | "19" | "4129":
                     pass
                 case "age":
                     self.copy("age", meas)
-                case "age class":
+                case "age class" | "life stage":
                     self.copy("lifeState", meas)
                 case "calcar length":
                     self.calcar_length(meas, units)
+                case "curvilinear length":
+                    self.copy("curvilinear_length", meas)
                 case "ear length from notch" | "ear from notch":
                     self.ear_length(meas, units, measured_from="notch")
+                case "forearm length":
+                    self.forearm_length(meas, units)
                 case "hind foot with claw":
                     self.hind_foot_length(meas, units, includes="claw")
                 case "reproductive data":
@@ -61,8 +64,8 @@ class DmnsRangesTraits(Janitor):
                     self.tarsus_length(meas, units)
                 case "tail length":
                     self.tail_length(meas, units)
-                case "thumb with claw":
-                    self.thumb_length(meas, units)
+                case "thumb with claw" | "thumb length with claw":
+                    self.thumb_length(meas, units, includes="claw")
                 case "total length":
                     self.total_length(meas, units)
                 case "tragus length":
@@ -70,5 +73,4 @@ class DmnsRangesTraits(Janitor):
                 case "weight":
                     self.body_mass(meas, units)
                 case _:
-                    logging.error(f"{self.dirty[trait]=}")
-                    raise ValueError
+                    raise ValueError(f"{self.dirty[trait]=}")

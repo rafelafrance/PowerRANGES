@@ -8,7 +8,7 @@ class MicrotusMod(Janitor):
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occurrenceID")
         self.copy("catalogNumber", "catalognumberint")
-        self.copy("quid", "quid")
+        self.copy("guid", "guid")
         self.copy("scientificName", "subspecies")
         self.copy("recordedBy", "collectors")
         self.copy("stateProvince", "state_prov")

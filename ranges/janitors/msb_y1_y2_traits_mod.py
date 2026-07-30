@@ -1,11 +1,11 @@
 import logging
 from dataclasses import dataclass
 
-from ranges.janitors.base import Janitor
+from ranges.janitors.base_janitor import BaseJanitor
 
 
 @dataclass
-class MsbY1Y2TraitsMod(Janitor):
+class MsbY1Y2TraitsMod(BaseJanitor):
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occurenceID")
         self.copy("msb_id", "MSBID")

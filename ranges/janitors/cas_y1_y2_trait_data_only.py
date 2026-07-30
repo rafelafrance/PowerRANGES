@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from ranges.janitors.base import Janitor
+from ranges.janitors.base_janitor import BaseJanitor
 
 
 @dataclass
-class CasY1Y2TraitDataOnly(Janitor):
+class CasY1Y2TraitDataOnly(BaseJanitor):
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occuranceID")
         self.copy("catalogNumber", "catalog#")

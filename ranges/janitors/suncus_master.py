@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from ranges.janitors.base import Janitor
+from ranges.janitors.base_janitor import BaseJanitor
 
 
 @dataclass
-class SuncusMaster(Janitor):
+class SuncusMaster(BaseJanitor):
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occurrenceID")
         self.copy("institutionCode", "institutionCode")

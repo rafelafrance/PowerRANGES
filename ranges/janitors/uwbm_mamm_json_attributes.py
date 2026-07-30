@@ -1,11 +1,11 @@
 import json
 from dataclasses import dataclass, field
 
-from ranges.janitors.base import Janitor
+from ranges.janitors.base_janitor import BaseJanitor
 
 
 @dataclass
-class UwbmMammJsonAttributes(Janitor):
+class UwbmMammJsonAttributes(BaseJanitor):
     gonad_length_count: int = 0
     gonad_width_count: int = 0
     gonad: dict = field(default_factory=dict)

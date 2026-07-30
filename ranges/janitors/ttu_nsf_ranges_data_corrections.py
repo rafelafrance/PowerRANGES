@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from ranges.janitors.base import Janitor
+from ranges.janitors.base_janitor import BaseJanitor
 
 
 @dataclass
-class TtunsfRangesDataCorrections(Janitor):
+class TtunsfRangesDataCorrections(BaseJanitor):
     @staticmethod
     def trim_date(value: str) -> str:
         return value.removesuffix("00:00:00").strip()

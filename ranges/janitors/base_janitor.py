@@ -65,7 +65,7 @@ PLACENTAL = pipeline.placental_scar_count()
 
 
 @dataclass
-class Janitor:
+class BaseJanitor:
     dirty: dict[str, Any] = field(default_factory=dict)
     clean: dict[str, Any] = field(default_factory=dict)
     ear_length_count: int = 0  # Can have multiple measurements
@@ -264,7 +264,7 @@ class Janitor:
 
     @staticmethod
     def to_int(value: str) -> str:
-        num = Janitor.as_int(value)
+        num = BaseJanitor.as_int(value)
         return "" if num is None else str(num)
 
     @staticmethod
@@ -273,20 +273,20 @@ class Janitor:
         float_match = FLOAT.match(value)
         units = units_match.group(0) if units_match else ""
         flt = float_match.group(0) if float_match else ""
-        converted = Janitor.convert_units(flt, units)
+        converted = BaseJanitor.convert_units(flt, units)
         return converted
 
     @staticmethod
     def to_grams(value: str, units: str = "g", decimals: int = 1) -> str:
-        return Janitor.convert_units(value, units, decimals)
+        return BaseJanitor.convert_units(value, units, decimals)
 
     @staticmethod
     def to_mm(value: str, units: str = "mm", decimals: int = 1) -> str:
-        return Janitor.convert_units(value, units, decimals)
+        return BaseJanitor.convert_units(value, units, decimals)
 
     @staticmethod
     def convert_units(value: str, units: str, decimals: int = 1) -> str:
-        num = Janitor.as_float(value)
+        num = BaseJanitor.as_float(value)
 
         if num is None:
             return ""
@@ -302,10 +302,10 @@ class Janitor:
 
         # Handle numbers formatted like: 4 1/4
         if m := FRACT.search(value):
-            whole = Janitor.as_float(m[1]) or 0.0
+            whole = BaseJanitor.as_float(m[1]) or 0.0
             num, denom = m[2].split("/")
-            num = Janitor.as_float(num) or 0.0
-            denom = Janitor.as_float(denom)
+            num = BaseJanitor.as_float(num) or 0.0
+            denom = BaseJanitor.as_float(denom)
             if denom is None:
                 return None
             return whole + (num / denom)
@@ -315,5 +315,5 @@ class Janitor:
 
     @staticmethod
     def to_float(value: str, decimals: int = 1) -> str:
-        flt = Janitor.as_float(value)
+        flt = BaseJanitor.as_float(value)
         return f"{flt:0.{decimals}f}" if flt is not None else ""

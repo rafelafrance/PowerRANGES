@@ -2,11 +2,11 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
-from ranges.janitors.base import Janitor
+from ranges.janitors.base_janitor import BaseJanitor
 
 
 @dataclass
-class FmnhTestRangesTraits(Janitor): ...
+class FmnhTestRangesTraits(BaseJanitor): ...
 
 
 def fmnh_multi_row_cleaner(rows: list[dict], _janitor_class: Any) -> list[dict]:

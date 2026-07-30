@@ -3,14 +3,14 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
-from ranges.janitors.base import Janitor
+from ranges.janitors.base_janitor import BaseJanitor
 from ranges.pylib import pipeline
 
 PIPELINE = pipeline.build()
 
 
 @dataclass
-class UwymzY2Mod(Janitor): ...
+class UwymzY2Mod(BaseJanitor): ...
 
 
 def uwymz_y2_mod_multi_row_cleaner(rows: list[dict], _janitor_class: Any) -> list[dict]:

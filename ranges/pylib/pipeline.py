@@ -115,6 +115,9 @@ def female_repro() -> Language:
     nlp = init_pipe()
 
     Number.pipe(nlp)
+    PlacentalScarCount.pipe(nlp)
+
+    Number.pipe(nlp)
     FemaleStateShorthand.pipe(nlp)
 
     Number.pipe(nlp)

@@ -88,6 +88,10 @@ class BaseJanitor:
         )
 
     def copy(self, clean_label: str, dirty_label: str) -> None:
+        if not clean_label:
+            msg = "No clean label."
+            raise ValueError(msg)
+
         self.clean[clean_label] = self.dirty[dirty_label]
 
     def ear_length(self, length: str, units: str = "", measured_from: str = "") -> None:
@@ -215,45 +219,6 @@ class BaseJanitor:
         )
 
     # --------------------------------------------------------------------------------
-    # Rule parsers
-
-    def get_traits(self, doc: Doc) -> None:
-        traits = [e._.trait for e in doc.ents]
-        all_ = {}
-        for trait in traits:
-            if hasattr(trait, "for_csv"):
-                new = trait.for_csv()
-                all_ |= {k: v for k, v in new.items() if not self.clean.get(k)}
-        self.clean |= all_
-
-    def parse_all(self, text: str) -> None:
-        doc = PIPELINE(text)
-        self.get_traits(doc)
-
-    def parse_body_mass(self, text: str) -> None:
-        doc = BODY_MASS(text)
-        self.get_traits(doc)
-
-    def parse_embryo(self, text: str) -> None:
-        doc = EMBRYO(text)
-        self.get_traits(doc)
-
-    def parse_placental_scar_count(self, text: str) -> None:
-        doc = PLACENTAL(text)
-        self.get_traits(doc)
-
-    def parse_repro_cond(self, sex: str, text: str) -> None:
-        doc = FEMALE_REPRO(text) if sex.lower().startswith("f") else MALE_REPRO(text)
-        self.get_traits(doc)
-
-    def parse_shorthand(self, text: str) -> None:
-        doc = LEN_SHORTHAND(text)
-        traits = [e._.trait for e in doc.ents]
-        shorts = {}
-        shorts = traits[0].for_csv() if traits and hasattr(traits[0], "for_csv") else {}
-        self.clean |= shorts
-
-    # --------------------------------------------------------------------------------
     # Converters
 
     @staticmethod
@@ -317,3 +282,56 @@ class BaseJanitor:
     def to_float(value: str, decimals: int = 1) -> str:
         flt = BaseJanitor.as_float(value)
         return f"{flt:0.{decimals}f}" if flt is not None else ""
+
+    # --------------------------------------------------------------------------------
+    # Rule parsers
+
+    def parse_all(self, field: str) -> None:
+        text = self.clean[field]
+        doc = PIPELINE(text)
+        self.get_traits(doc)
+
+    def parse_body_mass(self, field: str) -> None:
+        text = self.clean[field]
+        doc = BODY_MASS(text)
+        self.get_traits(doc)
+
+    def parse_embryo(self, field: str) -> None:
+        text = self.clean[field]
+        doc = EMBRYO(text)
+        self.get_traits(doc)
+
+    def parse_placental_scar_count(self, field: str) -> None:
+        text = self.clean[field]
+        doc = PLACENTAL(text)
+        self.get_traits(doc)
+
+    def parse_repro_cond(self, sex_field: str, field: str) -> None:
+        sex = self.clean[sex_field].lower()
+        text = self.clean[field]
+        if sex.startswith("f"):
+            doc = FEMALE_REPRO(text)
+        elif sex.startswith("m"):
+            doc = MALE_REPRO(text)
+        else:
+            msg = "No sex given"
+            raise ValueError(msg)
+
+        self.get_traits(doc)
+
+    def parse_shorthand(self, field: str) -> None:
+        text = self.clean[field]
+        doc = LEN_SHORTHAND(text)
+        traits = [e._.trait for e in doc.ents]
+        shorts = {}
+        shorts = traits[0].for_csv() if traits and hasattr(traits[0], "for_csv") else {}
+        self.clean |= shorts
+
+    def get_traits(self, doc: Doc) -> None:
+        traits = [e._.trait for e in doc.ents]
+        all_ = {}
+        for trait in traits:
+            if hasattr(trait, "for_csv"):
+                new = trait.for_csv()
+                all_ |= {k: v for k, v in new.items() if not self.clean.get(k)}
+        self.clean |= all_

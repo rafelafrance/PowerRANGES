@@ -43,3 +43,6 @@ class PeromyscusMaster(BaseJanitor):
         self.copy("review_needed", "REVIEW NEEDED")
         self.copy("notes_1", "Unnamed: 38")
         self.copy("notes_2", "Unnamed: 39")
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("unformatted_measurements")

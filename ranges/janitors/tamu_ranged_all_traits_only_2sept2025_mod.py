@@ -63,3 +63,6 @@ class TamuRangesAllTraitsOnly2Sept2025Mod(BaseJanitor):
         self.copy("year", "year")
         self.copy("occurrenceRemarks", "occurrenceRemarks")
         self.copy("dynamicProperties", "dynamicProperties")
+
+        self.parse_all("occurrenceRemarks")
+        self.parse_all("dynamicProperties")

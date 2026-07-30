@@ -28,7 +28,12 @@ class DmnsRangesTraits(BaseJanitor):
         self.copy("year", "year")
         self.copy("occurrenceRemarks", "occurrenceRemarks")
         self.copy("dynamicProperties", "dynamicProperties")
+
         self.variable_traits()
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("occurrenceRemarks")
+        self.parse_all("dynamicProperties")
 
     def variable_traits(self) -> None:
         columns = [
@@ -57,7 +62,7 @@ class DmnsRangesTraits(BaseJanitor):
                 case "hind foot with claw":
                     self.hind_foot_length(meas, units, includes="claw")
                 case "reproductive data":
-                    self.parse_all(self.dirty[trait])
+                    self.copy("reproductiveCondition", "reproductive data")
                 case "sex":
                     self.copy("sex", meas)
                 case "tarsus length":

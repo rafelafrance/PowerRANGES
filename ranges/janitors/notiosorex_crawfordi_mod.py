@@ -37,3 +37,5 @@ class NotiosorexCrawfordiMod(BaseJanitor):
         self.copy("unnamed", "Unnamed: 31")
         self.copy("arctos_upload", "data uploaded to Arctos?")
         self.copy("review_needed", "REVIEW NEEDED")
+
+        self.parse_repro_cond("sex", "reproductiveCondition")

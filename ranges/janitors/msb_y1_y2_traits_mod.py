@@ -28,7 +28,13 @@ class MsbY1Y2TraitsMod(BaseJanitor):
         self.copy("year", "year")
         self.copy("occurrenceRemarks", "occurrenceRemarks")
         self.copy("dynamicProperties", "dynamicProperties")
+
         self.from_slots()
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("unformatted_measurements")
+        self.parse_all("occurrenceRemarks")
+        self.parse_all("dynamicProperties")
 
     def from_slots(self) -> None:
         columns = [
@@ -66,7 +72,7 @@ class MsbY1Y2TraitsMod(BaseJanitor):
                 case "life stage":
                     self.clean["lifeStage"] = self.dirty[meas]
                 case "reproductive data":
-                    self.parse_all(self.dirty[meas])
+                    self.copy("reproductiveCondition", "reproductive data")
                 case "sex":
                     self.clean["sex"] = self.dirty[meas]
                 case "tail length":
@@ -88,7 +94,7 @@ class MsbY1Y2TraitsMod(BaseJanitor):
                         self.dirty[meas], self.dirty[units]
                     )
                 case "unformatted measurements":
-                    self.parse_all(self.dirty[meas])
+                    self.copy("unformatted_measurements", "unformatted measurements")
                 case "weight":
                     self.clean["body_mass"] = self.to_grams(
                         self.dirty[meas], self.dirty[units]

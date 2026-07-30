@@ -40,3 +40,6 @@ class ReithrodontomysMod(BaseJanitor):
         self.copy("year", "Year")
         self.copy("catalog_checked", "catalog checked? (or no catalog available)")
         self.copy("review_needed", "REVIEW NEEDED")
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("unformatted_measurements")

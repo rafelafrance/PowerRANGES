@@ -41,6 +41,9 @@ class EptesicusMod(BaseJanitor):
         self.copy("year", "Year")
         self.copy("review_needed", "REVIEW NEEDED")
 
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("unformatted_measurements")
+
     def collector(self) -> None:
         words = self.dirty["COLLECTOR_NUMBER"].split()
         self.clean["recordedBy"] = " ".join(w for w in words if not re.search(r"\d", w))

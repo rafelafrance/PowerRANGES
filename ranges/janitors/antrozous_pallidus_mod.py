@@ -35,3 +35,6 @@ class AntrozousPallidusMod(BaseJanitor):
         self.copy("month", "Month")
         self.copy("year", "Year")
         self.copy("review_needed", "REVIEW NEEDED")
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("unformatted_measurements")

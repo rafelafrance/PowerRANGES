@@ -37,3 +37,6 @@ class MustelaMod(BaseJanitor):
         self.copy("month", "month")
         self.copy("year", "year")
         self.copy("review_needed", "review_needed")
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("unformatted_measurements")

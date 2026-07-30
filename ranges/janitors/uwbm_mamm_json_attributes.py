@@ -146,5 +146,9 @@ class UwbmMammJsonAttributes(BaseJanitor):
         self.copy("country", "country")
         self.copy("stateProvince", "state_prov")
         self.copy("county", "county")
+
         self.attribute_detail()
         self.gonad_adjustment()
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("unformatted_measurements")

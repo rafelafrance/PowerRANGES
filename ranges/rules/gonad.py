@@ -49,8 +49,10 @@ class Gonad(Base):
     # ---------------------
 
     description: str | None = None
-    length1: float | None = None
-    width1: float | None = None
+    length: float | None = None
+    length2: float | None = None
+    width: float | None = None
+    width2: float | None = None
     units_inferred: bool | None = None
 
     def for_csv(self) -> dict[str, Any]:
@@ -60,10 +62,16 @@ class Gonad(Base):
             value["gonad_description"] = self.description
 
         if self.length is not None:
-            value["gonad_length_1"] = self.length
+            value["gonad_length"] = self.length
+
+        if self.length2 is not None:
+            value["gonad_length_2"] = self.length
 
         if self.width is not None:
-            value["gonad_width_1"] = self.width
+            value["gonad_width"] = self.width
+
+        if self.width2 is not None:
+            value["gonad_width_2"] = self.width2
 
         return value
 
@@ -168,14 +176,14 @@ class Gonad(Base):
         data = {}
 
         if key.startswith("gonad_len"):
-            data["length1"] = nums[0]
+            data["length"] = nums[0]
         elif key.startswith("gonad_width"):
-            data["width1"] = nums[0]
+            data["width"] = nums[0]
         else:
             one_pair = 2
             two_pairs = 4
-            data["length1"] = nums[0]
-            data["width1"] = nums[1] if len(nums) > 1 else None
+            data["length"] = nums[0]
+            data["width"] = nums[1] if len(nums) > 1 else None
             data["length2"] = nums[2] if len(nums) > one_pair else None
             data["width2"] = nums[3] if len(nums) >= two_pairs else None
 

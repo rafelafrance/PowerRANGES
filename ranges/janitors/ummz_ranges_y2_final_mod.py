@@ -39,3 +39,6 @@ class UmmzRangesY2FinalMod(BaseJanitor):
         self.copy("pregnancy_state", "pregnancy")
         self.thumb_length("thumbLengthWithClaw", "lengthUnits", "claw")
         self.clean["wing_span"] = self.value_with_units(self.dirty["wingSpan"])
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("additional_comments")

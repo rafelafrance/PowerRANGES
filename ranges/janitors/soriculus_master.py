@@ -38,3 +38,6 @@ class SoriculusMaster(BaseJanitor):
         self.copy("catalog_status", "Unnamed: 33")
         self.copy("unformatted_measurements", "unformatted measurements")
         self.copy("review_needed", "REVIEW NEEDED")
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("unformatted_measurements")

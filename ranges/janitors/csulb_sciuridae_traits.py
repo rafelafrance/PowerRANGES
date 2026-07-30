@@ -33,3 +33,7 @@ class CsulbSciuridaeTraits(BaseJanitor):
         self.copy("year", "year")
         self.copy("occurrenceRemarks", "occurrenceRemarks")
         self.copy("dynamicProperties", "dynamicProperties")
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("occurrenceRemarks")
+        self.parse_all("dynamicProperties")

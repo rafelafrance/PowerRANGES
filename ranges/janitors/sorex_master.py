@@ -42,3 +42,6 @@ class SorexMaster(BaseJanitor):
         self.copy(
             "remarks", "remarks (data discrepancy, need to revisit specimen, etc.)"
         )
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("remarks")

@@ -40,3 +40,7 @@ class MyosorexVariusMod(BaseJanitor):
             "occurrenceRemarks",
             "remarks (data discrepancy, need to revisit specimen, etc.)",
         )
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_all("occurrenceRemarks")
+        self.parse_all("fieldNotes")

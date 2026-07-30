@@ -57,3 +57,7 @@ class LACMRangesSpecimensUpdatedNewDataDec2025(BaseJanitor):
         self.ear_length("MamEar", "length_units")
         self.body_mass("MamWeight_transcribed", "MamWeight_transcribed_unit")
         self.copy("reproductive_condition_transcribed", "MamReprod_transcribed")
+
+        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_repro_cond("sex", "reproductive_condition_transcribed")
+        self.parse_all("occurrenceRemarks")

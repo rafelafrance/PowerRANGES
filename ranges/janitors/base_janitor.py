@@ -314,8 +314,7 @@ class BaseJanitor:
         elif sex.startswith("m"):
             doc = MALE_REPRO(text)
         else:
-            msg = "No sex given"
-            raise ValueError(msg)
+            doc = PIPELINE(text)
 
         self.get_traits(doc)
 

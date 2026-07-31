@@ -27,11 +27,8 @@ class TamuRangesAllTraitsOnly2Sept2025Mod(BaseJanitor):
         self.copy("vagina_state", "Vaginal Perforation")
         self.copy("uterus_condition", "Uterus Condition")
         self.copy("pregnancy_state", "Pregnancy")
-        self.parse_embryo("Embryo Count")
-        self.embryo_count(
-            "", "Left Embryo Count", "Right Embryo Count", only_if_filled=True
-        )
-        self.embryo_length("Embryo Length", only_if_filled=True)
+        self.copy("embryo_count_raw", "Embryo Count")
+        self.clean["embryo_length"] = self.value_with_units(self.dirty["Embryo Length"])
         # self.placental_scars_present("Placental Scars")
         self.placental_scar_count(
             "Placental Scar Count",
@@ -64,5 +61,6 @@ class TamuRangesAllTraitsOnly2Sept2025Mod(BaseJanitor):
         self.copy("occurrenceRemarks", "occurrenceRemarks")
         self.copy("dynamicProperties", "dynamicProperties")
 
+        self.parse_embryo("embryo_count_raw")
         self.parse_all("occurrenceRemarks")
         self.parse_all("dynamicProperties")

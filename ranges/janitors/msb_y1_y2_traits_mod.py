@@ -41,6 +41,11 @@ class MsbY1Y2TraitsMod(BaseJanitor):
             (f"trait name/type {i}", f"measurement {i}", f"units {i}")
             for i in range(1, 16)
         ]
+
+        self.clean["sex"] = ""
+        self.clean["reproductiveCondition"] = ""
+        self.clean["unformatted_measurements"] = ""
+
         for trait, meas, units in columns:
             match self.dirty[trait].strip():
                 case "":
@@ -72,7 +77,7 @@ class MsbY1Y2TraitsMod(BaseJanitor):
                 case "life stage":
                     self.clean["lifeStage"] = self.dirty[meas]
                 case "reproductive data":
-                    self.copy("reproductiveCondition", "reproductive data")
+                    self.clean["reproductiveCondition"] = self.dirty[meas]
                 case "sex":
                     self.clean["sex"] = self.dirty[meas]
                 case "tail length":
@@ -94,7 +99,7 @@ class MsbY1Y2TraitsMod(BaseJanitor):
                         self.dirty[meas], self.dirty[units]
                     )
                 case "unformatted measurements":
-                    self.copy("unformatted_measurements", "unformatted measurements")
+                    self.clean["unformatted_measurements"] = self.dirty[meas]
                 case "weight":
                     self.clean["body_mass"] = self.to_grams(
                         self.dirty[meas], self.dirty[units]

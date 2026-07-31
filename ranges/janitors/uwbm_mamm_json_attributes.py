@@ -11,10 +11,15 @@ class UwbmMammJsonAttributes(BaseJanitor):
     gonad: dict = field(default_factory=dict)
 
     def attribute_detail(self) -> None:
+        self.clean["sex"] = ""
+        self.clean["reproductiveCondition"] = ""
+        self.clean["unformatted_measurements"] = ""
+
         detail = self.dirty["attributedetail"]
         if not detail:
             return
         attrs = json.loads(detail)
+
         for attr in attrs:
             ear_length_count = 0
             value = attr["attribute_value"]

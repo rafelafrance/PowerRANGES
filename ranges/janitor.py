@@ -92,6 +92,8 @@ def main(args: argparse.Namespace) -> None:
     # args.output_dir.mkdir(parents=True, exist_ok=True)
     # to_csv(args)
 
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+
     for name, janitor in CSVS.items():
         if not janitor:
             continue

@@ -43,6 +43,9 @@ class DmnsRangesTraits(BaseJanitor):
             ("trait name/type4", "measurement4", "units4"),
         ]
 
+        self.clean["sex"] = ""
+        self.clean["reproductiveCondition"] = ""
+
         for trait, meas, units in columns:
             match self.dirty[trait].strip():
                 case "" | "19" | "4129":
@@ -62,7 +65,7 @@ class DmnsRangesTraits(BaseJanitor):
                 case "hind foot with claw":
                     self.hind_foot_length(meas, units, includes="claw")
                 case "reproductive data":
-                    self.copy("reproductiveCondition", "reproductive data")
+                    self.copy("reproductiveCondition", meas)
                 case "sex":
                     self.copy("sex", meas)
                 case "tarsus length":

@@ -511,3 +511,9 @@ class TestEmbryo(unittest.TestCase):
             parse("One embryo. C-R: 32 mm"),
             [Embryo(start=0, end=22, length=32, measured_from="crown", count=1)],
         )
+
+    def test_embryo_55(self) -> None:
+        self.assertEqual(
+            parse("Emb 2R 1L R=16 mm"),
+            [Embryo(start=0, count=3, right=2, left=1, length=16.0, end=17)],
+        )

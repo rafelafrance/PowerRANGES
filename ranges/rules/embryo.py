@@ -71,6 +71,8 @@ class Embryo(BaseLength):
     count: int | None = None
     right: int | None = None
     left: int | None = None
+    female: int | None = None
+    male: int | None = None
 
     def for_csv(self) -> dict[str, Any]:
         value = {}
@@ -426,7 +428,7 @@ class Embryo(BaseLength):
         new = []
 
         for side in sides:
-            side = cls.replace.get(side.text.lower(), side.text)
+            side = cls.replace.get(side.text.lower(), side.text.lower())
 
             if side.endswith("1"):
                 new.append("side1")

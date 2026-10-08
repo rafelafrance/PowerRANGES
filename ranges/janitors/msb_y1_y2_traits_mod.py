@@ -8,30 +8,11 @@ from ranges.janitors.base_janitor import BaseJanitor
 class MsbY1Y2TraitsMod(BaseJanitor):
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occurenceID")
-        self.copy("msb_id", "MSBID")
-        self.copy("catalogNumber", "catalogNumber")
         self.copy("scientificName", "scientificName")
-        self.copy("country", "countryCode")
-        self.copy("institutionCode", "institutionCode")
-        self.copy("collectionCode", "collectionCode")
-        self.copy("order", "order")
-        self.copy("family", "family")
-        self.copy("genus", "genus")
-        self.copy("specificEpithet", "specificEpithet")
-        self.copy("stateProvince", "state/province")
-        self.copy("county", "County")
-        self.copy("decimalLatitude", "decLat")
-        self.copy("decimalLongitude", "decLon")
-        self.copy("eventDate", "eventDate")
-        self.copy("day", "day")
-        self.copy("month", "month")
-        self.copy("year", "year")
-        self.copy("occurrenceRemarks", "occurrenceRemarks")
-        self.copy("dynamicProperties", "dynamicProperties")
 
         self.from_slots()
 
-        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_repro_cond("sex", "reproductive data")
         self.parse_all("unformatted_measurements")
         self.parse_all("occurrenceRemarks")
         self.parse_all("dynamicProperties")
@@ -42,11 +23,12 @@ class MsbY1Y2TraitsMod(BaseJanitor):
             for i in range(1, 16)
         ]
 
-        self.clean["sex"] = ""
-        self.clean["reproductiveCondition"] = ""
-        self.clean["unformatted_measurements"] = ""
+        self.data["sex"] = ""
+        self.data["reproductive data"] = ""
+        self.data["unformatted_measurements"] = ""
 
         for trait, meas, units in columns:
+            self.dirty[trait] = meas
             match self.dirty[trait].strip():
                 case "":
                     pass
@@ -58,7 +40,7 @@ class MsbY1Y2TraitsMod(BaseJanitor):
                     )
                     self.clean["embryo_length_measured_from"] = "crown-rump"
                 case "detected":
-                    self.clean["detected"] = self.dirty[meas]
+                    pass
                 case "ear length from notch" | "ear from notch":
                     self.clean["ear_length"] = self.to_mm(
                         self.dirty[meas], self.dirty[units]
@@ -77,7 +59,7 @@ class MsbY1Y2TraitsMod(BaseJanitor):
                 case "life stage":
                     self.clean["lifeStage"] = self.dirty[meas]
                 case "reproductive data":
-                    self.clean["reproductiveCondition"] = self.dirty[meas]
+                    pass
                 case "sex":
                     self.clean["sex"] = self.dirty[meas]
                 case "tail length":
@@ -99,7 +81,7 @@ class MsbY1Y2TraitsMod(BaseJanitor):
                         self.dirty[meas], self.dirty[units]
                     )
                 case "unformatted measurements":
-                    self.clean["unformatted_measurements"] = self.dirty[meas]
+                    pass
                 case "weight":
                     self.clean["body_mass"] = self.to_grams(
                         self.dirty[meas], self.dirty[units]

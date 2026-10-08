@@ -22,20 +22,14 @@ def uwymz_y1_mod_multi_row_cleaner(rows: list[dict], _janitor_class: Any) -> lis
         key = dirty["occurrenceID"]
         cleaned[key]["occurrenceID"] = dirty["occurrenceID"]
         cleaned[key]["scientificName"] = dirty["sciName"]
-        cleaned[key]["guid"] = dirty["guid"]
-        cleaned[key]["guid_prefix"] = dirty["guid_prefix"]
-        cleaned[key]["other_id_type"] = dirty["other_id_type"]
-        cleaned[key]["other_id_number"] = dirty["other_id_number"]
-        cleaned[key]["uuid"] = dirty["uuid"]
-        cleaned[key]["attribute_date"] = dirty["attribute_date"]
-        cleaned[key]["attribute_meth"] = dirty["attribute_meth"]
-        cleaned[key]["determiner"] = dirty["determiner"]
-        cleaned[key]["remarks"] = dirty["remarks"]
 
+        attr = dirty["attribute"]
         value = dirty["attribute_value"]
         units = dirty["attribute_units"]
 
-        match dirty["attribute"]:
+        cleaned[key][attr] = value
+
+        match attr:
             case "":
                 pass
             case "ear from notch":

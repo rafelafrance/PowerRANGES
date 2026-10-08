@@ -49,24 +49,21 @@ def fmnh_multi_row_cleaner(rows: list[dict], _janitor_class: Any) -> list[dict]:
     for dirty in rows:
         key = dirty["occurrenceID"]
         cleaned[key]["occurrenceID"] = dirty["occurrenceID"]
-        cleaned[key]["catalogNumber"] = dirty["catalogNumber"]
-
         cleaned[key]["scientificName"] = dirty["scientificName"]
 
-        cleaned[key]["country"] = dirty["countryCode"]
+        cleaned[key]["catalogNumber"] = dirty["catalogNumber"]
+        cleaned[key]["countryCode"] = dirty["countryCode"]
         cleaned[key]["institutionCode"] = dirty["institutionCode"]
-
         cleaned[key]["collectionCode"] = dirty["collectionCode"]
         cleaned[key]["order"] = dirty["order"]
         cleaned[key]["family"] = dirty["family"]
         cleaned[key]["genus"] = dirty["genus"]
         cleaned[key]["specificEpithet"] = dirty["specificEpithet"]
-        cleaned[key]["stateProvince"] = dirty["state/province"]
-        cleaned[key]["county"] = dirty["County"]
-        cleaned[key]["decimalLatitude"] = dirty["decLat"]
-        cleaned[key]["decimalLongitude"] = dirty["decLon"]
-
-        cleaned[key]["eventDate"] = dirty["eventDate"][:10].removesuffix("-")
+        cleaned[key]["state/province"] = dirty["state/province"]
+        cleaned[key]["County"] = dirty["County"]
+        cleaned[key]["decLat"] = dirty["decLat"]
+        cleaned[key]["decLon"] = dirty["decLon"]
+        cleaned[key]["eventDate"] = dirty["eventDate"]
         cleaned[key]["day"] = dirty["day"]
         cleaned[key]["month"] = dirty["month"]
         cleaned[key]["year"] = dirty["year"]

@@ -11,9 +11,9 @@ class UwbmMammJsonAttributes(BaseJanitor):
     gonad: dict = field(default_factory=dict)
 
     def attribute_detail(self) -> None:
-        self.clean["sex"] = ""
-        self.clean["reproductiveCondition"] = ""
-        self.clean["unformatted_measurements"] = ""
+        self.dirty["sex"] = ""
+        self.clean["reproductive data"] = ""
+        self.clean["unformatted measurements"] = ""
 
         detail = self.dirty["attributedetail"]
         if not detail:
@@ -24,19 +24,20 @@ class UwbmMammJsonAttributes(BaseJanitor):
             ear_length_count = 0
             value = attr["attribute_value"]
             units = attr["attribute_units"]
+            self.dirty[attr] = value
             match attr["attribute_type"]:
                 case "age":
                     self.clean["age"] = value
                 case "antler points":
-                    self.clean["antler_points"] = value
+                    pass
                 case "associated species":
-                    self.clean["associatedSpecies"] = value
+                    pass
                 case "body condition":
-                    self.clean["body_condition"] = value
+                    pass
                 case "colors":
                     self.clean["colors"] = value
                 case "detected":
-                    self.clean["detected"] = value
+                    pass
                 case "ear from crown":
                     key = "ear_length"
                     key2 = "ear_length_measured_from"
@@ -56,9 +57,9 @@ class UwbmMammJsonAttributes(BaseJanitor):
                     self.clean[key2] = "notch"
                     ear_length_count += 1
                 case "examined for":
-                    self.clean["examined_for"] = value
+                    pass
                 case "fat deposition":
-                    self.clean["fat_deposition"] = value
+                    pass
                 case "forearm length":
                     self.clean["forearm_length"] = self.to_mm(value, units)
                 case "gonad length":
@@ -79,20 +80,19 @@ class UwbmMammJsonAttributes(BaseJanitor):
                 case "life stage":
                     self.clean["lifeStage"] = value
                 case "molt condition":
-                    self.clean["molt_condition"] = value
+                    pass
                 case "not detected":
-                    self.clean["not_detected"] = value
-                    self.clean["not_detected_method"] = attr["attribute_method"]
+                    pass
                 case "numeric age":
                     self.clean["numeric_age"] = value
                 case "processing history":
-                    self.clean["processing_history"] = value
+                    pass
                 case "reproductive data":
-                    self.clean["reproductive_condition"] = value
+                    pass
                 case "sex":
                     self.clean["sex"] = value
                 case "stomach contents":
-                    self.clean["stomach_contents"] = value
+                    pass
                 case "tail length":
                     self.clean["tail_length"] = self.to_mm(value, units)
                 case "tooth length":
@@ -102,18 +102,13 @@ class UwbmMammJsonAttributes(BaseJanitor):
                 case "tragus length":
                     self.clean["tragus_length"] = self.to_mm(value, units)
                 case "unformatted measurements":
-                    self.clean["unformatted_measurements"] = value
+                    pass
                 case "verbatim agent":
-                    self.clean["verbatim_agent"] = value
-                    self.clean["verbatim_agent_method"] = attr["attribute_method"]
-                    self.clean["verbatim_agent_remark"] = attr["attribute_remark"]
+                    pass
                 case "verbatim attribute":
-                    self.clean["verbatim_attribute"] = value
+                    pass
                 case "verbatim preservation date":
-                    self.clean["verbatim_preservation_date"] = value
-                    self.clean["verbatim_preservation_date_method"] = attr[
-                        "attribute_method"
-                    ]
+                    pass
                 case "weight":
                     self.clean["body_mass"] = self.to_grams(value, units)
                 case "wing span":
@@ -144,16 +139,10 @@ class UwbmMammJsonAttributes(BaseJanitor):
 
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occurrence_id")
-        self.copy("license", "use_license_url")
-        self.copy("collectionID", "collection_object_id")
-        self.copy("catalogNumber", "catalog_number")
         self.copy("scientificName", "scientific_name")
-        self.copy("country", "country")
-        self.copy("stateProvince", "state_prov")
-        self.copy("county", "county")
 
         self.attribute_detail()
         self.gonad_adjustment()
 
-        self.parse_repro_cond("sex", "reproductiveCondition")
-        self.parse_all("unformatted_measurements")
+        self.parse_repro_cond("sex", "reproductive data")
+        self.parse_all("unformatted measurements")

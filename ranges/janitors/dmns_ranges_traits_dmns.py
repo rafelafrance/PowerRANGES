@@ -7,31 +7,11 @@ from ranges.janitors.base_janitor import BaseJanitor
 class DmnsRangesTraits(BaseJanitor):
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occurrenceID")
-        self.copy("dmnsID", "DMNSID")
-        self.copy("catalogNumber", "catalogNumber")
         self.copy("scientificName", "scientificName")
-        self.copy("countryCode", "countryCode")
-        self.copy("institutionCode", "institutionCode")
-        self.copy("collectionCode", "collectionCode")
-        self.copy("collectionCode_1", "collectionCode.1")
-        self.copy("order", "order")
-        self.copy("family", "family")
-        self.copy("genus", "genus")
-        self.copy("specificEpithet", "specificEpithet")
-        self.copy("stateProvince", "state/province")
-        self.copy("county", "County")
-        self.copy("decimalLatitude", "decLat")
-        self.copy("decimalLongitude", "decLon")
-        self.event_date("eventDate")
-        self.copy("day", "day")
-        self.copy("month", "month")
-        self.copy("year", "year")
-        self.copy("occurrenceRemarks", "occurrenceRemarks")
-        self.copy("dynamicProperties", "dynamicProperties")
 
         self.variable_traits()
 
-        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_repro_cond("sex", "reproductive data")
         self.parse_all("occurrenceRemarks")
         self.parse_all("dynamicProperties")
 
@@ -43,10 +23,11 @@ class DmnsRangesTraits(BaseJanitor):
             ("trait name/type4", "measurement4", "units4"),
         ]
 
-        self.clean["sex"] = ""
-        self.clean["reproductiveCondition"] = ""
+        self.dirty["sex"] = ""
+        self.dirty["reproductive data"] = ""
 
         for trait, meas, units in columns:
+            self.dirty[trait] = meas
             match self.dirty[trait].strip():
                 case "" | "19" | "4129":
                     pass
@@ -57,7 +38,7 @@ class DmnsRangesTraits(BaseJanitor):
                 case "calcar length":
                     self.calcar_length(meas, units)
                 case "curvilinear length":
-                    self.copy("curvilinear_length", meas)
+                    pass
                 case "ear length from notch" | "ear from notch":
                     self.ear_length(meas, units, measured_from="notch")
                 case "forearm length":
@@ -65,7 +46,7 @@ class DmnsRangesTraits(BaseJanitor):
                 case "hind foot with claw":
                     self.hind_foot_length(meas, units, includes="claw")
                 case "reproductive data":
-                    self.copy("reproductiveCondition", meas)
+                    pass
                 case "sex":
                     self.copy("sex", meas)
                 case "tarsus length":

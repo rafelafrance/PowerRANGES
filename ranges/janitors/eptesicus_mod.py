@@ -8,17 +8,10 @@ from ranges.janitors.base_janitor import BaseJanitor
 class EptesicusMod(BaseJanitor):
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occurrenceID")
-        self.copy("institutionCode", "institutionCode")
-        self.copy("collectionCode", "collectionCode")
-        self.copy("catalogNumber", "catalognumberint")
-        self.copy("guid", "GUID")
         self.copy("scientificName", "SUBSPECIES")
-        self.copy("count", "COUNTY")
-        self.copy("locality", "SPEC_LOCALITY")
-        self.copy("stateProvince", "STATE_PROV")
-        self.collector()
-        self.copy("preservedSpecimen", "PARTS")
         self.copy("sex", "sex")
+        self.copy("lifeStage", "life stage")
+
         self.total_length("total length", "unit")
         self.tail_length("tail length", "unit")
         self.hind_foot_length("hind foot with claw", "unit", includes="claw")
@@ -27,21 +20,13 @@ class EptesicusMod(BaseJanitor):
         self.tragus_length("tragus", "unit")
         self.forearm_length("forearm", "unit")
         self.body_mass("weight", "units")
-        self.copy("lifeStage", "life stage")
-        self.copy("reproductiveCondition", "reproductive data")
-        self.copy("unformatted_measurements", "unformatted measurements")
         self.testis_length("testes L", "unit")
         self.testis_width("testes W", "unit")
         self.embryo_count("emb count", "embs L", "embs R")
         self.embryo_length("emb CR", "unit", "crown-rump")
         self.placental_scar_count("scars")
-        self.copy("tag_checked", "tag checked? (or no tag available), initial here")
-        self.copy("day", "Day")
-        self.copy("month", "Month")
-        self.copy("year", "Year")
-        self.copy("review_needed", "REVIEW NEEDED")
 
-        self.parse_repro_cond("sex", "reproductiveCondition")
+        self.parse_repro_cond("sex", "reproductive data")
         self.parse_all("unformatted_measurements")
 
     def collector(self) -> None:

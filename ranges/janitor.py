@@ -89,9 +89,6 @@ CSVS = {
 def main(args: argparse.Namespace) -> None:
     log.started()
 
-    # args.output_dir.mkdir(parents=True, exist_ok=True)
-    # to_csv(args)
-
     args.output_dir.mkdir(parents=True, exist_ok=True)
 
     for name, janitor in CSVS.items():
@@ -110,6 +107,7 @@ def main(args: argparse.Namespace) -> None:
             dirty = [dict(r) for r in reader]
 
         cleaned = cleaner(dirty, janitor_class)
+        cleaned |= {k if k not in cleaned else f"old_{k}": v for k, v in dirty.items()}
 
         df = pd.DataFrame(cleaned)
         path = args.output_dir / name

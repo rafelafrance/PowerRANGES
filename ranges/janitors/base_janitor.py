@@ -287,39 +287,38 @@ class BaseJanitor:
     # Rule parsers
 
     def parse_all(self, field: str) -> None:
-        text = self.clean[field]
+        text = self.dirty[field]
         doc = PIPELINE(text)
         self.get_traits(doc)
 
     def parse_body_mass(self, field: str) -> None:
-        text = self.clean[field]
+        text = self.dirty[field]
         doc = BODY_MASS(text)
         self.get_traits(doc)
 
     def parse_embryo(self, field: str) -> None:
-        text = self.clean[field]
+        text = self.dirty[field]
         doc = EMBRYO(text)
         self.get_traits(doc)
 
     def parse_placental_scar_count(self, field: str) -> None:
-        text = self.clean[field]
+        text = self.dirty[field]
         doc = PLACENTAL(text)
         self.get_traits(doc)
 
     def parse_repro_cond(self, sex_field: str, field: str) -> None:
-        sex = self.clean[sex_field].lower()
-        text = self.clean[field]
+        sex = self.dirty[sex_field].lower()
+        text = self.dirty[field]
         if sex.startswith("f"):
             doc = FEMALE_REPRO(text)
         elif sex.startswith("m"):
             doc = MALE_REPRO(text)
         else:
             doc = PIPELINE(text)
-
         self.get_traits(doc)
 
     def parse_shorthand(self, field: str) -> None:
-        text = self.clean[field]
+        text = self.dirty[field]
         doc = LEN_SHORTHAND(text)
         traits = [e._.trait for e in doc.ents]
         shorts = {}

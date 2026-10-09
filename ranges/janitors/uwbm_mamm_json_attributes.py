@@ -10,22 +10,34 @@ class UwbmMammJsonAttributes(BaseJanitor):
     gonad_width_count: int = 0
     gonad: dict = field(default_factory=dict)
 
+    def cleaner(self) -> None:
+        self.copy("occurrenceID", "occurrence_id")
+        self.copy("scientificName", "scientific_name")
+
+        self.attribute_detail()
+        self.gonad_adjustment()
+
+        self.parse_repro_cond("sex", "reproductive data")
+        self.parse_all("unformatted measurements")
+
     def attribute_detail(self) -> None:
         self.dirty["sex"] = ""
-        self.clean["reproductive data"] = ""
-        self.clean["unformatted measurements"] = ""
+        self.dirty["reproductive data"] = ""
+        self.dirty["unformatted measurements"] = ""
 
         detail = self.dirty["attributedetail"]
         if not detail:
             return
         attrs = json.loads(detail)
 
+        ear_length_count = 0
         for attr in attrs:
-            ear_length_count = 0
+            trait = attr["attribute_type"]
             value = attr["attribute_value"]
             units = attr["attribute_units"]
-            self.dirty[attr] = value
-            match attr["attribute_type"]:
+            self.dirty[trait] = value
+
+            match trait:
                 case "age":
                     self.clean["age"] = value
                 case "antler points":
@@ -136,13 +148,3 @@ class UwbmMammJsonAttributes(BaseJanitor):
         if width2 and (male or female):
             key = "testis_width_2" if male else "ovary_width_2"
             self.clean[key] = width2
-
-    def cleaner(self) -> None:
-        self.copy("occurrenceID", "occurrence_id")
-        self.copy("scientificName", "scientific_name")
-
-        self.attribute_detail()
-        self.gonad_adjustment()
-
-        self.parse_repro_cond("sex", "reproductive data")
-        self.parse_all("unformatted measurements")

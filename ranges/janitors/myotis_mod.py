@@ -26,4 +26,4 @@ class MyotisMod(BaseJanitor):
         self.placental_scar_count("scars")
 
         self.parse_repro_cond("sex", "reproductive data")
-        self.parse_all("unformatted_measurements")
+        self.parse_all("unformatted measurements")

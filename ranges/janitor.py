@@ -107,7 +107,6 @@ def main(args: argparse.Namespace) -> None:
             dirty = [dict(r) for r in reader]
 
         cleaned = cleaner(dirty, janitor_class)
-        cleaned |= {k if k not in cleaned else f"old_{k}": v for k, v in dirty.items()}
 
         df = pd.DataFrame(cleaned)
         path = args.output_dir / name
@@ -121,6 +120,7 @@ def per_row_cleaner(dirty: list[dict], janitor_class: Any) -> list[dict]:
     for row in tqdm(dirty):
         janitor = janitor_class(dirty=row)
         janitor.cleaner()
+        janitor.clean |= {k: v for k, v in row.items() if k not in janitor.clean}
         cleaned.append(janitor.clean)
     return cleaned
 

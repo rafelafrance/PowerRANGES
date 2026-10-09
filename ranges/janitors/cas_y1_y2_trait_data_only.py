@@ -13,5 +13,5 @@ class CasY1Y2TraitDataOnly(BaseJanitor):
 
         self.parse_repro_cond("sex", "reproductive condition")
         self.parse_body_mass("weight")
-        self.parse_shorthand("lengths")
-        self.parse_all("remarks")
+        self.parse_shorthand("trait data (SL-Tail-Hind Foot-Ear)")
+        self.parse_all("other trait remarks")

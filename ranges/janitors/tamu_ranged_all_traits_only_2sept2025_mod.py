@@ -36,7 +36,6 @@ class TamuRangesAllTraitsOnly2Sept2025Mod(BaseJanitor):
         self.testis_length("Testis Length")
         self.testis_width("Testis Width")
 
-        self.parse_repro_cond("sex", "Reproductive Data")
-        self.parse_embryo("embryo_count_raw")
+        self.parse_embryo("Embryo Count")
         self.parse_all("occurrenceRemarks")
         self.parse_all("dynamicProperties")

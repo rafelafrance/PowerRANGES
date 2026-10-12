@@ -85,6 +85,36 @@ CSVS = {
     "UWYMZ_Y2_mod.csv": (UwymzY2Mod, uwymz_y2_mod_multi_row_cleaner),
 }
 
+COLUMN_ORDER = """
+    occurrenceID scientificName
+    body_mass
+    calcar_length
+    color
+    ear_length ear_length_measured_from
+    embryo_count embryo_count_left embryo_count_right
+    embryo_length embryo_length_measured_from
+    forearm_length
+    hind_foot_length hind_foot_length_includes
+    lactation_state lactation_description
+    life_stage
+    nipple_state nipple_count nipple_size nipple_description
+    ovary_description ovary_length_1 ovary_length_2 ovary_position
+        ovary_width_1 ovary_width_2
+    placental_scar_count placental_scars_left placental_scars_right
+        placental_scars_present
+    pregnancy_state
+    sex
+    tail_length
+    tarsus_length
+    testis_description testis_length_1 testis_length_2 testis_position
+        testis_width_1 testis_width_2
+    thumb_length thumb_length_includes
+    tibia_length
+    total_length
+    tragus_length
+    vagina_state
+    """.split()
+
 
 def main(args: argparse.Namespace) -> None:
     log.started()
@@ -109,6 +139,11 @@ def main(args: argparse.Namespace) -> None:
         cleaned = cleaner(dirty, janitor_class)
 
         df = pd.DataFrame(cleaned)
+
+        order = [c for c in COLUMN_ORDER if c in df.columns]
+        order += [c for c in df.columns if c not in COLUMN_ORDER and c]
+        df = df[order]
+
         path = args.output_dir / name
         df.to_csv(path, index=False)
 

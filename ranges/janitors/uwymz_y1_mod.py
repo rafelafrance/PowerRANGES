@@ -3,10 +3,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from typing import Any
 
-from ranges.janitors.base_janitor import BaseJanitor
-from ranges.pylib import pipeline
-
-PIPELINE = pipeline.build()
+from ranges.janitors.base_janitor import PIPELINE, BaseJanitor
 
 
 @dataclass

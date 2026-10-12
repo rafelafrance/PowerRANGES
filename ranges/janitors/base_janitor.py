@@ -56,12 +56,6 @@ UNITS = {
 UNITS_RE = re.compile("|".join(UNITS.keys()), flags=re.IGNORECASE)
 
 PIPELINE = pipeline.build()
-BODY_MASS = pipeline.body_wt()
-LEN_SHORTHAND = pipeline.shorthand()
-FEMALE_REPRO = pipeline.female_repro()
-MALE_REPRO = pipeline.male_repro()
-EMBRYO = pipeline.embryo()
-PLACENTAL = pipeline.placental_scar_count()
 
 
 @dataclass
@@ -192,14 +186,12 @@ class BaseJanitor:
 
     def testis_length(self, length: str, units: str = "") -> None:
         self.testis_length_count += 1
-        label = "testis_length"
-        label += f"_{self.testis_length_count}" if self.testis_length_count > 1 else ""
+        label = f"testis_length_{self.testis_length_count}"
         self.clean[label] = self.to_mm(self.dirty[length], self.dirty.get(units, ""))
 
     def testis_width(self, width: str, units: str = "") -> None:
         self.testis_width_count += 1
-        label = "testis_width"
-        label += f"_{self.testis_width_count}" if self.testis_width_count > 1 else ""
+        label = f"testis_width_{self.testis_width_count}"
         self.clean[label] = self.to_mm(self.dirty[width], self.dirty.get(units, ""))
 
     def thumb_length(self, length: str, units: str = "", includes: str = "") -> None:
@@ -292,38 +284,20 @@ class BaseJanitor:
         self.get_traits(doc)
 
     def parse_body_mass(self, field: str) -> None:
-        text = self.dirty[field]
-        doc = BODY_MASS(text)
-        self.get_traits(doc)
+        return self.parse_all(field)
 
     def parse_embryo(self, field: str) -> None:
-        text = self.dirty[field]
-        doc = EMBRYO(text)
-        self.get_traits(doc)
+        return self.parse_all(field)
 
     def parse_placental_scar_count(self, field: str) -> None:
-        text = self.dirty[field]
-        doc = PLACENTAL(text)
-        self.get_traits(doc)
+        return self.parse_all(field)
 
     def parse_repro_cond(self, sex_field: str, field: str) -> None:
-        sex = self.dirty[sex_field].lower()
-        text = self.dirty[field]
-        if sex.startswith("f"):
-            doc = FEMALE_REPRO(text)
-        elif sex.startswith("m"):
-            doc = MALE_REPRO(text)
-        else:
-            doc = PIPELINE(text)
-        self.get_traits(doc)
+        _sex = self.dirty[sex_field].lower()
+        return self.parse_all(field)
 
     def parse_shorthand(self, field: str) -> None:
-        text = self.dirty[field]
-        doc = LEN_SHORTHAND(text)
-        traits = [e._.trait for e in doc.ents]
-        shorts = {}
-        shorts = traits[0].for_csv() if traits and hasattr(traits[0], "for_csv") else {}
-        self.clean |= shorts
+        return self.parse_all(field)
 
     def get_traits(self, doc: Doc) -> None:
         traits = [e._.trait for e in doc.ents]

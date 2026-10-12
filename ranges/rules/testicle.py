@@ -82,13 +82,13 @@ class Testicle(Base):
             value["testis_position"] = self.position
 
         if self.length1 is not None:
-            value["testis_length"] = self.length1
+            value["testis_length_1"] = self.length1
 
         if self.length2 is not None:
             value["testis_length_2"] = self.length2
 
         if self.width1 is not None:
-            value["testis_width"] = self.width1
+            value["testis_width_1"] = self.width1
 
         if self.width2 is not None:
             value["testis_width_2"] = self.width2

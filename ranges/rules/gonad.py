@@ -62,13 +62,13 @@ class Gonad(Base):
             value["gonad_description"] = self.description
 
         if self.length is not None:
-            value["gonad_length"] = self.length
+            value["gonad_length_1"] = self.length
 
         if self.length2 is not None:
             value["gonad_length_2"] = self.length
 
         if self.width is not None:
-            value["gonad_width"] = self.width
+            value["gonad_width_1"] = self.width
 
         if self.width2 is not None:
             value["gonad_width_2"] = self.width2

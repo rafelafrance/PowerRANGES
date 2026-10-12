@@ -34,7 +34,9 @@ from ranges.rules.vagina_state import VaginaState
 
 
 def build() -> Language:
-    nlp = init_pipe()
+    extensions.add_extensions()
+    nlp = spacy.load("en_core_web_md", exclude=["ner"])
+    tokenizer.setup(nlp)
 
     Uuid.pipe(nlp)
     Date.pipe(nlp)
@@ -101,80 +103,4 @@ def build() -> Language:
 
     delete.pipe(nlp)
 
-    return nlp
-
-
-def init_pipe() -> Language:
-    extensions.add_extensions()
-    nlp = spacy.load("en_core_web_md", exclude=["ner"])
-    tokenizer.setup(nlp)
-    return nlp
-
-
-def female_repro() -> Language:
-    nlp = init_pipe()
-
-    Number.pipe(nlp)
-    PlacentalScarCount.pipe(nlp)
-
-    Number.pipe(nlp)
-    FemaleStateShorthand.pipe(nlp)
-
-    Number.pipe(nlp)
-    Embryo.pipe(nlp)
-
-    Number.pipe(nlp)
-    Nipple.pipe(nlp)
-
-    LactationState.pipe(nlp)
-    PregnancyState.pipe(nlp)
-
-    Number.pipe(nlp)
-    Ovary.pipe(nlp)
-
-    Number.pipe(nlp)
-    Gonad.pipe(nlp)
-
-    VaginaState.pipe(nlp)
-
-    return nlp
-
-
-def male_repro() -> Language:
-    nlp = init_pipe()
-
-    Number.pipe(nlp)
-    Testicle.pipe(nlp)
-
-    Number.pipe(nlp)
-    Gonad.pipe(nlp)
-
-    return nlp
-
-
-def shorthand() -> Language:
-    nlp = init_pipe()
-    Number.pipe(nlp)
-    LengthShorthand.pipe(nlp)
-    return nlp
-
-
-def body_wt() -> Language:
-    nlp = init_pipe()
-    Number.pipe(nlp)
-    BodyMass.pipe(nlp)
-    return nlp
-
-
-def placental_scar_count() -> Language:
-    nlp = init_pipe()
-    Number.pipe(nlp)
-    PlacentalScarCount.pipe(nlp)
-    return nlp
-
-
-def embryo() -> Language:
-    nlp = init_pipe()
-    Number.pipe(nlp)
-    Embryo.pipe(nlp)
     return nlp

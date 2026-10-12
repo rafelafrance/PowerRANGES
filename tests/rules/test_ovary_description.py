@@ -231,11 +231,12 @@ class TestOvaryState(unittest.TestCase):
     def test_ovary_description_37(self) -> None:
         self.assertEqual(
             parse("Rov 3 cl, Lov 4 cl, both ov sm-med foll;"),
-            [
-                Ovary(
-                    description="3 cl 4 cl sm-med foll",
-                    start=0,
-                    end=39,
-                )
-            ],
+            [Ovary(description="3 cl 4 cl sm-med foll", start=0, end=39)],
+        )
+
+    def test_ovary_description_38(self) -> None:
+        actual = parse("Corpura Lutea: 8")
+        self.assertEqual(
+            actual,
+            [Ovary(description="Corpura Lutea 8", start=0, end=16)],
         )

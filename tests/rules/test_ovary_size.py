@@ -125,3 +125,16 @@ class TestOvarySize(unittest.TestCase):
             parse("reproductive data=ovary 2 x 1 1/4 mm"),
             [Ovary(length1=2, width1=1.25, start=18, end=36)],
         )
+
+    def test_ovary_size_11(self) -> None:
+        self.assertEqual(
+            parse("ovary: 12.7 mm"),
+            [Ovary(length1=12.7, start=0, end=14)],
+        )
+
+    def test_ovary_size_12(self) -> None:
+        actual = parse("ovary: 12.7 mm")
+        self.assertEqual(
+            actual,
+            [Ovary(length1=12.7, start=0, end=14)],
+        )

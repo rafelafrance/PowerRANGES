@@ -1,4 +1,3 @@
-import re
 from dataclasses import dataclass
 
 from ranges.janitors.base_janitor import BaseJanitor
@@ -28,8 +27,3 @@ class EptesicusMod(BaseJanitor):
 
         self.parse_repro_cond("sex", "reproductive data")
         self.parse_all("unformatted measurements")
-
-    def collector(self) -> None:
-        words = self.dirty["COLLECTOR_NUMBER"].split()
-        self.clean["recordedBy"] = " ".join(w for w in words if not re.search(r"\d", w))
-        self.clean["recordNumber"] = " ".join(w for w in words if re.search(r"\d", w))

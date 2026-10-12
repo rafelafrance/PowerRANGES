@@ -26,7 +26,7 @@ class LactationState(Base):
 
     def for_csv(self) -> dict[str, Any]:
         return {
-            "lactation": self.lactation,
+            "lactation_state": self.lactation,
             "lactation_description": self.description,
         }
 

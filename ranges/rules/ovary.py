@@ -112,13 +112,13 @@ class Ovary(Base):
             value["ovary_description"] = self.description
 
         if self.length1 is not None:
-            value["ovary_length"] = self.length1
+            value["ovary_length_1"] = self.length1
 
         if self.length2 is not None:
             value["ovary_length_2"] = self.length2
 
         if self.width1 is not None:
-            value["ovary_width"] = self.width1
+            value["ovary_width_1"] = self.width1
 
         if self.width2 is not None:
             value["ovary_width_2"] = self.width2
@@ -163,7 +163,7 @@ class Ovary(Base):
             overwrite=["number"],
         )
 
-        # add.debug_tokens(nlp)  # ###########################################
+        # add.debug_tokens(nlp)  # ##########################################
 
         add.cleanup_pipe(nlp, name="ovary_cleanup")
 
@@ -196,7 +196,7 @@ class Ovary(Base):
                     " 9? non descriptors ",
                     " [+] descriptors ",
                     " [+] descriptors , and? non? descriptors ",
-                    " [+] descriptors word? word? fat  ",
+                    " [+] descriptors word? word? fat ",
                 ],
             ),
         ]
@@ -217,6 +217,7 @@ class Ovary(Base):
                     " side+ , adp , ovaries        , descr ",
                     " side+ linker  ovaries linker , descr ",
                     " side_ovary descr , side_ovary descr , side* ovaries descr ",
+                    " descr ,? 9 ",
                 ],
             ),
         ]
@@ -258,11 +259,13 @@ class Ovary(Base):
 
     @classmethod
     def ovary_grouper_match(cls, ent: Span) -> "Ovary":
-        return cls.from_ent(ent)
+        trait = cls.from_ent(ent)
+        return trait
 
     @classmethod
     def ovary_description_match(cls, ent: Span) -> "Ovary":
-        return cls.from_ent(ent)
+        trait = cls.from_ent(ent, description=ent.text)
+        return trait
 
     @classmethod
     def in_millimeters(cls, number: Span, units: Span | str | None) -> float:
@@ -283,7 +286,9 @@ class Ovary(Base):
         data = {}
 
         descr = [
-            e.text for e in ent.ents if e.label_ in ("right", "left", "description")
+            e.text
+            for e in ent.ents
+            if e.label_ in ("right", "left", "description", "number")
         ]
         if descr:
             data["description"] = " ".join(descr)

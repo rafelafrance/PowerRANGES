@@ -13,11 +13,13 @@ from spacy.language import Language
 from spacy.tokens import Span
 from spacy.util import registry
 from traiter.pipes import add
+from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
 from traiter.pylib import term_util
 from traiter.pylib.pattern_compiler import Compiler
 from traiter.rules import terms as t_terms
 
+from ranges.pylib.flags import e_is_embryo, remove_embryo_flag
 from ranges.rules.base_length import DOT, SEP, BaseLength, DictFunc
 
 DECODER = {
@@ -31,7 +33,9 @@ DECODER = {
     ":": {"TEXT": {"IN": SEP}, "OP": "{,2}"},
     "=": {"TEXT": {"IN": t_const.EQ}},
     "[+]": {"TEXT": {"IN": t_const.PLUS}},
+    "ambig": {"ENT_TYPE": "ambiguous_key"},
     "emb_key": {"ENT_TYPE": "embryo_key"},
+    "flag": {"ENT_TYPE": "flags"},
     "key": {"ENT_TYPE": {"IN": ["len_key", "embryo_key"]}},
     "len_key": {"ENT_TYPE": "len_key"},
     "mm": {"ENT_TYPE": {"IN": ["metric_length", "imperial_length"]}},
@@ -103,8 +107,8 @@ class Embryo(BaseLength):
         cls.embryo_side_pipe(nlp)
         cls.embryo_mix_2_3_pipe(nlp)
         cls.embryo_mix_1_2_pipe(nlp)
-        # add.debug_tokens(nlp)  # ###########################################
         cls.embryo_mix_3_pipe(nlp)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.embryo_mix_2_pipe(nlp)
         cls.embryo_mix_1_pipe(nlp)
         cls.embryo_mix_0_pipe(nlp)
@@ -112,6 +116,7 @@ class Embryo(BaseLength):
         cls.length_pipe(nlp, label=cls.name)
         cls.embryo_count_pipe(nlp)
         cls.embryo_present_pipe(nlp)
+        # add.debug_tokens(nlp)  # ###########################################
         cls.cleanup_pipe(nlp)
 
     @classmethod
@@ -256,6 +261,21 @@ class Embryo(BaseLength):
                 on_match="embryo_count_match",
                 decoder=DECODER,
                 patterns=[
+                    "   ambig  : ( 9 ( side ) flag ",
+                    "   ambig  : ( 9 ( side ) , 9 ( side ) flag ",
+                    "   ambig  : ( 9 ( side ) , 9 ( side ) flag ",
+                    "   ambig  : ( 9 ( side ) , 9 ( side ) : 9 flag ",
+                    "   ambig  : 9  flag ",
+                    "   ambig  : 9 ( side ) x 9 ( side ) flag ",
+                    "   ambig  : 9 [+] 9 = 9 flag ",
+                    "   ambig  : 9 key* , ( 9 ( side ) , 9 ( side ) flag ",
+                    " 9 present+ ambig flag ",
+                    " 9 word ambig  flag ",
+                    " 9 word ambig  , ( side ) , 9 ( side ) flag ",
+                    " 9 word ambig  : ( 9 ( side ) , word 9 ( side ) flag ",
+                    " 9 word ambig  word ( side ) word , 9 word ( side ) flag ",
+                    " 9 ambig  ( side =? 9 , side =? 9 flag ",
+                    "   ambig  : 9 side 9 side =? 9 flag ",
                     "              ( 9 ( side ) , 9 ( side ) : key+ ",
                     "   emb_key+ : ( 9 ( side ) ",
                     "   emb_key+ : ( 9 ( side ) , 9 ( side ) ",
@@ -285,6 +305,10 @@ class Embryo(BaseLength):
                 on_match="embryo_present_match",
                 decoder=DECODER,
                 patterns=[
+                    "           present word ambig flag ",
+                    "ambig :         ( side ) flag ",
+                    "ambig : present flag ",
+                    "ambig : present ( side ) flag ",
                     "           present word emb_key+ ",
                     "emb_key+ :         ( side ) ",
                     "emb_key+ : present ",
@@ -301,6 +325,10 @@ class Embryo(BaseLength):
                 on_match="embryo_mix_0_match",
                 decoder=DECODER,
                 patterns=[
+                    " 9 mm+ , ambig , 9 ( side ) flag ",
+                    " 9 mm+ , ambig , 9 ( side ) , 9 ( side ) flag ",
+                    " 9 mm+ , ambig , 9 flag ",
+                    " ambig word side , 9 mm+ len_key flag ",
                     " 9 mm+ , key+ , 9 ( side ) ",
                     " 9 mm+ , key+ , 9 ( side ) , 9 ( side ) ",
                     " 9 mm+ , key+ , 9",
@@ -317,6 +345,22 @@ class Embryo(BaseLength):
                 on_match="embryo_mix_1_match",
                 decoder=DECODER,
                 patterns=[
+                    "      9 ambig ( side ) word , 9 mm* , 9 key+ ( side ) flag ",
+                    "      9 ambig word , 9 mm+ flag ",
+                    "      9 ambig word , 9 mm+ , ( 9 ( side ) , 9 ( side ) flag ",
+                    " ( side ) word 9 : ambig , 9 mm* flag ",
+                    " ( side ) word 9 : ambig , 9 mm* , ( side ) word 9 flag ",
+                    " ( side ) word 9 : ambig x , 9 mm* flag ",
+                    " ( side ) word 9 : ambig x , 9 mm* , ( side ) word 9 flag ",
+                    " 9 9 mm+ ambig flag ",
+                    " 9 9 mm+ ambig , 9 ( side ) , 9 ( side ) flag ",
+                    " ambig ( side ) word , 9 , word ( side ) , key* 9 mm+ ) flag ",
+                    " ambig , 9 , ( side ) ( len_key+ , 9 mm* ) , 9 ( side ) flag ",
+                    " ambig , 9 , len_key+ , 9 mm* flag ",
+                    " ambig , 9 , len_key+ , 9 mm* , 9 ( side ) x 9 ( side ) flag ",
+                    " ambig 9 x 9 ( side ) , 9 , ( side ) 9 ) flag ",
+                    " ambig 9 x 9 ( side ) , 9 , word ( side ) flag ",
+                    " 9 ambig . len_key+ , 9 mm+ flag ",
                     "      9 key+ ( side ) word , 9 mm* , 9 key+ ( side ) ",
                     "      9 key+ word , 9 mm+ ",
                     "      9 key+ word , 9 mm+ , ( 9 ( side ) , 9 ( side ) ",
@@ -345,6 +389,13 @@ class Embryo(BaseLength):
                 on_match="embryo_mix_1_2_match",
                 decoder=DECODER,
                 patterns=[
+                    "      9 ambig word , 9 x 9 mm+ flag ",
+                    " side 9 ambig word , 9 x 9 mm* , side 9 key+ flag ",
+                    "      9 ambig side word , 9 x 9 mm* , key* 9 side flag ",
+                    "      9 ambig side word , 9 x 9 mm* , key* side 9 flag ",
+                    "      9 ambig side word , 9 x 9 mm* , 9 key* side flag ",
+                    "      9 ambig side word , 9 x 9 mm* flag ",
+                    "      9 ambig word      , 9 x 9 mm+ , ( 9 side , 9 side ) flag ",
                     "      9 key+ word , 9 x 9 mm+ ",
                     " side 9 key+ word , 9 x 9 mm* , side 9 key+ ",
                     "      9 key+ side word , 9 x 9 mm* , key* 9 side ",
@@ -364,6 +415,13 @@ class Embryo(BaseLength):
                 on_match="embryo_mix_2_match",
                 decoder=DECODER,
                 patterns=[
+                    " 9 ambig : ( side word , 9 , word side ,     9 mm+ ) flag ",
+                    " 9      :   side word , 9 , word side ,     9 mm+   , ambig flag ",
+                    "            side word , 9 , side word , 9 : 9 mm*   , ambig flag ",
+                    "ambig : ( side word , 9 , side word , 9 , key* 9 mm+ ) flag ",
+                    " ambig : ( side ) word , 9 , ( side ) word , 9 , key* 9 mm+ flag ",
+                    " ambig : ( 9   side   word , 9 , word   side ,   : 9 mm+ ) flag ",
+                    " ambig :   9 ( side ) word , 9 , word ( side ) , : 9 mm+ flag ",
                     " 9 key+ : ( side word , 9 , word side ,     9 mm+ ) ",
                     " 9      :   side word , 9 , word side ,     9 mm+   , key+ ",
                     "            side word , 9 , side word , 9 : 9 mm*   , key+ ",
@@ -384,6 +442,9 @@ class Embryo(BaseLength):
                 on_match="embryo_mix_2_3_match",
                 decoder=DECODER,
                 patterns=[
+                    " 9 ambig          word , 9 word ( side ) , 9 x 9 mm* flag ",
+                    " 9 ambig ( side ) word , 9 word ( side ) , 9 x 9 mm* flag ",
+                    " 9 ambig ( side ) word , ( 9 word )      , 9 x 9 mm* flag ",
                     " 9 key+          word , 9 word ( side ) , 9 x 9 mm* ",
                     " 9 key+ ( side ) word , 9 word ( side ) , 9 x 9 mm* ",
                     " 9 key+ ( side ) word , ( 9 word )      , 9 x 9 mm* ",
@@ -399,6 +460,15 @@ class Embryo(BaseLength):
                 on_match="embryo_mix_3_match",
                 decoder=DECODER,
                 patterns=[
+                    " 9 ambig : ( 9 side word , 9 , word side , : 9 mm* ) flag ",
+                    " 9 ambig : 9 ( side ) word , 9 , word ( side ) , : 9 mm* flag ",
+                    " 9 : 9 ( side ) word , 9 , word ( side ) , : 9 mm* , ambig flag ",
+                    "ambig : ( 9 side  word , 9 , side word , 9 , : key* 9 mm* ) flag ",
+                    (
+                        "ambig : 9 ( side ) word , 9 , ( side ) word , 9 , : "
+                        "key* 9 mm* flag "
+                    ),
+                    " 9 ambig . 9 side . 9 side . key . 9 mm+ flag ",
                     " 9 key+ : ( 9   side   word , 9 , word   side ,   : 9 mm* ) ",
                     " 9 key+ :   9 ( side ) word , 9 , word ( side ) , : 9 mm* ",
                     " 9      :   9 ( side ) word , 9 , word ( side ) , : 9 mm* , key+ ",
@@ -418,9 +488,17 @@ class Embryo(BaseLength):
                 decoder=DECODER,
                 patterns=[
                     "key+ : 9 xx 9 mm* ",
+                    "ambig : 9 xx 9 mm* flag ",
                 ],
             ),
         ]
+
+    @classmethod
+    def get_ambiguous(cls, ent: Span) -> tuple[bool | None, str]:
+        ambiguous = any(e for e in ent.ents if e.label_ == "ambiguous_key")
+        if ambiguous and not e_is_embryo(ent.text):
+            raise RejectMatch
+        return ambiguous or None
 
     @classmethod
     def get_sides(cls, ent: Span, counts: list[int]) -> list[str]:
@@ -490,25 +568,31 @@ class Embryo(BaseLength):
 
     @classmethod
     def embryo_count_match(cls, ent: Span) -> "Embryo":
+        ambiguous = cls.get_ambiguous(ent)
         counts = [e for e in ent.ents if e.label_ == "number"]
         counts = cls.get_counts(counts)
 
         sides = cls.get_sides(ent, counts)
 
-        data = {"count": sum(counts)}
+        data = {"count": sum(counts), "ambiguous": ambiguous}
+        data["_text"], data["end"] = remove_embryo_flag(ent, ambiguous=ambiguous)
+
         cls.add_sides(data, counts, sides)
 
         return cls.from_ent(ent, **data)
 
     @classmethod
     def embryo_present_match(cls, ent: Span) -> "Embryo":
+        ambiguous = cls.get_ambiguous(ent)
+
         side_ents = [e for e in ent.ents if e.label_ == "side"]
         side = [cls.side.get(s.text.lower(), "") for s in side_ents]
 
         count = 1 if any(e.label_ == "yes" for e in ent.ents) or side else 0
         count = 1 if side else count
 
-        data = {"count": count}
+        data = {"count": count, "ambiguous": ambiguous}
+        data["_text"], data["end"] = remove_embryo_flag(ent, ambiguous=ambiguous)
 
         if side:
             data[side[0]] = count
@@ -519,6 +603,8 @@ class Embryo(BaseLength):
     def embryo_mix_match(
         cls, ent: Span, length_idx: int, width_idx: int | None = None
     ) -> "Embryo":
+        ambiguous = cls.get_ambiguous(ent)
+
         counts = [e for e in ent.ents if e.label_ == "number"]
 
         length = counts.pop(length_idx)
@@ -543,7 +629,9 @@ class Embryo(BaseLength):
             "length": length,
             "width": width,
             "measured_from": meas_from,
+            "ambiguous": ambiguous,
         }
+        data["_text"], data["end"] = remove_embryo_flag(ent, ambiguous=ambiguous)
 
         cls.add_sides(data, counts, sides)
 
@@ -551,6 +639,8 @@ class Embryo(BaseLength):
 
     @classmethod
     def embryo_width_match(cls, ent: Span) -> "Embryo":
+        ambiguous = cls.get_ambiguous(ent)
+
         length, width = (e for e in ent.ents if e.label_ == "number")
 
         meas_from = "crown" if any(e.label_ == "len_key" for e in ent.ents) else None
@@ -566,7 +656,9 @@ class Embryo(BaseLength):
             "width": width,
             "units_inferred": units_inferred,
             "measured_from": meas_from,
+            "ambiguous": ambiguous,
         }
+        data["_text"], data["end"] = remove_embryo_flag(ent, ambiguous=ambiguous)
 
         return cls.from_ent(ent, **data)
 

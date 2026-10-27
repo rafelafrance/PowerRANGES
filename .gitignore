@@ -45,3 +45,7 @@ scratch/
 pilot/
 old/
 experiments/
+
+# Notebooks
+notebooks/
+__marimo__/

@@ -321,3 +321,35 @@ class TestLengthShorthand(unittest.TestCase):
                 )
             ],
         )
+
+    def test_length_shorthand_20(self) -> None:
+        """It handles extra spaces."""
+        self.assertEqual(
+            parse("116  -41  -14  -"),
+            [
+                LengthShorthand(
+                    total_length=116,
+                    tail_length=41,
+                    hind_foot_length=14,
+                    start=0,
+                    end=11,
+                )
+            ],
+        )
+
+    def test_length_shorthand_21(self) -> None:
+        """It handles ear length with a measured from flag."""
+        self.assertEqual(
+            parse("160-73-18-20N-16C"),
+            [
+                LengthShorthand(
+                    total_length=160,
+                    tail_length=73,
+                    hind_foot_length=18,
+                    ear_length_from_notch=20,
+                    ear_length_from_crown=16,
+                    start=0,
+                    end=17,
+                )
+            ],
+        )

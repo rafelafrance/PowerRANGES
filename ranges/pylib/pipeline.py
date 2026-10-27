@@ -31,6 +31,7 @@ from ranges.rules.thumb_length import ThumbLength
 from ranges.rules.total_length import TotalLength
 from ranges.rules.tragus_length import TragusLength
 from ranges.rules.vagina_state import VaginaState
+from ranges.rules.wingspan import Wingspan
 
 
 def build() -> Language:
@@ -69,6 +70,9 @@ def build() -> Language:
 
     Number.pipe(nlp)
     TragusLength.pipe(nlp)
+
+    Number.pipe(nlp)
+    Wingspan.pipe(nlp)
 
     Number.pipe(nlp)
     HindFootLength.pipe(nlp)

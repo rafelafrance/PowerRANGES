@@ -1,5 +1,6 @@
 import unittest
 
+from ranges.pylib.flags import EMBRYO
 from ranges.rules.ear_length import EarLength
 from tests.setup import parse
 
@@ -15,27 +16,14 @@ class TestEarLength(unittest.TestCase):
         """It parses an ear length given as a fraction."""
         self.assertEqual(
             parse('ear 9/16"'),
-            [
-                EarLength(
-                    length=14.29,
-                    start=0,
-                    end=9,
-                )
-            ],
+            [EarLength(length=14.29, start=0, end=9)],
         )
 
     def test_ear_length_03(self) -> None:
         """It handles a really short ear key."""
         self.assertEqual(
             parse('E 1",'),
-            [
-                EarLength(
-                    length=25.4,
-                    ambiguous=True,
-                    start=0,
-                    end=4,
-                )
-            ],
+            [EarLength(length=25.4, ambiguous=True, start=0, end=4)],
         )
 
     def test_ear_length_04(self) -> None:
@@ -50,28 +38,14 @@ class TestEarLength(unittest.TestCase):
         """It gets a measured from notch notation."""
         self.assertEqual(
             parse("ear from notch=17 mm;"),
-            [
-                EarLength(
-                    length=17,
-                    measured_from="notch",
-                    start=0,
-                    end=20,
-                )
-            ],
+            [EarLength(length=17, measured_from="notch", start=0, end=20)],
         )
 
     def test_ear_length_07(self) -> None:
         """It gets a measured from crown notation."""
         self.assertEqual(
             parse("earfromcrown=17mm;"),
-            [
-                EarLength(
-                    length=17,
-                    measured_from="crown",
-                    start=0,
-                    end=17,
-                )
-            ],
+            [EarLength(length=17, measured_from="crown", start=0, end=17)],
         )
 
     def test_ear_length_08(self) -> None:
@@ -87,4 +61,11 @@ class TestEarLength(unittest.TestCase):
         self.assertEqual(
             parse(";E=6;"),
             [EarLength(length=6, start=1, end=4, ambiguous=True, units_inferred=True)],
+        )
+
+    def test_ear_length_11(self) -> None:
+        """It does not interpret an embryo abbreviation for an ear abbreviation."""
+        self.assertEqual(
+            parse('E 1",' + EMBRYO),
+            [],
         )

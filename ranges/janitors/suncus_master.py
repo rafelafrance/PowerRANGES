@@ -23,5 +23,5 @@ class SuncusMaster(BaseJanitor):
         self.embryo_length("emb CR", "unit", "crown-rump")
         self.placental_scar_count("scars")
 
-        self.parse_repro_cond("sex", "repro comments")
-        self.parse_all("remarks (data discrepancy, need to revisit specimen, etc.)")
+        self.parse("repro comments")
+        self.parse("remarks (data discrepancy, need to revisit specimen, etc.)")

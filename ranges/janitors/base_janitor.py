@@ -1,10 +1,9 @@
 import re
 from dataclasses import dataclass, field
-from typing import Any
-
-from spacy.tokens import Doc
+from typing import Any, ClassVar
 
 from ranges.pylib import pipeline
+from ranges.pylib.flags import NONE
 
 INT = re.compile(r"\d+")
 FLOAT = re.compile(r" \d+ (?: \.\d* )? | \.\d+", flags=re.VERBOSE)
@@ -60,6 +59,11 @@ PIPELINE = pipeline.build()
 
 @dataclass
 class BaseJanitor:
+    # ------------------ Class Vars --------------------------------------------------
+    parsed_fields: ClassVar[set[str]] = field(default_factory=set)
+    used_fields: ClassVar[set[str]] = field(default_factory=set)
+    # --------------------------------------------------------------------------------
+
     dirty: dict[str, Any] = field(default_factory=dict)
     clean: dict[str, Any] = field(default_factory=dict)
     ear_length_count: int = 0  # Can have multiple measurements
@@ -276,30 +280,11 @@ class BaseJanitor:
         return f"{flt:0.{decimals}f}" if flt is not None else ""
 
     # --------------------------------------------------------------------------------
-    # Rule parsers
+    # Rule parser
 
-    def parse_all(self, field: str) -> None:
+    def parse(self, field: str, flag: str = NONE) -> None:
         text = self.dirty[field]
-        doc = PIPELINE(text)
-        self.get_traits(doc)
-
-    def parse_body_mass(self, field: str) -> None:
-        return self.parse_all(field)
-
-    def parse_embryo(self, field: str) -> None:
-        return self.parse_all(field)
-
-    def parse_placental_scar_count(self, field: str) -> None:
-        return self.parse_all(field)
-
-    def parse_repro_cond(self, sex_field: str, field: str) -> None:
-        _sex = self.dirty[sex_field].lower()
-        return self.parse_all(field)
-
-    def parse_shorthand(self, field: str) -> None:
-        return self.parse_all(field)
-
-    def get_traits(self, doc: Doc) -> None:
+        doc = PIPELINE(text + flag)
         traits = [e._.trait for e in doc.ents]
         all_ = {}
         for trait in traits:

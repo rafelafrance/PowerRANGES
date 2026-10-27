@@ -22,6 +22,6 @@ class MyosorexVariusMod(BaseJanitor):
         self.embryo_count("emb count", "embs L", "embs R")
         self.placental_scar_count("scars")
 
-        self.parse_repro_cond("sex", "repro comments")
-        self.parse_all("remarks (data discrepancy, need to revisit specimen, etc.)")
-        self.parse_all("Unnamed: 32")
+        self.parse("repro comments")
+        self.parse("remarks (data discrepancy, need to revisit specimen, etc.)")
+        self.parse("Unnamed: 32")

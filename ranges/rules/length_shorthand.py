@@ -80,6 +80,10 @@ class LengthShorthand(Base):
 
     ear_length: float | None = None
     ear_length_estimated: bool | None = None
+    ear_length_from_crown: float = None
+    ear_length_from_crown_estimated: bool | None = None
+    ear_length_from_notch: float = None
+    ear_length_from_notch_estimated: bool | None = None
 
     body_mass: float | None = None
     body_mass_estimated: bool | None = None
@@ -102,8 +106,20 @@ class LengthShorthand(Base):
         if self.hind_foot_length is not None:
             value["hind_foot_length"] = self.hind_foot_length
 
+        ear_count = 1
         if self.ear_length is not None:
             value["ear_length"] = self.ear_length
+            ear_count += 1
+        if self.ear_length_from_crown is not None:
+            idx = f"_{ear_count}" if ear_count > 1 else ""
+            value[f"ear_length{idx}"] = self.ear_length_from_crown
+            value[f"ear_length{idx}_measured_from"] = "crown"
+            ear_count += 1
+        if self.ear_length_from_notch is not None:
+            idx = f"_{ear_count}" if ear_count > 1 else ""
+            value[f"ear_length{idx}"] = self.ear_length_from_crown
+            value[f"ear_length{idx}_measured_from"] = "notch"
+            ear_count += 1
 
         if self.body_mass is not None:
             value["body_mass"] = self.body_mass
@@ -204,7 +220,7 @@ class LengthShorthand(Base):
             "[": {"TEXT": "["},
             "]": {"TEXT": "]"},
             "g": {"ENT_TYPE": "metric_mass"},
-            "fa": {"LOWER": {"REGEX": r"^(fa|tr)$"}},
+            "fa": {"LOWER": {"REGEX": r"^(fa|tr|n|c)$"}},
         }
 
         return [
@@ -324,6 +340,16 @@ class LengthShorthand(Base):
                 length, estimated = cls.get_values(cell)
                 kwargs["tragus_length"] = length
                 kwargs["tragus_length_estimated"] = estimated
+
+            elif cell.find("c") > -1:
+                length, estimated = cls.get_values(cell)
+                kwargs["ear_length_from_crown"] = length
+                kwargs["ear_length_from_crown_estimated"] = estimated
+
+            elif cell.find("n") > -1:
+                length, _estimated = cls.get_values(cell)
+                kwargs["ear_length_from_notch"] = length
+                kwargs["ear_length_from_notch_estimated"] = estimated
 
             # Body mass is always last but it may be missing
             elif i >= full and i == len(cells) - 1:

@@ -24,5 +24,5 @@ class UmmzRangesY2FinalMod(BaseJanitor):
         self.embryo_count("embryoCount")
         self.thumb_length("thumbLengthWithClaw", "lengthUnits", "claw")
 
-        self.parse_repro_cond("sex", "reproductiveData")
-        self.parse_all("addl_comments")
+        self.parse("reproductiveData")
+        self.parse("addl_comments")

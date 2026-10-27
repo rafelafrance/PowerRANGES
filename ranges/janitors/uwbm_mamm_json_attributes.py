@@ -17,8 +17,8 @@ class UwbmMammJsonAttributes(BaseJanitor):
         self.attribute_detail()
         self.gonad_adjustment()
 
-        self.parse_repro_cond("sex", "reproductive data")
-        self.parse_all("unformatted measurements")
+        self.parse("reproductive data")
+        self.parse("unformatted measurements")
 
     def attribute_detail(self) -> None:
         self.dirty["sex"] = ""

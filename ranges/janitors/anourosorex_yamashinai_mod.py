@@ -20,5 +20,6 @@ class AnourosorexYamashinaiMod(BaseJanitor):
         self.embryo_count("emb count", "embs L", "embs R")
         self.embryo_length("emb CR", "unit", "crown-rump")
         self.placental_scar_count("scars")
+        self.event_date("date")
 
-        self.parse_repro_cond("sex", "repro comments")
+        self.parse("repro comments")

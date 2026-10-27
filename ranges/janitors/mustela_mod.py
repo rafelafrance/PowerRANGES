@@ -22,5 +22,5 @@ class MustelaMod(BaseJanitor):
         self.embryo_length("crown_rump_length", "length_units", "crown-rump")
         self.placental_scar_count("scars")
 
-        self.parse_all("reproductive_data")
-        self.parse_all("unformatted_measurements")
+        self.parse("reproductive_data")
+        self.parse("unformatted_measurements")

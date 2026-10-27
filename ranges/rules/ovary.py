@@ -89,7 +89,7 @@ class Ovary(Base):
         "ovary": {"ENT_TYPE": "ovary", "OP": "+"},
         "side": {"ENT_TYPE": {"IN": sides}},
         "side_ovary": {"ENT_TYPE": {"IN": side_ovary}, "OP": "+"},
-        "uterus": {"ENT_TYPE": "uterus", "OP": "+"},
+        # "uterus": {"ENT_TYPE": "uterus", "OP": "+"},
         "word": {"LOWER": {"REGEX": r"^[a-z]\w*$"}},
         "x": {"LOWER": {"IN": t_const.CROSS}},
     }
@@ -177,7 +177,7 @@ class Ovary(Base):
                 decoder=cls.decoder,
                 patterns=[
                     " ovary ",
-                    " ovary and? uterus horn? ",
+                    # " ovary and? uterus horn? ",
                     " ovary and? fallopian ",
                 ],
             ),

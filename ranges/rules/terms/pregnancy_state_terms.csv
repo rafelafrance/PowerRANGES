@@ -8,6 +8,9 @@ none,no evidence
 none,no evidence of
 none,not evident
 none,not visibly
+not_pregnant,non parous
+not_pregnant,non-parous
+not_pregnant,nulliparous
 not_pregnant,post parous
 not_pregnant,post-parous
 not_pregnant,postparous
@@ -16,7 +19,6 @@ post,post
 post,post-
 pregnant,gravid
 pregnant,multiparous
-pregnant,nulliparous
 pregnant,parous
 pregnant,preg
 pregnant,pregaant

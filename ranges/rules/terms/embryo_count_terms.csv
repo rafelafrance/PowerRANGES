@@ -48,6 +48,10 @@ side,rt. side,right
 side,rt.,right
 side,rx,right
 side,rx.,right
+ambiguous_key,e,
+ambiguous_key,e.,
+embryo_key,em,
+embryo_key,em.,
 embryo_key,emb,
 embryo_key,emb.,
 embryo_key,embr,
@@ -65,6 +69,8 @@ embryo_key,embs.,
 embryo_key,embyo,
 embryo_key,embyro,
 embryo_key,embyros,
+embryo_key,ems,
+embryo_key,ems.,
 embryo_key,emsac,
 embryo_key,fetus,
 embryo_key,fetuses,
@@ -79,3 +85,4 @@ yes,near-term,
 yes,nearterm,
 len_key,emb
 len_key,embsx,
+flags,eemmbbrryyoo,

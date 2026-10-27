@@ -16,6 +16,6 @@ class CsulbSciuridaeTraits(BaseJanitor):
         self.hind_foot_length("ear_length", "length_units")
         self.body_mass("weight", "weight_units")
 
-        self.parse_repro_cond("sex", "repro")
-        self.parse_all("occurrenceRemarks")
-        self.parse_all("dynamicProperties")
+        self.parse("repro")
+        self.parse("occurrenceRemarks")
+        self.parse("dynamicProperties")

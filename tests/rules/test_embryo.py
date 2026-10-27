@@ -1,5 +1,6 @@
 import unittest
 
+from ranges.pylib.flags import EMBRYO
 from ranges.rules.embryo import Embryo
 from ranges.rules.lactation_state import LactationState
 from ranges.rules.pregnancy_state import PregnancyState
@@ -516,4 +517,26 @@ class TestEmbryo(unittest.TestCase):
         self.assertEqual(
             parse("Emb 2R 1L R=16 mm"),
             [Embryo(start=0, count=3, right=2, left=1, length=16.0, end=17)],
+        )
+
+    def test_embryo_56(self) -> None:
+        self.assertEqual(
+            parse("E 2R 1L 16 mm" + EMBRYO),
+            [
+                Embryo(
+                    start=0,
+                    count=3,
+                    right=2,
+                    left=1,
+                    length=16.0,
+                    end=13,
+                    ambiguous=True,
+                )
+            ],
+        )
+
+    def test_embryo_57(self) -> None:
+        self.assertEqual(
+            parse("E 2R 1L"),
+            [],
         )

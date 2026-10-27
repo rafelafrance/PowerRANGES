@@ -6,9 +6,11 @@ from typing import Any, ClassVar
 from spacy.language import Language
 from spacy.tokens import Span
 from traiter.pipes import add
+from traiter.pipes.reject_match import RejectMatch
 from traiter.pylib import const as t_const
 from traiter.pylib.pattern_compiler import Compiler
 
+from ranges.pylib.flags import e_is_embryo
 from ranges.rules.base import Base
 
 
@@ -40,6 +42,7 @@ DECODER = {
     "bad": {"LOWER": {"IN": BAD}},
     "bad_prefix": {"ENT_TYPE": "bad_prefix", "OP": "+"},
     "bad_suffix": {"ENT_TYPE": "bad_suffix", "OP": "+"},
+    "flag": {"ENT_TYPE": "flags", "OP": "*"},
     "ft": {"ENT_TYPE": "imperial_length", "OP": "+"},
     "in": {"ENT_TYPE": {"IN": ["imperial_length", "imperial_inches"]}, "OP": "+"},
     "key": {"ENT_TYPE": {"IN": ["len_key", "key_with_units"]}, "OP": "+"},
@@ -105,7 +108,7 @@ class BaseLength(Base):
             nlp,
             name=f"{cls.name}_length_patterns",
             compiler=cls.length_patterns(allow_no_key=allow_no_key, label=label),
-            overwrite=["metric_length", "imperial_length", "number"],
+            overwrite=["metric_length", "imperial_length", "number", "flag"],
         )
 
     @classmethod
@@ -114,7 +117,7 @@ class BaseLength(Base):
             nlp,
             name=f"{cls.name}_length_compound_patterns",
             compiler=cls.compound_length_patterns(allow_no_key=allow_no_key),
-            overwrite=["imperial_length", "number"],
+            overwrite=["imperial_length", "number", "flag"],
         )
 
     @classmethod
@@ -123,7 +126,7 @@ class BaseLength(Base):
             nlp,
             name=f"{cls.name}_range_patterns",
             compiler=cls.range_length_patterns(allow_no_key=allow_no_key),
-            overwrite=["metric_length", "imperial_length", "number"],
+            overwrite=["metric_length", "imperial_length", "number", "flag"],
         )
 
     @classmethod
@@ -132,7 +135,7 @@ class BaseLength(Base):
             nlp,
             name=f"{cls.name}_bad_length_patterns",
             compiler=cls.bad_length_patterns(),
-            overwrite=["metric_length", "imperial_length", "number"],
+            overwrite=["metric_length", "imperial_length", "number", "flag"],
         )
 
     @classmethod
@@ -160,10 +163,10 @@ class BaseLength(Base):
         label = label or f"{cls.name}_length"
         patterns = [
             ' key             "? : "? [ 99 ] mm* ] ',
-            '      ambig :    "? : "? [ 99 ] mm+ ] ',
-            '      ambig : sp "? : "? [ 99 ] mm+ ] ',
-            '      ambig =    "? : "? [ 99 ] mm* ] ',
-            ' key  ambig      "? : "? [ 99 ] mm* ] ',
+            '      ambig :    "? : "? [ 99 ] mm+ ] , flag ',
+            '      ambig : sp "? : "? [ 99 ] mm+ ] , flag ',
+            '      ambig =    "? : "? [ 99 ] mm* ] , flag ',
+            ' key  ambig      "? : "? [ 99 ] mm* ] , flag ',
             "                         [ 99 ] mm* ] [ key ] ",
             " key : word :              99   mm+ ",
             " key+   99 ",
@@ -188,10 +191,10 @@ class BaseLength(Base):
         patterns = [
             " key       : 99 ft ,       99 in ",
             " key       : 99 ft , 99 to 99 in ",
-            "     ambig : 99 ft ,       99 in ",
-            "     ambig : 99 ft , 99 to 99 in ",
-            " key ambig : 99 ft ,       99 in ",
-            " key ambig : 99 ft , 99 to 99 in ",
+            "     ambig : 99 ft ,       99 in , flag ",
+            "     ambig : 99 ft , 99 to 99 in , flag ",
+            " key ambig : 99 ft ,       99 in , flag ",
+            " key ambig : 99 ft , 99 to 99 in , flag ",
         ]
         if allow_no_key:
             patterns += [
@@ -212,11 +215,11 @@ class BaseLength(Base):
     def range_length_patterns(cls, *, allow_no_key: bool = False) -> list[Compiler]:
         patterns = [
             ' key       "? : "? 99 to 99 mm* ',
-            ' key ambig "? : "? 99 to 99 mm* ',
-            ' key ambig "? : "? 99 to 99 mm* key mm* ',
-            '     ambig "? : "? 99 to 99 mm* ',
-            '     ambig "? : "? 99 to 99 mm* key mm* ',
-            "                   99 to 99 mm* key mm* ",
+            ' key ambig "? : "? 99 to 99 mm*         , flag ',
+            ' key ambig "? : "? 99 to 99 mm* key mm* , flag ',
+            '     ambig "? : "? 99 to 99 mm*         , flag ',
+            '     ambig "? : "? 99 to 99 mm* key mm* , flag ',
+            "                   99 to 99 mm* key mm* , flag ",
         ]
         if allow_no_key:
             patterns += [
@@ -235,14 +238,14 @@ class BaseLength(Base):
     @classmethod
     def tic_length_patterns(cls, *, allow_no_key: bool = False) -> list[Compiler]:
         patterns = [
-            ' ambig key   : 99 "+ ',
+            ' ambig key   : 99 "+ , flag ',
             '       key   : 99 "+ ',
-            '       ambig : 99 "+ ',
-            ' key   ambig : 99 "+ ',
-            " ambig key   : 99 in ",
+            '       ambig : 99 "+ , flag ',
+            ' key   ambig : 99 "+ , flag ',
+            " ambig key   : 99 in , flag ",
             "       key   : 99 in ",
-            "       ambig : 99 in ",
-            " key   ambig : 99 in ",
+            "       ambig : 99 in , flag ",
+            " key   ambig : 99 in , flag ",
         ]
         if allow_no_key:
             patterns += []
@@ -299,7 +302,15 @@ class BaseLength(Base):
         labels = [e for e in ent.ents if e.label_ in cls.keys]
         prefix = cls.get_prefix(labels)
         ambiguous = True if len(labels) == 0 else None
+        if ambiguous and e_is_embryo(ent.text):
+            raise RejectMatch
         return ambiguous, prefix
+
+    @staticmethod
+    def remove_ending_punct(ent: Span) -> tuple[str, int]:
+        if ent.text and ent.text[-1] in SEP:
+            return ent.text[:-1], ent.end_char - 1
+        return ent.text, ent.end_char
 
     @classmethod
     def length_match(cls, ent: Span) -> dict:
@@ -313,14 +324,17 @@ class BaseLength(Base):
         number = next(e for e in ent.ents if e.label_ == "number")
         length = cls.in_millimeters(number, units)
 
+        _text, end_char = cls.remove_ending_punct(ent)
+
         trait = {
+            "_text": _text,
             "length": length,
             "_prefix": prefix,
             "ambiguous": ambiguous,
             "estimated": estimated,
             "units_inferred": units_inferred,
             "start": ent.start_char,
-            "end": ent.end_char,
+            "end": end_char,
         }
         return trait
 
@@ -345,12 +359,15 @@ class BaseLength(Base):
                 round(length + cls.in_millimeters(numbers[2], units[1]), 2),
             ]
 
+        _text, end_char = cls.remove_ending_punct(ent)
+
         return {
+            "_text": _text,
             "length": length,
             "ambiguous": ambiguous,
             "_prefix": prefix,
             "start": ent.start_char,
-            "end": ent.end_char,
+            "end": end_char,
         }
 
     @classmethod
@@ -367,13 +384,16 @@ class BaseLength(Base):
             cls.in_millimeters(numbers[1], units),
         ]
 
+        _text, end_char = cls.remove_ending_punct(ent)
+
         return {
+            "_text": _text,
             "length": length,
             "_prefix": prefix,
             "ambiguous": ambiguous,
             "units_inferred": units_inferred,
             "start": ent.start_char,
-            "end": ent.end_char,
+            "end": end_char,
         }
 
     @classmethod
@@ -397,12 +417,15 @@ class BaseLength(Base):
         units = cls.replace.get(units.text, "inches") if units else "inches"
         length = cls.in_millimeters(number, units)
 
+        _text, end_char = cls.remove_ending_punct(ent)
+
         return {
+            "_text": _text,
             "length": length,
             "ambiguous": ambiguous,
             "_prefix": prefix,
             "start": ent.start_char,
-            "end": ent.end_char,
+            "end": end_char,
         }
 
     @classmethod

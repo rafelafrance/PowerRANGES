@@ -23,5 +23,5 @@ class SoriculusMaster(BaseJanitor):
         self.embryo_length("emb CR", "unit", "crown-rump")
         self.placental_scar_count("scars")
 
-        self.parse_repro_cond("sex", "repro comments")
-        self.parse_all("unformatted measurements")
+        self.parse("repro comments")
+        self.parse("unformatted measurements")

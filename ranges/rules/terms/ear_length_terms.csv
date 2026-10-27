@@ -1,4 +1,5 @@
 label,pattern,factor_cm,measured_from
+flags,eemmbbrryyoo,,
 ambiguous_key,e,,
 ambiguous_key,e.,,
 key_with_units,ear len in millimeters,0.1,

@@ -11,9 +11,9 @@ class DmnsRangesTraits(BaseJanitor):
 
         self.variable_traits()
 
-        self.parse_repro_cond("sex", "reproductive data")
-        self.parse_all("occurrenceRemarks")
-        self.parse_all("dynamicProperties")
+        self.parse("reproductive data")
+        self.parse("occurrenceRemarks")
+        self.parse("dynamicProperties")
 
     def variable_traits(self) -> None:
         columns = [

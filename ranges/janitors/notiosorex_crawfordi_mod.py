@@ -22,4 +22,4 @@ class NotiosorexCrawfordiMod(BaseJanitor):
         self.embryo_count("", "embs L", "embs R")
         self.placental_scar_count("scars")
 
-        self.parse_repro_cond("sex", "repro comments")
+        self.parse("repro comments")

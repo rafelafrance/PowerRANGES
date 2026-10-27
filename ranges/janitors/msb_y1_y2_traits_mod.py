@@ -12,9 +12,9 @@ class MsbY1Y2TraitsMod(BaseJanitor):
 
         self.from_slots()
 
-        self.parse_repro_cond("sex", "reproductive data")
-        self.parse_all("occurrenceRemarks")
-        self.parse_all("dynamicProperties")
+        self.parse("reproductive data")
+        self.parse("occurrenceRemarks")
+        self.parse("dynamicProperties")
 
     def from_slots(self) -> None:
         columns = [

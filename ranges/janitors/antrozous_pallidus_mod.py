@@ -7,6 +7,7 @@ from ranges.janitors.base_janitor import BaseJanitor
 class AntrozousPallidusMod(BaseJanitor):
     def cleaner(self) -> None:
         self.copy("occurrenceID", "occurrenceID")
+        self.copy("scientificName", "SUBSPECIES")
         self.copy("sex", "sex")
         self.copy("lifeStage", "life stage")
 
@@ -24,5 +25,5 @@ class AntrozousPallidusMod(BaseJanitor):
         self.embryo_length("emb CR", "unit", "crown-rump")
         self.placental_scar_count("scars")
 
-        self.parse_repro_cond("sex", "reproductive data")
-        self.parse_all("unformatted measurements")
+        self.parse("reproductive data")
+        self.parse("unformatted measurements")

@@ -25,5 +25,5 @@ class MyotisMod(BaseJanitor):
         self.embryo_length("emb CR", "unit", "crown-rump")
         self.placental_scar_count("scars")
 
-        self.parse_repro_cond("sex", "reproductive data")
-        self.parse_all("unformatted measurements")
+        self.parse("reproductive data")
+        self.parse("unformatted measurements")

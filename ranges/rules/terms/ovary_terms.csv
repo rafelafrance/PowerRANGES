@@ -254,6 +254,11 @@ ovary,ov
 ovary,ovaries
 ovary,ovary
 ovary,ovarys
+ovary,ov and ut
+ovary,ov & ut
+ovary,ovaries and uterine horns
+ovary,ovary and uterus
+ovary,ovaries and uterus
 ovary_len,ovary len
 ovary_len,ovary length
 ovary_len,ovarylen
@@ -446,9 +451,6 @@ size,very unobservable
 size,very unobservable size
 size,very unobservable+
 texture,smooth
-uterus,ut
-uterus,uterine
-uterus,uterus
 visible,bare
 visible,conspicuous
 visible,definite

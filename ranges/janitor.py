@@ -11,78 +11,44 @@ import pandas as pd
 from tqdm import tqdm
 
 from ranges.janitors.anourosorex_yamashinai_mod import AnourosorexYamashinaiMod
-from ranges.janitors.antrozous_pallidus_mod import AntrozousPallidusMod
-from ranges.janitors.cas_y1_y2_trait_data_only import CasY1Y2TraitDataOnly
-from ranges.janitors.csulb_sciuridae_traits import CsulbSciuridaeTraits
-from ranges.janitors.dmns_ranges_traits_dmns import DmnsRangesTraits
-from ranges.janitors.eptesicus_mod import EptesicusMod
-from ranges.janitors.fmnh_test_ranges_traits import (
-    FmnhTestRangesTraits,
-    fmnh_multi_row_cleaner,
-)
-from ranges.janitors.lacm_ranges_specimens_updated_new_data_dec2025 import (
-    LACMRangesSpecimensUpdatedNewDataDec2025,
-)
-from ranges.janitors.microtus_mod import MicrotusMod
-from ranges.janitors.msb_y1_y2_traits_mod import MsbY1Y2TraitsMod
-from ranges.janitors.mustela_mod import MustelaMod
-from ranges.janitors.myosorex_varius_mod import MyosorexVariusMod
-from ranges.janitors.myotis_mod import MyotisMod
-from ranges.janitors.neotoma_mod import NeotomaMod
-from ranges.janitors.notiosorex_crawfordi_mod import NotiosorexCrawfordiMod
-from ranges.janitors.peromyscus_master import PeromyscusMaster
-from ranges.janitors.reithrodontomys_mod import ReithrodontomysMod
-from ranges.janitors.sorex_master import SorexMaster
-from ranges.janitors.soriculus_master import SoriculusMaster
-from ranges.janitors.suncus_master import SuncusMaster
-from ranges.janitors.tamias_speciosus_mod import TamiasSpeciosusMod
-from ranges.janitors.tamu_ranged_all_traits_only_2sept2025_mod import (
-    TamuRangesAllTraitsOnly2Sept2025Mod,
-)
-from ranges.janitors.thomomys_bottae_mod import ThomomysBottaeMod
-from ranges.janitors.ttu_nsf_ranges_data_corrections import TtunsfRangesDataCorrections
-from ranges.janitors.ummz_ranges_y2_final_mod import UmmzRangesY2FinalMod
-from ranges.janitors.uwbm_mamm_json_attributes import UwbmMammJsonAttributes
-from ranges.janitors.uwymz_y1_mod import UwymzY1Mod, uwymz_y1_mod_multi_row_cleaner
-from ranges.janitors.uwymz_y2_mod import UwymzY2Mod, uwymz_y2_mod_multi_row_cleaner
 from ranges.pylib import log
 
 CSVS = {
     "Anourosorex_yamashinai_mod.csv": (AnourosorexYamashinaiMod,),
-    "Antrozous pallidus_mod.csv": (AntrozousPallidusMod,),
-    "CAS Y1&Y2 Trait Data Only (1).csv": (CasY1Y2TraitDataOnly,),
-    "CSULB_Sciuridae_Traits.csv": (CsulbSciuridaeTraits,),
-    "DMNS_Ranges_Traits_DMNS_Y1_mod.csv": (DmnsRangesTraits,),
-    "DMNS_Ranges_Traits_DMNS_Y2_mod.csv": (DmnsRangesTraits,),
-    "Eptesicus_mod.csv": (EptesicusMod,),
-    "FMNH_Test_Ranges_Traits (1).csv": (FmnhTestRangesTraits, fmnh_multi_row_cleaner),
-    "LACM_Ranges_specimens_updated_new_data_Dec2025.csv": (
-        LACMRangesSpecimensUpdatedNewDataDec2025,
-    ),
-    "Microtus_mod.csv": (MicrotusMod,),
-    "MSB-Y1-Y2-traits_mod.csv": (MsbY1Y2TraitsMod,),
-    "mustela_mod.csv": (MustelaMod,),
-    "Myosorex_varius_mod.csv": (MyosorexVariusMod,),
-    "Myotis_mod.csv": (MyotisMod,),
-    "Neotoma_mod.csv": (NeotomaMod,),
-    "Notiosorex_crawfordi_mod.csv": (NotiosorexCrawfordiMod,),
-    "Peromyscus_Master.csv": (PeromyscusMaster,),
-    "Reithrodontomys_mod.csv": (ReithrodontomysMod,),
-    "Sorex_Master.csv": (SorexMaster,),
-    "Soriculus_Master.csv": (SoriculusMaster,),
-    "Suncus_Master.csv": (SuncusMaster,),
-    "Tamias speciosus_mod.csv": (TamiasSpeciosusMod,),
-    "TAMU_RANGESALL_TraitsOnly2Sept2025_mod.csv": (
-        TamuRangesAllTraitsOnly2Sept2025Mod,
-    ),
-    "Thomomys bottae_mod.csv": (ThomomysBottaeMod,),
-    "TTU-NSF-Ranges-Data Corrections Next to Data-7-28-2025_mod.csv": (
-        TtunsfRangesDataCorrections,
-    ),
-    "UMMZ_ranges_y2_final_mod.csv": (UmmzRangesY2FinalMod,),
-    "UWBM_Mamm_JSON_Attributes.csv": (UwbmMammJsonAttributes,),
-    "UWYMZ_Y1_mod.csv": (UwymzY1Mod, uwymz_y1_mod_multi_row_cleaner),
-    "UWYMZ_Y2_mod.csv": (UwymzY2Mod, uwymz_y2_mod_multi_row_cleaner),
+    # "Antrozous pallidus_mod.csv": (AntrozousPallidusMod,),
+    # "CAS Y1&Y2 Trait Data Only (1).csv": (CasY1Y2TraitDataOnly,),
+    # "CSULB_Sciuridae_Traits.csv": (CsulbSciuridaeTraits,),
+    # "DMNS_Ranges_Traits_DMNS_Y1_mod.csv": (DmnsRangesTraits,),
+    # "DMNS_Ranges_Traits_DMNS_Y2_mod.csv": (DmnsRangesTraits,),
+    # "Eptesicus_mod.csv": (EptesicusMod,),
+    # "FMNH_Test_Ranges_Traits (1).csv": (FmnhTestRangesTraits, fmnh_multi_row_cleaner),
+    # "LACM_Ranges_specimens_updated_new_data_Dec2025.csv": (
+    #     LACMRangesSpecimensUpdatedNewDataDec2025,
+    # ),
+    # "Microtus_mod.csv": (MicrotusMod,),
+    # "MSB-Y1-Y2-traits_mod.csv": (MsbY1Y2TraitsMod,),
+    # "mustela_mod.csv": (MustelaMod,),
+    # "Myosorex_varius_mod.csv": (MyosorexVariusMod,),
+    # "Myotis_mod.csv": (MyotisMod,),
+    # "Neotoma_mod.csv": (NeotomaMod,),
+    # "Notiosorex_crawfordi_mod.csv": (NotiosorexCrawfordiMod,),
+    # "Peromyscus_Master.csv": (PeromyscusMaster,),
+    # "Reithrodontomys_mod.csv": (ReithrodontomysMod,),
+    # "Sorex_Master.csv": (SorexMaster,),
+    # "Soriculus_Master.csv": (SoriculusMaster,),
+    # "Suncus_Master.csv": (SuncusMaster,),
+    # "Tamias speciosus_mod.csv": (TamiasSpeciosusMod,),
+    # "TAMU_RANGESALL_TraitsOnly2Sept2025_mod.csv": (
+    #     TamuRangesAllTraitsOnly2Sept2025Mod,
+    # ),
+    # "Thomomys bottae_mod.csv": (ThomomysBottaeMod,),
+    # "TTU-NSF-Ranges-Data Corrections Next to Data-7-28-2025_mod.csv": (
+    #     TtunsfRangesDataCorrections,
+    # ),
+    # "UMMZ_ranges_y2_final_mod.csv": (UmmzRangesY2FinalMod,),
+    # "UWBM_Mamm_JSON_Attributes.csv": (UwbmMammJsonAttributes,),
+    # "UWYMZ_Y1_mod.csv": (UwymzY1Mod, uwymz_y1_mod_multi_row_cleaner),
+    # "UWYMZ_Y2_mod.csv": (UwymzY2Mod, uwymz_y2_mod_multi_row_cleaner),
 }
 
 COLUMN_ORDER = """
@@ -90,13 +56,15 @@ COLUMN_ORDER = """
     body_mass
     calcar_length
     color
-    ear_length ear_length_measured_from
+    ear_length ear_length_measured_from ear_length_2 ear_length_2_measured_from
+        ear_length_3 ear_length_3_measured_from
     embryo_count embryo_count_left embryo_count_right
     embryo_length embryo_length_measured_from
+    eventDate
     forearm_length
     hind_foot_length hind_foot_length_includes
     lactation_state lactation_description
-    life_stage
+    lifeStage
     nipple_state nipple_count nipple_size nipple_description
     ovary_description ovary_length_1 ovary_length_2 ovary_position
         ovary_width_1 ovary_width_2
@@ -113,6 +81,7 @@ COLUMN_ORDER = """
     total_length
     tragus_length
     vagina_state
+    wingspan
     """.split()
 
 

@@ -1,0 +1,12 @@
+label,pattern,factor_cm
+key_with_units,wingspan in millimeters,0.1
+key_with_units,wingspan in mm,0.1
+key_with_units,wingspaninmillimeters,0.1
+key_with_units,wingspaninmm,0.1
+len_key,wing span,
+len_key,wing spread,
+len_key,wing,
+len_key,wings,
+len_key,wingspan,
+len_key,wingspread,
+len_key,ws,

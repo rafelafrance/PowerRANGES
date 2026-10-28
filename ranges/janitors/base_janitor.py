@@ -76,16 +76,21 @@ class BaseJanitor:
     # Per field actions
 
     def body_mass(self, mass: str, units: str = "") -> None:
+        self.used_fields.add(mass)
+        self.used_fields.add(units)
         self.clean["body_mass"] = self.to_grams(
             self.dirty[mass], self.dirty.get(units, "")
         )
 
     def calcar_length(self, length: str, units: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.clean["calcar_length"] = self.to_mm(
             self.dirty[length], self.dirty.get(units, "")
         )
 
     def copy(self, clean_label: str, dirty_label: str) -> None:
+        self.used_fields.add(dirty_label)
         if not clean_label:
             msg = "No clean label."
             raise ValueError(msg)
@@ -93,6 +98,8 @@ class BaseJanitor:
         self.clean[clean_label] = self.dirty[dirty_label]
 
     def ear_length(self, length: str, units: str = "", measured_from: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         ear_label = "ear_length"
         measure_label = "ear_length_measured_from"
         self.ear_length_count += 1
@@ -112,6 +119,9 @@ class BaseJanitor:
         *,
         only_if_filled: bool = False,
     ) -> None:
+        self.used_fields.add(count)
+        self.used_fields.add(left)
+        self.used_fields.add(right)
         count = self.to_int(self.dirty.get(count, ""))
         left = self.to_int(self.dirty.get(left, ""))
         right = self.to_int(self.dirty.get(right, ""))
@@ -136,15 +146,20 @@ class BaseJanitor:
         *,
         only_if_filled: bool = False,
     ) -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         length = self.to_mm(self.dirty[length], self.dirty.get(units, ""))
         if not only_if_filled or (only_if_filled and length):
             self.clean["embryo_length"] = length
             self.clean["embryo_length_measured_from"] = measured_from
 
     def event_date(self, date_: str) -> None:
+        self.used_fields.add(date_)
         self.clean["eventDate"] = self.dirty[date_].removesuffix("00:00:00").strip()
 
     def forearm_length(self, length: str, units: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.clean["forearm_length"] = self.to_mm(
             self.dirty[length], self.dirty.get(units, "")
         )
@@ -152,6 +167,8 @@ class BaseJanitor:
     def hind_foot_length(
         self, length: str, units: str = "", includes: str = ""
     ) -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.clean["hind_foot_length"] = self.to_mm(
             self.dirty[length], self.dirty.get(units, "")
         )
@@ -160,6 +177,9 @@ class BaseJanitor:
     def placental_scar_count(
         self, count: str = "", left: str = "", right: str = ""
     ) -> None:
+        self.used_fields.add(count)
+        self.used_fields.add(left)
+        self.used_fields.add(right)
         count = self.to_int(self.dirty.get(count, ""))
         left = self.to_int(self.dirty.get(left, ""))
         right = self.to_int(self.dirty.get(right, ""))
@@ -169,6 +189,7 @@ class BaseJanitor:
         self.clean["placental_scars_right"] = right
 
     def placental_scars_present(self, present: str) -> None:
+        self.used_fields.add(present)
         value = self.dirty[present]
         true = re.match(r"true|yes", value, flags=re.IGNORECASE)
         false = re.match(r"false|no", value, flags=re.IGNORECASE)
@@ -179,37 +200,51 @@ class BaseJanitor:
             self.clean["placental_scars_present"] = "False"
 
     def tail_length(self, length: str, units: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.clean["tail_length"] = self.to_mm(
             self.dirty[length], self.dirty.get(units, "")
         )
 
     def tarsus_length(self, length: str, units: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.clean["tarsus_length"] = self.to_mm(
             self.dirty[length], self.dirty.get(units, "")
         )
 
     def testis_length(self, length: str, units: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.testis_length_count += 1
         label = f"testis_length_{self.testis_length_count}"
         self.clean[label] = self.to_mm(self.dirty[length], self.dirty.get(units, ""))
 
     def testis_width(self, width: str, units: str = "") -> None:
+        self.used_fields.add(width)
+        self.used_fields.add(units)
         self.testis_width_count += 1
         label = f"testis_width_{self.testis_width_count}"
         self.clean[label] = self.to_mm(self.dirty[width], self.dirty.get(units, ""))
 
     def thumb_length(self, length: str, units: str = "", includes: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.clean["thumb_length"] = self.to_mm(
             self.dirty[length], self.dirty.get(units, "")
         )
         self.clean["thumb_length_includes"] = includes
 
     def total_length(self, length: str, units: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.clean["total_length"] = self.to_mm(
             self.dirty[length], self.dirty.get(units, "")
         )
 
     def tragus_length(self, length: str, units: str = "") -> None:
+        self.used_fields.add(length)
+        self.used_fields.add(units)
         self.clean["tragus_length"] = self.to_mm(
             self.dirty[length], self.dirty.get(units, "")
         )
@@ -283,6 +318,7 @@ class BaseJanitor:
     # Rule parser
 
     def parse(self, field: str, flag: str = NONE) -> None:
+        self.parsed_fields.add(field)
         text = self.dirty[field]
         doc = PIPELINE(text + flag)
         traits = [e._.trait for e in doc.ents]

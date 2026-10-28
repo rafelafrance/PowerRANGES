@@ -7,14 +7,24 @@ from spacy.tokens import Span
 # parsed and use that as a flag in the parsers. The flag must be a suffix so it doesn't
 # move trait offsets and I choose a spelling to defeat Traiter so it doesn't interfere
 # with normal parsing.
+EAR = "eeaarr"
 EMBRYO = "eemmbbrryyoo"
 LENGTH = "lleennggtthh"
-EAR = "eeaarr"
 NONE = ""
 
+EAR_LEN = len(EAR)
 EMBRYO_LEN = len(EMBRYO)
 LENGTH_LEN = len(LENGTH)
-EAR_LEN = len(EAR)
+
+
+def e_is_ear(text: str) -> bool:
+    return text.endswith(EAR)
+
+
+def remove_ear_flag(ent: Span, *, ambiguous: bool) -> tuple[str, int]:
+    if len(ent.text) >= EAR_LEN and ambiguous:
+        return ent.text.removesuffix(EAR), ent.end_char - EAR_LEN
+    return ent.text, ent.end_char
 
 
 def e_is_embryo(text: str) -> bool:

@@ -110,7 +110,15 @@ def main(args: argparse.Namespace) -> None:
         df = pd.DataFrame(cleaned)
 
         order = [c for c in COLUMN_ORDER if c in df.columns]
-        order += [c for c in df.columns if c not in COLUMN_ORDER and c]
+        parsed_fields = sorted(cleaner.parsed_fields)
+        used_fields = sorted(cleaner.used_fiels)
+        order += sorted(parsed_fields)
+        order += sorted(used_fields)
+        order += [
+            c
+            for c in df.columns
+            if c not in COLUMN_ORDER + parsed_fields + used_fields and c
+        ]
         df = df[order]
 
         path = args.output_dir / name

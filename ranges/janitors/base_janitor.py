@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 from ranges.pylib import pipeline
-from ranges.pylib.flags import NONE
 
 INT = re.compile(r"\d+")
 FLOAT = re.compile(r" \d+ (?: \.\d* )? | \.\d+", flags=re.VERBOSE)
@@ -60,8 +59,8 @@ PIPELINE = pipeline.build()
 @dataclass
 class BaseJanitor:
     # ------------------ Class Vars --------------------------------------------------
-    parsed_fields: ClassVar[set[str]] = field(default_factory=set)
-    used_fields: ClassVar[set[str]] = field(default_factory=set)
+    parsed_fields: ClassVar[set[str]] = set()
+    used_fields: ClassVar[set[str]] = set()
     # --------------------------------------------------------------------------------
 
     dirty: dict[str, Any] = field(default_factory=dict)
@@ -95,7 +94,8 @@ class BaseJanitor:
             msg = "No clean label."
             raise ValueError(msg)
 
-        self.clean[clean_label] = self.dirty[dirty_label]
+        if clean_label not in self.clean:
+            self.clean[clean_label] = self.dirty[dirty_label]
 
     def ear_length(self, length: str, units: str = "", measured_from: str = "") -> None:
         self.used_fields.add(length)
@@ -317,10 +317,21 @@ class BaseJanitor:
     # --------------------------------------------------------------------------------
     # Rule parser
 
-    def parse(self, field: str, flag: str = NONE) -> None:
+    def parse(self, field: str, *, prefix: str = "", flag: str = "") -> None:
+        """
+        Parse a CSV cell's value.
+
+        field = Which dirty column is being parsed in the row
+        prefix = If there are no labels and just random measurements try to label what
+                 is being parsed. For instance if the embryo_count cell value is "2R 3L"
+                 we prefix is with "embryo 2R 3L" so that the parser "knows" these are
+                 embryo counts and not placental scar counts, etc.
+        flag = tell the parse what a single letter abbreviation represents. Is "E 16m"
+               an ear measurement or an embryo length measurement.
+        """
         self.parsed_fields.add(field)
-        text = self.dirty[field]
-        doc = PIPELINE(text + flag)
+        prefix = prefix + " " if prefix else ""
+        doc = PIPELINE(prefix + self.dirty[field] + flag)
         traits = [e._.trait for e in doc.ents]
         all_ = {}
         for trait in traits:

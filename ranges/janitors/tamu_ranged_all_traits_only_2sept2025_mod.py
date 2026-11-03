@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from ranges.janitors.base_janitor import BaseJanitor
+from ranges.pylib.flags import EMBRYO
 
 
 @dataclass
@@ -11,7 +12,6 @@ class TamuRangesAllTraitsOnly2Sept2025Mod(BaseJanitor):
         self.copy("vagina_state", "Vaginal Perforation")
         self.copy("uterus_condition", "Uterus Condition")
         self.copy("pregnancy_state", "Pregnancy")
-        self.copy("embryo_count_raw", "Embryo Count")
         self.copy("lactation_state", "Lacation")
         self.copy("nipple_size", "Nipple Size")
         self.copy("testis_position", "Testis Position")
@@ -26,16 +26,13 @@ class TamuRangesAllTraitsOnly2Sept2025Mod(BaseJanitor):
             self.dirty["Forearm Length"]
         )
         self.clean["tragus_length"] = self.value_with_units(self.dirty["Tragus Length"])
-        self.clean["embryo_length"] = self.value_with_units(self.dirty["Embryo Length"])
 
-        self.placental_scar_count(
-            "Placental Scar Count",
-            "Left Placental Scar Count",
-            "Right Placental Scar Count",
-        )
-        self.testis_length("Testis Length")
-        self.testis_width("Testis Width")
-
-        self.parse("Embryo Count")
+        self.parse("Reproductive Data", flag=EMBRYO)
         self.parse("occurrenceRemarks")
         self.parse("dynamicProperties")
+        self.parse("Embryo Count", prefix="embryo")
+        self.parse("Embryo Length", prefix="embryo")
+        self.parse("Placental Scars", prefix="placental scars")
+        self.parse("Testis Position", prefix="testis")
+        self.parse("Testis Length", prefix="testis")
+        self.parse("Testis Width", prefix="testis")

@@ -10,11 +10,16 @@ from typing import Any
 import pandas as pd
 from tqdm import tqdm
 
-from ranges.janitors.anourosorex_yamashinai_mod import AnourosorexYamashinaiMod
+from ranges.janitors.lacm_ranges_specimens_updated_new_data_dec2025 import (
+    LACMRangesSpecimensUpdatedNewDataDec2025,
+)
+from ranges.janitors.tamu_ranged_all_traits_only_2sept2025_mod import (
+    TamuRangesAllTraitsOnly2Sept2025Mod,
+)
 from ranges.pylib import log
 
 CSVS = {
-    "Anourosorex_yamashinai_mod.csv": (AnourosorexYamashinaiMod,),
+    # "Anourosorex_yamashinai_mod.csv": (AnourosorexYamashinaiMod,),
     # "Antrozous pallidus_mod.csv": (AntrozousPallidusMod,),
     # "CAS Y1&Y2 Trait Data Only (1).csv": (CasY1Y2TraitDataOnly,),
     # "CSULB_Sciuridae_Traits.csv": (CsulbSciuridaeTraits,),
@@ -22,9 +27,9 @@ CSVS = {
     # "DMNS_Ranges_Traits_DMNS_Y2_mod.csv": (DmnsRangesTraits,),
     # "Eptesicus_mod.csv": (EptesicusMod,),
     # "FMNH_Test_Ranges_Traits (1).csv": (FmnhTestRangesTraits, fmnh_multi_row_cleaner),
-    # "LACM_Ranges_specimens_updated_new_data_Dec2025.csv": (
-    #     LACMRangesSpecimensUpdatedNewDataDec2025,
-    # ),
+    "LACM_Ranges_specimens_updated_new_data_Dec2025.csv": (
+        LACMRangesSpecimensUpdatedNewDataDec2025,
+    ),
     # "Microtus_mod.csv": (MicrotusMod,),
     # "MSB-Y1-Y2-traits_mod.csv": (MsbY1Y2TraitsMod,),
     # "mustela_mod.csv": (MustelaMod,),
@@ -38,9 +43,9 @@ CSVS = {
     # "Soriculus_Master.csv": (SoriculusMaster,),
     # "Suncus_Master.csv": (SuncusMaster,),
     # "Tamias speciosus_mod.csv": (TamiasSpeciosusMod,),
-    # "TAMU_RANGESALL_TraitsOnly2Sept2025_mod.csv": (
-    #     TamuRangesAllTraitsOnly2Sept2025Mod,
-    # ),
+    "TAMU_RANGESALL_TraitsOnly2Sept2025_mod.csv": (
+        TamuRangesAllTraitsOnly2Sept2025Mod,
+    ),
     # "Thomomys bottae_mod.csv": (ThomomysBottaeMod,),
     # "TTU-NSF-Ranges-Data Corrections Next to Data-7-28-2025_mod.csv": (
     #     TtunsfRangesDataCorrections,
@@ -109,17 +114,11 @@ def main(args: argparse.Namespace) -> None:
 
         df = pd.DataFrame(cleaned)
 
-        order = [c for c in COLUMN_ORDER if c in df.columns]
-        parsed_fields = sorted(cleaner.parsed_fields)
-        used_fields = sorted(cleaner.used_fiels)
-        order += sorted(parsed_fields)
-        order += sorted(used_fields)
-        order += [
-            c
-            for c in df.columns
-            if c not in COLUMN_ORDER + parsed_fields + used_fields and c
-        ]
-        df = df[order]
+        columns = [c for c in COLUMN_ORDER if c in df.columns]
+        columns += sorted(f for f in janitor_class.parsed_fields if f)
+        columns += sorted(f for f in janitor_class.used_fields if f)
+        columns += [c for c in df.columns if c not in columns and c]
+        df = df[columns]
 
         path = args.output_dir / name
         df.to_csv(path, index=False)
@@ -128,6 +127,9 @@ def main(args: argparse.Namespace) -> None:
 
 
 def per_row_cleaner(dirty: list[dict], janitor_class: Any) -> list[dict]:
+    janitor_class.parsed_fields = set()
+    janitor_class.used_fields = set()
+
     cleaned = []
     for row in tqdm(dirty):
         janitor = janitor_class(dirty=row)

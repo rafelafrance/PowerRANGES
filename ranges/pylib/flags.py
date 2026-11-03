@@ -10,7 +10,6 @@ from spacy.tokens import Span
 EAR = "eeaarr"
 EMBRYO = "eemmbbrryyoo"
 LENGTH = "lleennggtthh"
-NONE = ""
 
 EAR_LEN = len(EAR)
 EMBRYO_LEN = len(EMBRYO)
